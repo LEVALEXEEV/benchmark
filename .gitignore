@@ -3,7 +3,7 @@ dist/
 .vite/
 *.log
 .DS_Store
-results/*.json
-!results/.gitkeep
 playwright-report/
 test-results/
+# Трассы CDP большие и нужны только для разового разбора GC — в датасет не входят
+results/**/traces/

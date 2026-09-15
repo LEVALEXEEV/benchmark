@@ -1,343 +1,358 @@
-import { chromium, type Browser, type Page } from 'playwright';
-import { writeFile, mkdir } from 'node:fs/promises';
+import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { mulberry32 } from '@bench/scene-spec';
 import type {
   BenchResult,
-  BenchInitResult,
-  BenchInputResult,
-  BenchScaleResult,
+  FrameRunResult,
+  InitRunResult,
+  InputRunResult,
+  ScaleRunResult,
 } from '@bench/metrics';
-import { parseArgs, type BenchConfig, type ImplTarget } from './config.js';
-import { runBundleSizeReport, type BundleSizeReport } from './bundle-size.js';
+import { BenchPage } from './bench-page.js';
+import { launchBrowser, newBenchContext, type LaunchedBrowser } from './browser.js';
+import { measureBundles } from './bundle-size.js';
+import { parseArgs, runUrl, type BenchConfig, type Target } from './config.js';
+import { deviceSlug, hostEnv, thermalSnapshot } from './host-env.js';
+import { canvasBox, startClickDriver } from './input-driver.js';
+import { runParity } from './parity-check.js';
+import { buildImpls, startServers } from './servers.js';
+import { Tracer, type GcWindowStats } from './trace.js';
 
-type AnyResult = BenchResult | BenchInitResult | BenchInputResult | BenchScaleResult;
-
-interface IterationOutcome {
-  readonly label: string;
+interface ScheduleItem {
+  readonly target: Target;
+  readonly warmup: boolean;
+  /** номер итерации (для прогревов — номер прогрева) */
   readonly iteration: number;
-  readonly result: AnyResult;
 }
 
-function buildUrl(target: ImplTarget, cfg: BenchConfig): string {
-  const params = new URLSearchParams({
-    scenario: cfg.scenarioId,
-    warmup: String(cfg.warmupMs),
-    record: String(cfg.recordMs),
-    quiet: String(cfg.quietWindowMs),
-    ttiTimeout: String(cfg.ttiTimeoutMs),
-    clickInterval: String(cfg.clickIntervalMs),
-    seed: String(cfg.seed),
-    fpsFloor: String(cfg.fpsFloor),
-    levels: cfg.levels.join(','),
-  });
-  if (target.mode) params.set('mode', target.mode);
-  return `${target.baseUrl}/?${params.toString()}`;
-}
+const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 
-async function runIteration(
-  browser: Browser,
-  target: ImplTarget,
-  cfg: BenchConfig,
-  iteration: number
-): Promise<IterationOutcome> {
-  // Свежий context на каждый прогон → у S3 это даёт "холодный" HTTP-кэш,
-  // что и есть смысл cold-start измерения.
-  const context = await browser.newContext({
-    viewport: { width: 1400, height: 900 },
-    deviceScaleFactor: 1,
-  });
-
-  const page: Page = await context.newPage();
-
-  // Для S3 дополнительно отключаем HTTP-кэш на уровне CDP, чтобы между
-  // итерациями не подхватывались артефакты предыдущей загрузки.
-  if (cfg.scenarioId === 's3') {
-    const cdp = await context.newCDPSession(page);
-    await cdp.send('Network.enable');
-    await cdp.send('Network.setCacheDisabled', { cacheDisabled: true });
+function shuffled<T>(xs: readonly T[], rng: () => number): T[] {
+  const a = [...xs];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [a[i], a[j]] = [a[j]!, a[i]!];
   }
-
-  await page.goto(buildUrl(target, cfg), { waitUntil: 'load' });
-
-  const timeoutMs =
-    cfg.scenarioId === 's3'
-      ? cfg.ttiTimeoutMs + 15_000
-      : cfg.scenarioId === 's5'
-        ? cfg.levels.length * (cfg.warmupMs + cfg.recordMs) + 30_000
-        : cfg.warmupMs + cfg.recordMs + 15_000;
-
-  const result: AnyResult = await page
-    .waitForFunction(
-      () => {
-        const bench = (
-          window as unknown as { __BENCH__?: { status: string; result: AnyResult | null } }
-        ).__BENCH__;
-        return bench?.status === 'done' && bench.result ? bench.result : null;
-      },
-      null,
-      { timeout: timeoutMs, polling: 250 }
-    )
-    .then((handle) => handle.jsonValue() as Promise<AnyResult>);
-
-  await context.close();
-  return { label: target.label, iteration, result };
+  return a;
 }
 
-function isFrame(r: AnyResult): r is BenchResult {
-  return r.kind === 'frame';
+/**
+ * Порядок прогонов. random — рандомизированные блоки: в каждой итерации все
+ * варианты в случайном порядке. В НИР2 шли сначала все прогоны three.js, затем
+ * все R3F, и медленный дрейф среды (нагрев, фоновые процессы) смешивался с
+ * различием технологий. blocked оставлен для контроля этого эффекта.
+ */
+function buildSchedule(cfg: BenchConfig): ScheduleItem[] {
+  const rng = mulberry32(cfg.orderSeed);
+  const items: ScheduleItem[] = [];
+  for (let w = 1; w <= cfg.warmupRuns; w++) {
+    for (const target of shuffled(cfg.targets, rng)) items.push({ target, warmup: true, iteration: w });
+  }
+  if (cfg.order === 'blocked') {
+    for (const target of cfg.targets) {
+      for (let i = 1; i <= cfg.iterations; i++) items.push({ target, warmup: false, iteration: i });
+    }
+  } else {
+    for (let i = 1; i <= cfg.iterations; i++) {
+      for (const target of shuffled(cfg.targets, rng)) items.push({ target, warmup: false, iteration: i });
+    }
+  }
+  return items;
 }
 
-function isInit(r: AnyResult): r is BenchInitResult {
-  return r.kind === 'init';
+function runTimeoutMs(cfg: BenchConfig): number {
+  switch (cfg.scenario) {
+    case 's3':
+      return cfg.settleMs + 60_000;
+    case 's5':
+      // построение крупных уровней в state-режиме занимает секунды
+      return cfg.levels.length * (cfg.warmupMs + cfg.recordMs * 5 + 20_000) + 60_000;
+    default:
+      return cfg.warmupMs + cfg.recordMs + 60_000;
+  }
 }
 
-function isInput(r: AnyResult): r is BenchInputResult {
-  return r.kind === 'input';
+/**
+ * Проверки валидности прогона. fatal — нарушение условий эксперимента
+ * (серия прерывается), остальные — предупреждения в манифесте.
+ */
+function validate(cfg: BenchConfig, lb: LaunchedBrowser, r: BenchResult, consoleErrors: string[]) {
+  const fatal: string[] = [];
+  const warnings: string[] = [];
+  const env = r.meta.env;
+  if (cfg.serve === 'preview' && env.buildMode !== 'production') fatal.push(`buildMode=${env.buildMode}`);
+  if (!env.crossOriginIsolated) fatal.push('страница не cross-origin isolated');
+  if (env.timerResolutionMs > 0.1) warnings.push(`грубый таймер: ${env.timerResolutionMs} мс`);
+  const w = Math.round(1280 * cfg.renderScale);
+  const h = Math.round(720 * cfg.renderScale);
+  if (env.gl.drawingBufferWidth !== w || env.gl.drawingBufferHeight !== h) {
+    fatal.push(`drawing buffer ${env.gl.drawingBufferWidth}×${env.gl.drawingBufferHeight} ≠ ${w}×${h}`);
+  }
+  if (env.gl.canvasCssWidth !== 1280 || env.gl.canvasCssHeight !== 720) {
+    fatal.push(`canvas CSS ${env.gl.canvasCssWidth}×${env.gl.canvasCssHeight} ≠ 1280×720`);
+  }
+  if (env.renderer.clearAlpha !== 1) fatal.push(`альфа очистки ${env.renderer.clearAlpha} ≠ 1`);
+  if (env.renderer.toneMapping !== 0) fatal.push(`tone mapping ${env.renderer.toneMapping} ≠ NoToneMapping`);
+  if (r.kind === 'frame' && r.summary.frames < 100) warnings.push(`мало кадров: ${r.summary.frames}`);
+  if (r.kind === 'frame' && lb.vsyncUncapped && Math.abs(r.summary.fps_median - 60) < 1.5) {
+    warnings.push('median FPS ≈ 60 — похоже, vsync не снят');
+  }
+  if (r.kind === 'input') {
+    if (r.summary.ok < 30) warnings.push(`мало измеренных кликов: ${r.summary.ok}`);
+    if (r.summary.timeout > 0) warnings.push(`клики без отклика: ${r.summary.timeout}`);
+    // event.timeStamp должен быть в шкале performance.now(); иначе queue и
+    // полная задержка бессмысленны (в разных браузерах шкала исторически различалась)
+    const q = r.summary.queue_ms_median;
+    if (!(q >= 0 && q < 100)) fatal.push(`queue_ms_median=${q}: event.timeStamp не в шкале performance.now()`);
+  }
+  if (consoleErrors.length > 0) warnings.push(`ошибки консоли: ${consoleErrors.slice(0, 3).join(' | ')}`);
+  return { fatal, warnings };
 }
 
-function isScale(r: AnyResult): r is BenchScaleResult {
-  return r.kind === 'scale';
-}
+async function runOne(
+  lb: LaunchedBrowser,
+  cfg: BenchConfig,
+  item: ScheduleItem,
+  tracePath: string | null
+): Promise<{ result: BenchResult; consoleErrors: string[]; gc: GcWindowStats[] | null; clicks: number | null }> {
+  const context = await newBenchContext(lb);
+  try {
+    const bp = await BenchPage.open(context);
+    if (cfg.scenario === 's3' && lb.supportsCdp) {
+      // новый контекст уже с пустым кэшем; CDP — дополнительная гарантия
+      const cdp = await context.newCDPSession(bp.page);
+      await cdp.send('Network.enable');
+      await cdp.send('Network.setCacheDisabled', { cacheDisabled: true });
+    }
+    const tracer = tracePath && lb.supportsCdp ? await Tracer.start(bp.page) : null;
 
-function avg(xs: number[]): number {
-  if (xs.length === 0) return 0;
-  return xs.reduce((s, x) => s + x, 0) / xs.length;
-}
+    await bp.goto(runUrl(cfg, item.target));
 
-function stddev(xs: number[]): number {
-  if (xs.length < 2) return 0;
-  const m = avg(xs);
-  return Math.sqrt(xs.reduce((s, x) => s + (x - m) ** 2, 0) / (xs.length - 1));
-}
-
-function median(xs: number[]): number {
-  if (xs.length === 0) return 0;
-  const s = [...xs].sort((a, b) => a - b);
-  const mid = Math.floor(s.length / 2);
-  return s.length % 2 ? s[mid]! : (s[mid - 1]! + s[mid]!) / 2;
-}
-
-function summarizeFrame(results: BenchResult[]): Record<string, unknown> {
-  const pick = (k: keyof BenchResult): number[] =>
-    results.map((r) => (r[k] as number) ?? 0);
-  return {
-    iterations: results.length,
-    fps_avg: avg(pick('fps_avg')),
-    fps_p1_low: avg(pick('fps_p1_low')),
-    frame_time_ms_avg: avg(pick('frame_time_ms_avg')),
-    frame_time_ms_stddev: avg(pick('frame_time_ms_stddev')),
-    frame_time_ms_p99: avg(pick('frame_time_ms_p99')),
-    heap_mb_peak: avg(pick('heap_mb_peak')),
-  };
-}
-
-function summarizeInit(results: BenchInitResult[]): Record<string, unknown> {
-  const pick = (k: keyof BenchInitResult): number[] =>
-    results
-      .map((r) => r[k])
-      .filter((x): x is number => typeof x === 'number');
-  const ttfr = pick('ttfr_ms');
-  const tti = pick('tti_ms');
-  return {
-    iterations: results.length,
-    ttfr_ms_avg: avg(ttfr),
-    ttfr_ms_median: median(ttfr),
-    ttfr_ms_stddev: stddev(ttfr),
-    ttfr_ms_min: ttfr.length ? Math.min(...ttfr) : 0,
-    ttfr_ms_max: ttfr.length ? Math.max(...ttfr) : 0,
-    tti_ms_avg: avg(tti),
-    tti_ms_median: median(tti),
-    tti_ms_stddev: stddev(tti),
-    first_frame_duration_ms_avg: avg(pick('first_frame_duration_ms')),
-    heap_mb_at_first_frame_avg: avg(pick('heap_mb_at_first_frame')),
-    heap_mb_at_tti_avg: avg(pick('heap_mb_at_tti')),
-    long_tasks_count_avg: avg(pick('long_tasks_count')),
-    long_tasks_total_ms_avg: avg(pick('long_tasks_total_ms')),
-  };
-}
-
-function summarizeInput(results: BenchInputResult[]): Record<string, unknown> {
-  const pick = (k: keyof BenchInputResult): number[] =>
-    results
-      .map((r) => r[k])
-      .filter((x): x is number => typeof x === 'number');
-  return {
-    iterations: results.length,
-    recorded_samples_avg: avg(pick('recorded_samples')),
-    missed_clicks_avg: avg(pick('missed_clicks')),
-    input_latency_ms_avg: avg(pick('input_latency_ms_avg')),
-    input_latency_ms_median_avg: avg(pick('input_latency_ms_median')),
-    input_latency_ms_p95_avg: avg(pick('input_latency_ms_p95')),
-    input_latency_ms_p99_avg: avg(pick('input_latency_ms_p99')),
-    input_latency_ms_max_avg: avg(pick('input_latency_ms_max')),
-    input_latency_ms_stddev_avg: avg(pick('input_latency_ms_stddev')),
-    frames_to_feedback_avg: avg(pick('frames_to_feedback_avg')),
-    heap_mb_peak_avg: avg(pick('heap_mb_peak')),
-  };
-}
-
-function summarizeScale(results: BenchScaleResult[]): Record<string, unknown> {
-  const degs = results
-    .map((r) => r.degradation_count)
-    .filter((x): x is number => typeof x === 'number');
-
-  // median FPS по каждому уровню, усреднённый по итерациям
-  const byCount = new Map<number, number[]>();
-  for (const r of results) {
-    for (const lvl of r.levels) {
-      (byCount.get(lvl.count) ?? byCount.set(lvl.count, []).get(lvl.count)!).push(
-        lvl.fps_median
+    let driver: { stop(): Promise<number> } | null = null;
+    if (cfg.scenario === 's4') {
+      await bp.waitFor(['warmup', 'recording'], 60_000);
+      // seed по номеру итерации: все варианты итерации получают одинаковые клики
+      const seed = cfg.clickSeed + (item.warmup ? -item.iteration : item.iteration) * 7919;
+      driver = startClickDriver(bp.page, await canvasBox(bp.page), seed, cfg.clickIntervalMs, () =>
+        bp.has('done')
       );
     }
-  }
-  const perLevel: Record<string, number> = {};
-  for (const [count, fpsList] of [...byCount.entries()].sort((a, b) => a[0] - b[0])) {
-    perLevel[String(count)] = avg(fpsList);
-  }
 
-  return {
-    iterations: results.length,
-    degradation_count_avg: avg(degs),
-    degradation_count_min: degs.length ? Math.min(...degs) : null,
-    degradation_count_max: degs.length ? Math.max(...degs) : null,
-    // сколько прогонов вообще достигли деградации в пределах уровней
-    degraded_iterations: degs.length,
-    fps_median_by_count: perLevel,
-  };
+    try {
+      await bp.waitFor(['done'], runTimeoutMs(cfg));
+    } finally {
+      await driver?.stop();
+    }
+    const clicks = driver ? await driver.stop() : null;
+    const result = await bp.result<BenchResult>();
+    const gc = tracer ? await tracer.stop(tracePath) : null;
+    return { result, consoleErrors: bp.consoleErrors, gc, clicks };
+  } finally {
+    // закрытие тяжёлого WebGL-контекста иногда зависает — не ждём дольше 15 с
+    await Promise.race([context.close().catch(() => undefined), sleep(15_000)]);
+  }
 }
 
-function summarize(outcomes: readonly IterationOutcome[]): Record<string, unknown> {
-  const byLabel: Record<string, AnyResult[]> = {};
-  for (const o of outcomes) {
-    (byLabel[o.label] ??= []).push(o.result);
-  }
-  const summary: Record<string, unknown> = {};
-  for (const [label, results] of Object.entries(byLabel)) {
-    if (results.every(isFrame)) {
-      summary[label] = summarizeFrame(results);
-    } else if (results.every(isInit)) {
-      summary[label] = summarizeInit(results);
-    } else if (results.every(isInput)) {
-      summary[label] = summarizeInput(results);
-    } else if (results.every(isScale)) {
-      summary[label] = summarizeScale(results);
+/** компактная сводка прогона для манифеста и консоли */
+function brief(r: BenchResult): Record<string, number | null> {
+  const n = (x: number | null | undefined) => (x === null || x === undefined || Number.isNaN(x) ? null : Math.round(x * 1000) / 1000);
+  switch (r.kind) {
+    case 'frame': {
+      const s = (r as FrameRunResult).summary;
+      return {
+        fps_median: n(s.fps_median),
+        frame_ms_median: n(s.frame_ms_median),
+        frame_ms_p99: n(s.frame_ms_p99),
+        fps_p1_low: n(s.fps_p1_low),
+        jank_60_share: n(s.jank_60_share),
+        update_ms_median: n(s.update_ms_median),
+        render_ms_median: n(s.render_ms_median),
+        other_ms_median: n(s.other_ms_median),
+        heap_mb_peak: n(s.heap_mb_peak),
+      };
+    }
+    case 'init': {
+      const i = r as InitRunResult;
+      return {
+        js_ready_ms: n(i.js_ready_ms),
+        ttfr_submit_ms: n(i.ttfr_submit_ms),
+        ttfr_frame_ms: n(i.ttfr_frame_ms),
+        init_ms: n(i.init_ms),
+        first_frame_render_ms: n(i.first_frame_render_ms),
+        tbt_to_ttfr_ms: n(i.tbt_to_ttfr_ms),
+        heap_mb_at_ttfr: n(i.heap_mb_at_ttfr),
+      };
+    }
+    case 'input': {
+      const s = (r as InputRunResult).summary;
+      return {
+        ok: s.ok,
+        miss: s.miss,
+        latency_render_ms_median: n(s.latency_render_ms_median),
+        latency_render_ms_p95: n(s.latency_render_ms_p95),
+        queue_ms_median: n(s.queue_ms_median),
+        dispatch_ms_median: n(s.dispatch_ms_median),
+        apply_ms_median: n(s.apply_ms_median),
+        commit_ms_median: n(s.commit_ms_median),
+        frame_wait_ms_median: n(s.frame_wait_ms_median),
+        render_ms_median: n(s.render_ms_median),
+      };
+    }
+    case 'scale': {
+      const s = r as ScaleRunResult;
+      return {
+        levels: s.levels.length,
+        capacity_fps60: s.capacity_fps60,
+        capacity_fps30: s.capacity_fps30,
+        first_below_floor: s.first_below_floor,
+      };
     }
   }
-  return summary;
+}
+
+function median(xs: number[]): number | null {
+  if (xs.length === 0) return null;
+  const s = [...xs].sort((a, b) => a - b);
+  const m = Math.floor(s.length / 2);
+  return s.length % 2 ? s[m]! : (s[m - 1]! + s[m]!) / 2;
+}
+
+function printSummary(runs: { label: string; warmup: boolean; brief: Record<string, number | null> }[]): void {
+  const byLabel = new Map<string, Record<string, number | null>[]>();
+  for (const r of runs) {
+    if (r.warmup) continue;
+    (byLabel.get(r.label) ?? byLabel.set(r.label, []).get(r.label)!).push(r.brief);
+  }
+  const table: Record<string, Record<string, number | null>> = {};
+  for (const [label, briefs] of byLabel) {
+    const row: Record<string, number | null> = { n: briefs.length };
+    for (const k of Object.keys(briefs[0] ?? {})) {
+      const v = median(briefs.map((b) => b[k]).filter((x): x is number => x !== null));
+      row[k] = v === null ? null : Math.round(v * 1000) / 1000;
+    }
+    table[label] = row;
+  }
+  console.log('\n[harness] медианы по итерациям (предварительно; статистика — в анализе):');
+  console.table(table);
 }
 
 async function main(): Promise<void> {
   const cfg = parseArgs(process.argv.slice(2));
-  console.log(
-    `[harness] scenario=${cfg.scenarioId} iterations=${cfg.iterations} ` +
-      `warmupRuns=${cfg.warmupRuns} (discarded)`
-  );
-  if (cfg.scenarioId === 's3') {
-    console.log(`[harness] quietWindow=${cfg.quietWindowMs}ms ttiTimeout=${cfg.ttiTimeoutMs}ms`);
-  } else if (cfg.scenarioId === 's5') {
-    console.log(
-      `[harness] per-level warmup=${cfg.warmupMs}ms record=${cfg.recordMs}ms ` +
-        `fpsFloor=${cfg.fpsFloor} levels=[${cfg.levels.join(', ')}]`
-    );
-  } else {
-    console.log(`[harness] warmup=${cfg.warmupMs}ms record=${cfg.recordMs}ms`);
-  }
-  console.log(`[harness] targets: ${cfg.targets.map((t) => t.label).join(', ')}`);
+  const stamp = new Date().toISOString().replace(/[:.]/g, '-');
+  const outDir = join(cfg.resultsDir, deviceSlug(cfg.device), cfg.browser, cfg.scenario, stamp);
+  await mkdir(join(outDir, 'runs'), { recursive: true });
+  console.log(`[harness] ${cfg.scenario} • ${cfg.browser} • ${cfg.targets.map((t) => t.label).join(', ')}`);
+  console.log(`[harness] результаты: ${outDir}`);
+  if (cfg.serve === 'dev') console.warn('[harness] ВНИМАНИЕ: dev-сервер — данные непригодны для анализа');
 
-  await mkdir(cfg.resultsDir, { recursive: true });
+  if (cfg.build && cfg.serve === 'preview') buildImpls();
+  const bundles = cfg.serve === 'preview' ? await measureBundles() : null;
+  const servers = await startServers(cfg);
+  let lb: LaunchedBrowser | null = null;
 
-  let bundleSize: readonly BundleSizeReport[] | null = null;
-  if (cfg.scenarioId === 's3') {
-    // Бандл собираем один раз перед прогонами TTFR/TTI.
-    // Сборка кэшируется Vite, повторно не дёргаем.
-    bundleSize = await runBundleSizeReport({ build: true });
-  }
-
-  const browser = await chromium.launch({
-    headless: false,
-    args: [
-      '--use-gl=angle',
-      '--enable-gpu',
-      '--ignore-gpu-blocklist',
-      '--disable-frame-rate-limit',
-      '--disable-gpu-vsync',
-    ],
-  });
-
-  const outcomes: IterationOutcome[] = [];
+  const manifest: Record<string, unknown> & { runs: unknown[] } = {
+    schema: 2,
+    createdAt: new Date().toISOString(),
+    config: cfg,
+    host: hostEnv(),
+    browser: null,
+    servers: servers.info,
+    bundles,
+    parity: null,
+    schedule: [],
+    runs: [],
+  };
+  const saveManifest = () => writeFile(join(outDir, 'manifest.json'), JSON.stringify(manifest, null, 2));
 
   try {
-    for (const target of cfg.targets) {
-      // Прогрев браузера: первые прогоны отбрасываем — они ловят холодный
-      // выброс (JIT, инициализация компилятора шейдеров, дисковый кэш).
-      for (let w = 1; w <= cfg.warmupRuns; w++) {
-        console.log(`[harness] ${target.label} • warm-up ${w}/${cfg.warmupRuns} (discarded)`);
-        await runIteration(browser, target, cfg, 0);
-      }
-      for (let i = 1; i <= cfg.iterations; i++) {
-        console.log(`[harness] ${target.label} • iteration ${i}/${cfg.iterations}`);
-        const outcome = await runIteration(browser, target, cfg, i);
-        outcomes.push(outcome);
-        const r = outcome.result;
-        if (isFrame(r)) {
-          console.log(
-            `  → fps_avg=${r.fps_avg.toFixed(1)}  p1_low=${r.fps_p1_low.toFixed(1)}  ` +
-              `frame_ms_avg=${r.frame_time_ms_avg.toFixed(2)}±${r.frame_time_ms_stddev.toFixed(2)}`
-          );
-        } else if (isInput(r)) {
-          console.log(
-            `  → lat_avg=${r.input_latency_ms_avg.toFixed(2)}ms  ` +
-              `median=${r.input_latency_ms_median.toFixed(2)}ms  ` +
-              `p95=${r.input_latency_ms_p95.toFixed(2)}ms  ` +
-              `frames=${r.frames_to_feedback_avg.toFixed(2)}  ` +
-              `samples=${r.recorded_samples}/${r.dispatched_clicks}`
-          );
-        } else if (isScale(r)) {
-          const deg = r.degradation_count === null ? 'none' : `${r.degradation_count}`;
-          const sweep = r.levels
-            .map((l) => `${l.count}:${l.fps_median.toFixed(0)}`)
-            .join(' ');
-          console.log(`  → degradation=${deg} (fps<${r.fpsFloor})  [count:fps] ${sweep}`);
-        } else {
-          const tti = r.tti_ms === null ? 'n/a' : `${r.tti_ms.toFixed(0)}ms`;
-          console.log(
-            `  → ttfr=${r.ttfr_ms.toFixed(0)}ms  tti=${tti}  ` +
-              `heap_ff=${r.heap_mb_at_first_frame?.toFixed(1) ?? 'n/a'}MB  ` +
-              `longtasks=${r.long_tasks_count}`
-          );
-        }
+    lb = await launchBrowser(cfg.browser);
+    manifest.browser = {
+      name: lb.name,
+      version: lb.version,
+      launchArgs: lb.launchArgs,
+      prefs: lb.prefs,
+      vsyncUncapped: lb.vsyncUncapped,
+    };
+    console.log(`[harness] браузер ${lb.name} ${lb.version}`);
+    await saveManifest();
+
+    if (!cfg.skipParity) {
+      const parity = await runParity(lb, cfg);
+      manifest.parity = parity;
+      await writeFile(join(outDir, 'parity.json'), JSON.stringify(parity, null, 2));
+      await saveManifest();
+      if (!parity.ok) throw new Error('Паритет сцен нарушен — замеры не проводятся (см. parity.json)');
+    } else {
+      console.warn('[harness] ВНИМАНИЕ: проверка паритета пропущена');
+    }
+    if (cfg.parityOnly) return;
+
+    const schedule = buildSchedule(cfg);
+    manifest.schedule = schedule.map((s) => ({ label: s.target.label, warmup: s.warmup, iteration: s.iteration }));
+    const briefs: { label: string; warmup: boolean; brief: Record<string, number | null> }[] = [];
+
+    for (let idx = 0; idx < schedule.length; idx++) {
+      const item = schedule[idx]!;
+      const tag = `${String(idx + 1).padStart(3, '0')}_${item.target.label}_${item.warmup ? 'w' : 'i'}${item.iteration}`;
+      if (idx > 0) await sleep(cfg.cooldownMs);
+      const thermal = thermalSnapshot();
+      const startedAt = new Date().toISOString();
+      const t0 = Date.now();
+      console.log(
+        `[harness] ${idx + 1}/${schedule.length} ${item.target.label} ${item.warmup ? `прогрев ${item.iteration}` : `итерация ${item.iteration}`}`
+      );
+      const tracePath = cfg.trace ? join(outDir, 'traces', `${tag}.json.gz`) : null;
+      const { result, consoleErrors, gc, clicks } = await runOne(lb, cfg, item, tracePath);
+      const validity = validate(cfg, lb, result, consoleErrors);
+      const b = brief(result);
+      console.log(`           ${JSON.stringify(b)}`);
+      for (const wmsg of validity.warnings) console.warn(`           ⚠ ${wmsg}`);
+
+      const file = `runs/${tag}.json`;
+      await writeFile(
+        join(outDir, file),
+        JSON.stringify({
+          label: item.target.label,
+          warmup: item.warmup,
+          iteration: item.iteration,
+          startedAt,
+          durationMs: Date.now() - t0,
+          thermal,
+          validity,
+          consoleErrors,
+          clicksSent: clicks,
+          gc,
+          result,
+        })
+      );
+      manifest.runs.push({
+        file,
+        label: item.target.label,
+        warmup: item.warmup,
+        iteration: item.iteration,
+        startedAt,
+        durationMs: Date.now() - t0,
+        thermal: thermal.therm,
+        validity,
+        brief: b,
+      });
+      briefs.push({ label: item.target.label, warmup: item.warmup, brief: b });
+      await saveManifest();
+      if (validity.fatal.length > 0) {
+        throw new Error(`Нарушены условия эксперимента в ${tag}: ${validity.fatal.join('; ')}`);
       }
     }
+    printSummary(briefs);
   } finally {
-    // Результаты пишем ДО закрытия браузера: на тяжёлых сценах (S5)
-    // browser.close() иногда зависает на освобождении WebGL-контекста, и файл
-    // иначе вообще не успевает сформироваться.
-    const stamp = new Date().toISOString().replace(/[:.]/g, '-');
-    const outFile = join(cfg.resultsDir, `${cfg.scenarioId}-${stamp}.json`);
-    const payload = {
-      config: cfg,
-      bundleSize,
-      outcomes,
-      summary: summarize(outcomes),
-    };
-    await writeFile(outFile, JSON.stringify(payload, null, 2), 'utf8');
-    console.log(`[harness] wrote ${outFile}`);
-    console.log('[harness] summary:');
-    console.log(JSON.stringify(payload.summary, null, 2));
-
-    // Закрываем браузер с таймаутом: если close() завис на разрушении тяжёлого
-    // WebGL-контекста, не ждём его дольше 10 c. Гарантированное завершение
-    // процесса даёт process.exit(0) ниже (результаты уже записаны выше).
-    await Promise.race([
-      browser.close().catch(() => undefined),
-      new Promise<void>((resolve) => setTimeout(resolve, 10_000)),
-    ]);
+    await saveManifest();
+    if (lb) await Promise.race([lb.browser.close().catch(() => undefined), sleep(15_000)]);
+    servers.stop();
   }
 }
 
 main()
   .then(() => process.exit(0))
   .catch((err) => {
-    console.error(err);
+    console.error(err instanceof Error ? err.message : err);
     process.exit(1);
   });

@@ -91,7 +91,11 @@ export const S3_INIT: SceneSpec = {
     height: 720,
     pixelRatio: 1,
     antialias: true,
+    alpha: false,
+    toneMapping: 'none',
+    outputColorSpace: 'srgb',
     shadowMap: false,
+    shadowType: 'pcf',
     clearColor: 0x101826,
   },
   camera: {

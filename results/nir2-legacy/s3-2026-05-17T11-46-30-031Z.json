@@ -1,0 +1,455 @@
+{
+  "config": {
+    "scenarioId": "s3",
+    "warmupMs": 5000,
+    "recordMs": 30000,
+    "iterations": 10,
+    "quietWindowMs": 2000,
+    "ttiTimeoutMs": 15000,
+    "targets": [
+      {
+        "name": "threejs",
+        "mode": null,
+        "baseUrl": "http://localhost:5173",
+        "label": "threejs"
+      },
+      {
+        "name": "r3f",
+        "mode": null,
+        "baseUrl": "http://localhost:5174",
+        "label": "r3f"
+      }
+    ],
+    "resultsDir": "/Users/levalekseev/Documents/vscode/NIR/benchmark/results"
+  },
+  "bundleSize": [
+    {
+      "impl": "threejs",
+      "distDir": "/Users/levalekseev/Documents/vscode/NIR/benchmark/packages/impl-threejs/dist",
+      "files": [
+        {
+          "path": "assets/index-D4hY4zV4.js",
+          "bytes": 479833,
+          "gzipBytes": 121906
+        },
+        {
+          "path": "index.html",
+          "bytes": 996,
+          "gzipBytes": 581
+        }
+      ],
+      "total_bytes": 480829,
+      "total_gz_bytes": 122487
+    },
+    {
+      "impl": "r3f",
+      "distDir": "/Users/levalekseev/Documents/vscode/NIR/benchmark/packages/impl-r3f/dist",
+      "files": [
+        {
+          "path": "assets/index-aWCHHIIp.js",
+          "bytes": 971768,
+          "gzipBytes": 269040
+        },
+        {
+          "path": "index.html",
+          "bytes": 857,
+          "gzipBytes": 533
+        }
+      ],
+      "total_bytes": 972625,
+      "total_gz_bytes": 269573
+    }
+  ],
+  "outcomes": [
+    {
+      "label": "threejs",
+      "iteration": 1,
+      "result": {
+        "kind": "init",
+        "scenarioId": "s3-init",
+        "implementation": "threejs",
+        "mode": null,
+        "ttfr_ms": 359.10000002384186,
+        "tti_ms": 359.89999997615814,
+        "first_frame_duration_ms": 194.10000002384186,
+        "heap_mb_at_first_frame": 12.096593856811523,
+        "heap_mb_at_tti": 12.647452354431152,
+        "long_tasks_count": 1,
+        "long_tasks_total_ms": 195,
+        "finishedAt": 2362.8000000715256
+      }
+    },
+    {
+      "label": "threejs",
+      "iteration": 2,
+      "result": {
+        "kind": "init",
+        "scenarioId": "s3-init",
+        "implementation": "threejs",
+        "mode": null,
+        "ttfr_ms": 81.79999995231628,
+        "tti_ms": 81.79999995231628,
+        "first_frame_duration_ms": 42.59999990463257,
+        "heap_mb_at_first_frame": 14.360065460205078,
+        "heap_mb_at_tti": 11.412707328796387,
+        "long_tasks_count": 0,
+        "long_tasks_total_ms": 0,
+        "finishedAt": 2083.600000023842
+      }
+    },
+    {
+      "label": "threejs",
+      "iteration": 3,
+      "result": {
+        "kind": "init",
+        "scenarioId": "s3-init",
+        "implementation": "threejs",
+        "mode": null,
+        "ttfr_ms": 80.20000004768372,
+        "tti_ms": 80.20000004768372,
+        "first_frame_duration_ms": 45.200000047683716,
+        "heap_mb_at_first_frame": 14.038646697998047,
+        "heap_mb_at_tti": 11.4133939743042,
+        "long_tasks_count": 0,
+        "long_tasks_total_ms": 0,
+        "finishedAt": 2082.2000000476837
+      }
+    },
+    {
+      "label": "threejs",
+      "iteration": 4,
+      "result": {
+        "kind": "init",
+        "scenarioId": "s3-init",
+        "implementation": "threejs",
+        "mode": null,
+        "ttfr_ms": 76.90000009536743,
+        "tti_ms": 76.90000009536743,
+        "first_frame_duration_ms": 42.90000009536743,
+        "heap_mb_at_first_frame": 14.112438201904297,
+        "heap_mb_at_tti": 11.412676811218262,
+        "long_tasks_count": 0,
+        "long_tasks_total_ms": 0,
+        "finishedAt": 2079.5
+      }
+    },
+    {
+      "label": "threejs",
+      "iteration": 5,
+      "result": {
+        "kind": "init",
+        "scenarioId": "s3-init",
+        "implementation": "threejs",
+        "mode": null,
+        "ttfr_ms": 73.29999995231628,
+        "tti_ms": 73.29999995231628,
+        "first_frame_duration_ms": 41.09999990463257,
+        "heap_mb_at_first_frame": 13.782730102539062,
+        "heap_mb_at_tti": 11.413008689880371,
+        "long_tasks_count": 0,
+        "long_tasks_total_ms": 0,
+        "finishedAt": 2075.600000023842
+      }
+    },
+    {
+      "label": "threejs",
+      "iteration": 6,
+      "result": {
+        "kind": "init",
+        "scenarioId": "s3-init",
+        "implementation": "threejs",
+        "mode": null,
+        "ttfr_ms": 74.5,
+        "tti_ms": 74.5,
+        "first_frame_duration_ms": 41.60000002384186,
+        "heap_mb_at_first_frame": 12.790084838867188,
+        "heap_mb_at_tti": 11.412203788757324,
+        "long_tasks_count": 0,
+        "long_tasks_total_ms": 0,
+        "finishedAt": 2075.7000000476837
+      }
+    },
+    {
+      "label": "threejs",
+      "iteration": 7,
+      "result": {
+        "kind": "init",
+        "scenarioId": "s3-init",
+        "implementation": "threejs",
+        "mode": null,
+        "ttfr_ms": 72.89999997615814,
+        "tti_ms": 72.89999997615814,
+        "first_frame_duration_ms": 40.89999997615814,
+        "heap_mb_at_first_frame": 13.68783187866211,
+        "heap_mb_at_tti": 11.413146018981934,
+        "long_tasks_count": 0,
+        "long_tasks_total_ms": 0,
+        "finishedAt": 2075.2000000476837
+      }
+    },
+    {
+      "label": "threejs",
+      "iteration": 8,
+      "result": {
+        "kind": "init",
+        "scenarioId": "s3-init",
+        "implementation": "threejs",
+        "mode": null,
+        "ttfr_ms": 74.10000002384186,
+        "tti_ms": 74.10000002384186,
+        "first_frame_duration_ms": 41.700000047683716,
+        "heap_mb_at_first_frame": 12.82332992553711,
+        "heap_mb_at_tti": 11.413439750671387,
+        "long_tasks_count": 0,
+        "long_tasks_total_ms": 0,
+        "finishedAt": 2076.399999976158
+      }
+    },
+    {
+      "label": "threejs",
+      "iteration": 9,
+      "result": {
+        "kind": "init",
+        "scenarioId": "s3-init",
+        "implementation": "threejs",
+        "mode": null,
+        "ttfr_ms": 73.70000004768372,
+        "tti_ms": 73.70000004768372,
+        "first_frame_duration_ms": 41.60000002384186,
+        "heap_mb_at_first_frame": 14.132694244384766,
+        "heap_mb_at_tti": 11.41263484954834,
+        "long_tasks_count": 0,
+        "long_tasks_total_ms": 0,
+        "finishedAt": 2075.8000000715256
+      }
+    },
+    {
+      "label": "threejs",
+      "iteration": 10,
+      "result": {
+        "kind": "init",
+        "scenarioId": "s3-init",
+        "implementation": "threejs",
+        "mode": null,
+        "ttfr_ms": 74.79999995231628,
+        "tti_ms": 74.79999995231628,
+        "first_frame_duration_ms": 39.89999997615814,
+        "heap_mb_at_first_frame": 13.47494888305664,
+        "heap_mb_at_tti": 11.413226127624512,
+        "long_tasks_count": 0,
+        "long_tasks_total_ms": 0,
+        "finishedAt": 2076.899999976158
+      }
+    },
+    {
+      "label": "r3f",
+      "iteration": 1,
+      "result": {
+        "kind": "init",
+        "scenarioId": "s3-init",
+        "implementation": "r3f",
+        "mode": null,
+        "ttfr_ms": 542.6999999284744,
+        "tti_ms": 542.6999999284744,
+        "first_frame_duration_ms": 50.299999952316284,
+        "heap_mb_at_first_frame": 18.74704360961914,
+        "heap_mb_at_tti": 19.341062545776367,
+        "long_tasks_count": 0,
+        "long_tasks_total_ms": 0,
+        "finishedAt": 2544.1999999284744
+      }
+    },
+    {
+      "label": "r3f",
+      "iteration": 2,
+      "result": {
+        "kind": "init",
+        "scenarioId": "s3-init",
+        "implementation": "r3f",
+        "mode": null,
+        "ttfr_ms": 185.69999992847443,
+        "tti_ms": 185.69999992847443,
+        "first_frame_duration_ms": 18.09999990463257,
+        "heap_mb_at_first_frame": 17.62492084503174,
+        "heap_mb_at_tti": 19.33777141571045,
+        "long_tasks_count": 0,
+        "long_tasks_total_ms": 0,
+        "finishedAt": 2186.2999999523163
+      }
+    },
+    {
+      "label": "r3f",
+      "iteration": 3,
+      "result": {
+        "kind": "init",
+        "scenarioId": "s3-init",
+        "implementation": "r3f",
+        "mode": null,
+        "ttfr_ms": 182.80000007152557,
+        "tti_ms": 182.80000007152557,
+        "first_frame_duration_ms": 18.5,
+        "heap_mb_at_first_frame": 19.910340309143066,
+        "heap_mb_at_tti": 19.58711528778076,
+        "long_tasks_count": 0,
+        "long_tasks_total_ms": 0,
+        "finishedAt": 2185
+      }
+    },
+    {
+      "label": "r3f",
+      "iteration": 4,
+      "result": {
+        "kind": "init",
+        "scenarioId": "s3-init",
+        "implementation": "r3f",
+        "mode": null,
+        "ttfr_ms": 174.60000002384186,
+        "tti_ms": 174.60000002384186,
+        "first_frame_duration_ms": 18.100000023841858,
+        "heap_mb_at_first_frame": 17.290830612182617,
+        "heap_mb_at_tti": 19.148189544677734,
+        "long_tasks_count": 0,
+        "long_tasks_total_ms": 0,
+        "finishedAt": 2179
+      }
+    },
+    {
+      "label": "r3f",
+      "iteration": 5,
+      "result": {
+        "kind": "init",
+        "scenarioId": "s3-init",
+        "implementation": "r3f",
+        "mode": null,
+        "ttfr_ms": 193.20000004768372,
+        "tti_ms": 193.20000004768372,
+        "first_frame_duration_ms": 20,
+        "heap_mb_at_first_frame": 18.570916175842285,
+        "heap_mb_at_tti": 19.705439567565918,
+        "long_tasks_count": 0,
+        "long_tasks_total_ms": 0,
+        "finishedAt": 2194.100000023842
+      }
+    },
+    {
+      "label": "r3f",
+      "iteration": 6,
+      "result": {
+        "kind": "init",
+        "scenarioId": "s3-init",
+        "implementation": "r3f",
+        "mode": null,
+        "ttfr_ms": 181.80000007152557,
+        "tti_ms": 181.80000007152557,
+        "first_frame_duration_ms": 17.399999976158142,
+        "heap_mb_at_first_frame": 19.915477752685547,
+        "heap_mb_at_tti": 19.427980422973633,
+        "long_tasks_count": 0,
+        "long_tasks_total_ms": 0,
+        "finishedAt": 2181.9000000953674
+      }
+    },
+    {
+      "label": "r3f",
+      "iteration": 7,
+      "result": {
+        "kind": "init",
+        "scenarioId": "s3-init",
+        "implementation": "r3f",
+        "mode": null,
+        "ttfr_ms": 182.10000002384186,
+        "tti_ms": 182.10000002384186,
+        "first_frame_duration_ms": 17.199999928474426,
+        "heap_mb_at_first_frame": 19.727423667907715,
+        "heap_mb_at_tti": 19.102723121643066,
+        "long_tasks_count": 0,
+        "long_tasks_total_ms": 0,
+        "finishedAt": 2182.7000000476837
+      }
+    },
+    {
+      "label": "r3f",
+      "iteration": 8,
+      "result": {
+        "kind": "init",
+        "scenarioId": "s3-init",
+        "implementation": "r3f",
+        "mode": null,
+        "ttfr_ms": 183.89999997615814,
+        "tti_ms": 183.89999997615814,
+        "first_frame_duration_ms": 17.799999952316284,
+        "heap_mb_at_first_frame": 19.391135215759277,
+        "heap_mb_at_tti": 19.104336738586426,
+        "long_tasks_count": 0,
+        "long_tasks_total_ms": 0,
+        "finishedAt": 2185.899999976158
+      }
+    },
+    {
+      "label": "r3f",
+      "iteration": 9,
+      "result": {
+        "kind": "init",
+        "scenarioId": "s3-init",
+        "implementation": "r3f",
+        "mode": null,
+        "ttfr_ms": 180.60000002384186,
+        "tti_ms": 180.60000002384186,
+        "first_frame_duration_ms": 18.100000023841858,
+        "heap_mb_at_first_frame": 19.392945289611816,
+        "heap_mb_at_tti": 18.693717002868652,
+        "long_tasks_count": 0,
+        "long_tasks_total_ms": 0,
+        "finishedAt": 2181.5
+      }
+    },
+    {
+      "label": "r3f",
+      "iteration": 10,
+      "result": {
+        "kind": "init",
+        "scenarioId": "s3-init",
+        "implementation": "r3f",
+        "mode": null,
+        "ttfr_ms": 180.80000007152557,
+        "tti_ms": 180.80000007152557,
+        "first_frame_duration_ms": 17.5,
+        "heap_mb_at_first_frame": 19.30509662628174,
+        "heap_mb_at_tti": 19.163267135620117,
+        "long_tasks_count": 0,
+        "long_tasks_total_ms": 0,
+        "finishedAt": 2182.4000000953674
+      }
+    }
+  ],
+  "summary": {
+    "threejs": {
+      "iterations": 10,
+      "ttfr_ms_avg": 104.13000000715256,
+      "ttfr_ms_stddev": 89.63767871560866,
+      "ttfr_ms_min": 72.89999997615814,
+      "ttfr_ms_max": 359.10000002384186,
+      "tti_ms_avg": 104.21000000238419,
+      "tti_ms_stddev": 89.89051920428682,
+      "first_frame_duration_ms_avg": 57.16000000238419,
+      "heap_mb_at_first_frame_avg": 13.529936408996582,
+      "heap_mb_at_tti_avg": 11.536388969421386,
+      "long_tasks_count_avg": 0.1,
+      "long_tasks_total_ms_avg": 19.5
+    },
+    "r3f": {
+      "iterations": 10,
+      "ttfr_ms_avg": 218.8200000166893,
+      "ttfr_ms_stddev": 113.8951544848053,
+      "ttfr_ms_min": 174.60000002384186,
+      "ttfr_ms_max": 542.6999999284744,
+      "tti_ms_avg": 218.8200000166893,
+      "tti_ms_stddev": 113.8951544848053,
+      "first_frame_duration_ms_avg": 21.29999997615814,
+      "heap_mb_at_first_frame_avg": 18.987613010406495,
+      "heap_mb_at_tti_avg": 19.26116027832031,
+      "long_tasks_count_avg": 0,
+      "long_tasks_total_ms_avg": 0
+    }
+  }
+}

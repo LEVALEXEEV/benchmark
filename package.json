@@ -9,19 +9,21 @@
   "scripts": {
     "dev:threejs": "npm run dev -w @bench/impl-threejs",
     "dev:r3f": "npm run dev -w @bench/impl-r3f",
-    "build": "npm run build --workspaces --if-present",
-    "bench": "npm run bench -w @bench/harness",
+    "build": "npm run build -w @bench/impl-threejs && npm run build -w @bench/impl-r3f",
+    "typecheck": "tsc --noEmit -p packages/scene-spec && tsc --noEmit -p packages/metrics && tsc --noEmit -p packages/impl-threejs && tsc --noEmit -p packages/impl-r3f && tsc --noEmit -p packages/harness",
+    "bench": "npm run bench -w @bench/harness --",
+    "bench:parity": "npm run bench -w @bench/harness -- --parity-only --scenario",
     "bench:s1": "npm run bench -w @bench/harness -- --scenario s1",
     "bench:s2": "npm run bench -w @bench/harness -- --scenario s2",
     "bench:s3": "npm run bench -w @bench/harness -- --scenario s3",
     "bench:s4": "npm run bench -w @bench/harness -- --scenario s4",
     "bench:s5": "npm run bench -w @bench/harness -- --scenario s5",
-    "clean": "rm -rf packages/*/dist packages/*/node_modules node_modules"
+    "clean": "rm -rf packages/*/dist node_modules"
   },
   "devDependencies": {
-    "typescript": "^5.6.3"
+    "typescript": "5.9.3"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=22.12.0"
   }
 }

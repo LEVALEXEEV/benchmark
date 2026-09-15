@@ -1,124 +1,77 @@
-import { useCallback, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { getScenario } from '@bench/scene-spec';
-import { Scene, type AnimationMode } from './Scene.js';
-import { InputScene } from './SceneInput.js';
-import { ScaleScene } from './SceneScale.js';
-import { MetricsBridge } from './MetricsBridge.js';
-import { MetricsBridgeInit } from './MetricsBridgeInit.js';
-import { S5_LEVELS } from '@bench/scene-spec';
+import * as THREE from 'three';
+import { FrameClock, type RunParams } from '@bench/metrics';
+import { getScenario, makeS5Scene, S5_LEVELS, withDetailScale, type SceneSpec } from '@bench/scene-spec';
+import { FrameClockContext, FrameDriver } from './FrameDriver.js';
+import { FrameRun } from './runs/FrameRun.js';
+import { InitRun } from './runs/InitRun.js';
+import { InputRun } from './runs/InputRun.js';
+import { ScaleRun } from './runs/ScaleRun.js';
 
-const params = new URLSearchParams(window.location.search);
-const scenarioId = params.get('scenario') ?? 's1';
-const warmupMs = Number(params.get('warmup') ?? 5000);
-const recordMs = Number(params.get('record') ?? 30000);
-const quietWindowMs = Number(params.get('quiet') ?? 2000);
-const ttiTimeoutMs = Number(params.get('ttiTimeout') ?? 15000);
-const clickIntervalMs = Number(params.get('clickInterval') ?? 250);
-const inputSeed = Number(params.get('seed') ?? 4242);
-const fpsFloor = Number(params.get('fpsFloor') ?? 30);
-const levelsParam = params.get('levels');
-const levels = levelsParam
-  ? levelsParam.split(',').map((s) => Number(s)).filter((n) => Number.isFinite(n) && n > 0)
-  : S5_LEVELS;
-const modeParam = params.get('mode');
-const mode: AnimationMode = modeParam === 'state' ? 'state' : 'ref';
+function initialSpec(params: RunParams): SceneSpec {
+  if (params.scenario !== 's5') return withDetailScale(getScenario(params.scenario), params.detailScale);
+  const levels = params.levels ?? S5_LEVELS;
+  return makeS5Scene(params.parity ? (params.parityCount ?? levels[0]!) : levels[0]!);
+}
 
-const isInitScenario = scenarioId === 's3';
-const isInputScenario = scenarioId === 's4';
-const isScaleScenario = scenarioId === 's5';
+/**
+ * Камера создаётся экземпляром, а не объектом пропсов: из пропсов R3F делает
+ * lookAt(0,0,0), и в НИР2 камера в S2/S3 смотрела не туда, куда задано в
+ * спецификации. Экземпляр R3F не трогает (кроме aspect по размеру canvas).
+ */
+function createCamera(spec: SceneSpec): THREE.PerspectiveCamera {
+  const c = spec.camera;
+  const camera = new THREE.PerspectiveCamera(c.fov, spec.renderer.width / spec.renderer.height, c.near, c.far);
+  camera.position.set(...c.position);
+  camera.lookAt(...c.lookAt);
+  camera.updateProjectionMatrix();
+  return camera;
+}
 
-export function App() {
-  const spec = getScenario(scenarioId);
-  const [phase, setPhase] = useState('idle');
-  const [readout, setReadout] = useState<string>('— fps');
+const PARENT_STATE_INTERVAL_MS = 500;
 
-  const onPhaseChange = useCallback((p: string, value: number | null) => {
-    setPhase(p);
-    if (value !== null) {
-      setReadout(
-        isInitScenario
-          ? `ttfr ${value.toFixed(0)}ms`
-          : isInputScenario
-            ? `lat ${value.toFixed(1)}ms`
-            : isScaleScenario
-              ? `${value} obj`
-              : `${value.toFixed(1)} fps`
-      );
-    }
-  }, []);
+export function App({ params, mode }: { params: RunParams; mode: string | null }) {
+  const spec = useMemo(() => initialSpec(params), [params]);
+  const camera = useMemo(() => createCamera(spec), [spec]);
+  const clock = useMemo(() => new FrameClock(params.freezeTime), [params]);
 
-  const hudLabel = isInputScenario || isInitScenario ? '' : ` [mode=${mode}]`;
+  // Антипаттерн, воспроизводящий дефект НИР2: state в родителе <Canvas>
+  // меняется 2 раза в секунду. Canvas перерисовывает корень R3F на каждом
+  // своём рендере (layout-эффект без зависимостей), и немемоизированная сцена
+  // целиком проходит реконсиляцию. Включается только явно (?parentState=1).
+  const [, setTick] = useState(0);
+  useEffect(() => {
+    if (!params.parentState) return;
+    const id = setInterval(() => setTick((n) => n + 1), PARENT_STATE_INTERVAL_MS);
+    return () => clearInterval(id);
+  }, [params.parentState]);
 
+  const r = spec.renderer;
   return (
-    <div id="app">
-      <div className="hud">
-        react-three-fiber{hudLabel} •{' '}
-        <span className={phase === 'done' ? 'done' : 'phase'}>{phase}</span> •{' '}
-        <span>{readout}</span>
-      </div>
-      <div
-        className="canvas-host"
-        style={{ width: spec.renderer.width, height: spec.renderer.height }}
-      >
-        <Canvas
-          shadows={spec.renderer.shadowMap}
-          dpr={spec.renderer.pixelRatio}
-          gl={{
-            antialias: spec.renderer.antialias,
-            powerPreference: 'high-performance',
-          }}
-          camera={{
-            fov: spec.camera.fov,
-            near: spec.camera.near,
-            far: spec.camera.far,
-            position: [...spec.camera.position],
-          }}
-          style={{ width: spec.renderer.width, height: spec.renderer.height }}
-        >
-          {isScaleScenario ? (
-            <ScaleScene
-              scenarioId={spec.id}
-              mode={mode}
-              levels={levels}
-              warmupMs={warmupMs}
-              recordMs={recordMs}
-              fpsFloor={fpsFloor}
-              onPhaseChange={onPhaseChange}
-            />
-          ) : isInputScenario ? (
-            <InputScene
-              spec={spec}
-              mode={mode}
-              warmupMs={warmupMs}
-              recordMs={recordMs}
-              clickIntervalMs={clickIntervalMs}
-              seed={inputSeed}
-              onPhaseChange={onPhaseChange}
-            />
-          ) : (
-            <>
-              <Scene spec={spec} mode={mode} />
-              {isInitScenario ? (
-                <MetricsBridgeInit
-                  scenarioId={spec.id}
-                  quietWindowMs={quietWindowMs}
-                  ttiTimeoutMs={ttiTimeoutMs}
-                  onPhaseChange={onPhaseChange}
-                />
-              ) : (
-                <MetricsBridge
-                  scenarioId={spec.id}
-                  mode={mode}
-                  warmupMs={warmupMs}
-                  recordMs={recordMs}
-                  onPhaseChange={onPhaseChange}
-                />
-              )}
-            </>
-          )}
-        </Canvas>
-      </div>
-    </div>
+    <Canvas
+      // flat → NoToneMapping; linear=false → sRGB — как у three.js
+      flat
+      dpr={r.pixelRatio * params.renderScale}
+      gl={{ antialias: r.antialias, alpha: r.alpha, powerPreference: 'high-performance' }}
+      // объект, а не boolean: при shadows={false} R3F всё равно выставляет
+      // PCFSoftShadowMap, и конфигурация рендерера расходится с three.js
+      shadows={{ enabled: r.shadowMap, type: THREE.PCFShadowMap }}
+      camera={camera}
+      style={{ width: r.width, height: r.height }}
+    >
+      <FrameClockContext.Provider value={clock}>
+        <FrameDriver clock={clock} />
+        {params.scenario === 's3' ? (
+          <InitRun params={params} spec={spec} />
+        ) : params.scenario === 's4' ? (
+          <InputRun params={params} mode={mode!} spec={spec} />
+        ) : params.scenario === 's5' ? (
+          <ScaleRun params={params} mode={mode!} initialSpec={spec} />
+        ) : (
+          <FrameRun params={params} mode={mode!} spec={spec} />
+        )}
+      </FrameClockContext.Provider>
+    </Canvas>
   );
 }

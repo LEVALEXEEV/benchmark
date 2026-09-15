@@ -1,240 +1,264 @@
-import { mean, percentile, stddev } from './stats.js';
-import type { BenchInputResult } from './types.js';
+import { FrameRecorder } from './frame-recorder.js';
+import { bench, type FrameProbe } from './runtime.js';
+import { mean, median, percentile, sortedFinite } from './stats.js';
+import type { FrameRaw, FrameSummary, InputRunResult, InputSample } from './types.js';
 
 export interface InputCollectorConfig {
-  readonly scenarioId: string;
-  readonly implementation: 'threejs' | 'r3f';
-  readonly mode: 'ref' | 'state' | null;
   readonly warmupMs: number;
   readonly recordMs: number;
-  /** период между синтезированными pointerdown-событиями, мс */
-  readonly clickIntervalMs: number;
-  /** seed для детерминированной траектории кликов */
-  readonly seed: number;
-  readonly publishToWindow: boolean;
+  /** клик без отклика дольше этого считается timeout */
+  readonly timeoutMs: number;
 }
-
-type Phase = 'idle' | 'warmup' | 'recording' | 'done';
-
-interface PerformanceMemory {
-  readonly usedJSHeapSize: number;
-}
-
-function readHeap(): number | null {
-  const perf = performance as Performance & { memory?: PerformanceMemory };
-  return perf.memory?.usedJSHeapSize ?? null;
-}
-
-/** Mulberry32 — тот же детерминированный PRNG, что и в scene-spec. */
-function mulberry32(seed: number): () => number {
-  let a = seed >>> 0;
-  return () => {
-    a = (a + 0x6d2b79f5) >>> 0;
-    let t = a;
-    t = Math.imul(t ^ (t >>> 15), t | 1);
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
-
-/**
- * Доля каждой стороны canvas, отсекаемая с краёв при выборе точки клика.
- * Облако объектов S4 проецируется в центральную часть кадра; стрельба точками
- * по этому региону поднимает долю попаданий raycast'а, не внося смещения в
- * сравнение (регион одинаков для обеих реализаций).
- */
-const CLICK_REGION_INSET = 0.2;
 
 interface Pending {
-  readonly token: number;
-  /** число кадров с момента диспатча до резолва */
-  framesElapsed: number;
-  t0: number;
+  readonly seq: number;
+  readonly recorded: boolean;
+  readonly eventTs: number;
+  readonly captureTs: number;
+  dispatchEndTs: number;
   hit: boolean;
+  hitTs: number;
+  isApplied: (() => boolean) | null;
+  appliedTs: number;
+  appliedInferred: boolean;
+  feedbackRenderStart: number;
+  feedbackRenderEnd: number;
+  /** начатых кадров с момента события */
+  frames: number;
+  /** номер кадра (1 — первый после события), в котором отрисован отклик */
+  feedbackFrame: number;
 }
 
+type InputMeasures = Omit<InputRunResult, 'kind' | 'meta'>;
+
 /**
- * InputCollector измеряет задержку «ввод → визуальный отклик» (S4).
+ * S4: задержка «ввод → отрисованный отклик».
  *
- * Принцип воспроизводимости: коллектор САМ синтезирует поток pointerdown-
- * событий по детерминированной (seeded) траектории и диспатчит их на canvas.
- * Так обе реализации (three.js и R3F) получают идентичный по таймингу и
- * координатам ввод — устраняется человеческий фактор и джиттер реального
- * указателя.
+ * Как устроено (и чем отличается от НИР2):
+ *   - клики подаёт harness через CDP / Playwright (Input.dispatchMouseEvent):
+ *     событие проходит настоящий конвейер ввода браузера и приходит в
+ *     СЛУЧАЙНОЙ фазе относительно кадра. В НИР2 коллектор сам диспатчил
+ *     синтетическое событие изнутри своего кадрового хука, причём в three.js
+ *     после render(), а в R3F — до него; разница 0,35 против 4,85 мс была
+ *     артефактом этого порядка;
+ *   - начало отсчёта — event.timeStamp (момент создания события браузером);
+ *   - отклик считается применённым по фактическому состоянию сцены
+ *     (реализация передаёт проверку цвета материала), а не по токену,
+ *     который реализация сама выставляет;
+ *   - конец отсчёта — конец renderer.render() кадра, в начале которого
+ *     отклик уже был в сцене.
  *
- * Жизненный цикл:
- *   new InputCollector(cfg)
- *   .start(canvas)                 → warmup → recording
- *   .frame(now, renderedToken)     вызывается КАЖДЫЙ кадр после render():
- *                                  резолвит «висящий» клик и при наступлении
- *                                  момента — диспатчит следующий.
- *   .onPointerDown(t0, hit)        вызывается из обработчика pointerdown
- *                                  реализации (после raycast'а).
- *
- * Сопоставление «клик → отрисованный отклик» идёт по токену:
- *   - каждый диспатч получает монотонный token (== currentToken);
- *   - реализация, применив подсветку к объекту, отмечает этот token как
- *     «отрисованный» и передаёт его в .frame();
- *   - как только renderedToken догоняет token висящего клика, фиксируется
- *     задержка now − t0.
+ * Слушатели: capture на canvas (срабатывает раньше обработчиков реализации
+ * и R3F) и bubble на window (срабатывает после всех синхронных обработчиков).
  */
-export class InputCollector {
+export class InputCollector implements FrameProbe {
   private readonly cfg: InputCollectorConfig;
-  private readonly rng: () => number;
-  private phase: Phase = 'idle';
-  private startTs = 0;
-  private recordStartTs = 0;
-  private lastDispatchTs = 0;
-  private canvas: HTMLElement | null = null;
-
-  /** токен текущего «в полёте» клика; реализация читает его при подсветке */
-  currentToken = 0;
+  private phase: 'idle' | 'warmup' | 'recording' | 'draining' | 'done' = 'idle';
+  private warmStart = NaN;
+  private recordStart = NaN;
+  private recorder: FrameRecorder | null = null;
   private pending: Pending | null = null;
-
-  private readonly latenciesMs: number[] = [];
-  private readonly framesToFeedback: number[] = [];
-  private dispatched = 0;
-  private hits = 0;
-  private misses = 0;
-  private heapPeak: number | null = null;
-
-  private result: BenchInputResult | null = null;
-  private onDoneCb: ((r: BenchInputResult) => void) | null = null;
+  private seqCounter = 0;
+  private readonly samples: InputSample[] = [];
+  private onDoneCb: ((m: InputMeasures) => void) | null = null;
+  private detach: (() => void) | null = null;
 
   constructor(cfg: InputCollectorConfig) {
     this.cfg = cfg;
-    this.rng = mulberry32(cfg.seed);
-    this.publish();
   }
 
-  start(canvas: HTMLElement): void {
-    this.canvas = canvas;
-    this.phase = 'warmup';
-    this.startTs = performance.now();
-    this.publish();
-  }
-
-  onDone(cb: (r: BenchInputResult) => void): void {
+  onDone(cb: (m: InputMeasures) => void): void {
     this.onDoneCb = cb;
   }
 
+  /** порядковый номер клика, обрабатываемого прямо сейчас (читать в обработчике) */
+  get clickSeq(): number {
+    return this.pending?.seq ?? 0;
+  }
+
+  attach(canvas: HTMLElement): void {
+    const onCapture = (e: PointerEvent): void => this.onPointerDownCapture(e);
+    const onBubble = (): void => this.onPointerDownBubble();
+    canvas.addEventListener('pointerdown', onCapture, { capture: true });
+    window.addEventListener('pointerdown', onBubble);
+    this.detach = () => {
+      canvas.removeEventListener('pointerdown', onCapture, { capture: true });
+      window.removeEventListener('pointerdown', onBubble);
+    };
+  }
+
   /**
-   * Вызывается обработчиком pointerdown реализации сразу после raycast'а.
-   * t0  — performance.now() в начале обработчика (момент «прихода» ввода).
-   * hit — попал ли клик в объект сцены.
+   * Реализация сообщает о попадании raycast'а. isApplied должна возвращать
+   * true, когда объект УЖЕ имеет цвет отклика этого клика.
    */
-  onPointerDown(t0: number, hit: boolean): void {
-    if (!this.pending) return;
-    this.pending.t0 = t0;
-    this.pending.hit = hit;
+  reportHit(isApplied: () => boolean): void {
+    const p = this.pending;
+    if (!p || p.hit) return;
+    p.hit = true;
+    p.hitTs = performance.now();
+    p.isApplied = isApplied;
+    if (isApplied()) p.appliedTs = p.hitTs;
   }
 
-  /** вызывается каждый кадр рендера после render(); см. описание класса */
-  frame(now: number, renderedToken: number): void {
-    if (this.phase === 'idle' || this.phase === 'done') return;
-
-    const heap = readHeap();
-    if (heap !== null) {
-      this.heapPeak = this.heapPeak === null ? heap : Math.max(this.heapPeak, heap);
-    }
-
-    if (this.phase === 'warmup') {
-      if (now - this.startTs >= this.cfg.warmupMs) {
-        this.phase = 'recording';
-        this.recordStartTs = now;
-        // первый клик диспатчим сразу на следующем кадре
-        this.lastDispatchTs = now - this.cfg.clickIntervalMs;
-        this.publish();
-      }
-      return;
-    }
-
-    // recording
-    if (this.pending && this.pending.hit && this.pending.t0 > 0) {
-      this.pending.framesElapsed++;
-      if (renderedToken === this.pending.token) {
-        this.latenciesMs.push(now - this.pending.t0);
-        this.framesToFeedback.push(this.pending.framesElapsed);
-        this.hits++;
-        this.pending = null;
-      }
-    }
-
-    if (now - this.recordStartTs >= this.cfg.recordMs) {
-      this.finish(now);
-      return;
-    }
-
-    if (this.pending === null && now - this.lastDispatchTs >= this.cfg.clickIntervalMs) {
-      this.lastDispatchTs = now;
-      this.dispatchClick();
-    }
+  /**
+   * Необязательный точный сигнал «отклик закоммичен» (useLayoutEffect в R3F).
+   * Без него момент применения определяется в начале следующего рендера.
+   */
+  noteApplied(seq: number): void {
+    const p = this.pending;
+    if (!p || p.seq !== seq || !Number.isNaN(p.appliedTs)) return;
+    if (p.isApplied?.()) p.appliedTs = performance.now();
   }
 
-  private dispatchClick(): void {
-    if (!this.canvas) return;
-    const rect = this.canvas.getBoundingClientRect();
-    const span = 1 - 2 * CLICK_REGION_INSET;
-    const x = rect.width * (CLICK_REGION_INSET + this.rng() * span);
-    const y = rect.height * (CLICK_REGION_INSET + this.rng() * span);
-
-    const token = ++this.currentToken;
-    this.pending = { token, framesElapsed: 0, t0: 0, hit: false };
-    this.dispatched++;
-
-    const ev = new PointerEvent('pointerdown', {
-      clientX: rect.left + x,
-      clientY: rect.top + y,
-      bubbles: true,
-      cancelable: true,
-      pointerId: 1,
-      pointerType: 'mouse',
-      isPrimary: true,
-    });
-    // обработчик реализации отработает синхронно внутри dispatchEvent
-    this.canvas.dispatchEvent(ev);
-
-    // промах raycast'а — измерять нечего, освобождаем слот под следующий клик
-    if (this.pending && !this.pending.hit) {
-      this.misses++;
-      this.pending = null;
-    }
-  }
-
-  private finish(now: number): void {
+  beginFrame(now: number): void {
     if (this.phase === 'done') return;
-    const sorted = [...this.latenciesMs].sort((a, b) => a - b);
-    const result: BenchInputResult = {
-      kind: 'input',
-      scenarioId: this.cfg.scenarioId,
-      implementation: this.cfg.implementation,
-      mode: this.cfg.mode,
-      dispatched_clicks: this.dispatched,
-      recorded_samples: this.hits,
-      missed_clicks: this.misses,
-      input_latency_ms_avg: mean(this.latenciesMs),
-      input_latency_ms_median: percentile(sorted, 50),
-      input_latency_ms_p95: percentile(sorted, 95),
-      input_latency_ms_p99: percentile(sorted, 99),
-      input_latency_ms_max: sorted.length ? sorted[sorted.length - 1]! : 0,
-      input_latency_ms_stddev: stddev(this.latenciesMs),
-      frames_to_feedback_avg: mean(this.framesToFeedback),
-      heap_mb_peak: this.heapPeak === null ? null : this.heapPeak / (1024 * 1024),
-      startedAt: this.recordStartTs,
-      finishedAt: now,
-    };
+    if (this.phase === 'idle') {
+      this.phase = 'warmup';
+      this.warmStart = now;
+      bench.setStatus('warmup');
+    }
+    if (this.phase === 'warmup' && now - this.warmStart >= this.cfg.warmupMs) {
+      this.phase = 'recording';
+      this.recordStart = now;
+      this.recorder = new FrameRecorder(now);
+      bench.mark('record-start');
+      bench.setStatus('recording');
+    }
 
-    this.result = result;
-    this.phase = 'done';
-    this.publish();
-    this.onDoneCb?.(result);
+    const p = this.pending;
+    if (p) {
+      p.frames++;
+      if (!Number.isNaN(p.feedbackRenderEnd)) {
+        this.finalize(p, 'ok', now);
+      } else if (now - p.captureTs > this.cfg.timeoutMs) {
+        this.finalize(p, 'timeout', now);
+      }
+    }
+
+    if (this.phase === 'recording' && now - this.recordStart >= this.cfg.recordMs) {
+      this.recorder!.finish(now);
+      bench.mark('record-end');
+      this.phase = 'draining';
+    }
+    if (this.phase === 'draining' && this.pending === null) {
+      this.complete();
+      return;
+    }
+    if (this.phase === 'recording') this.recorder!.beginFrame(now);
   }
 
-  private publish(): void {
-    if (!this.cfg.publishToWindow) return;
-    window.__BENCH__ = {
-      status: this.phase,
-      result: this.result,
+  beginRender(now: number): void {
+    if (this.phase === 'recording') this.recorder!.beginRender(now);
+    const p = this.pending;
+    if (!p || !p.hit || !Number.isNaN(p.feedbackRenderStart)) return;
+    if (Number.isNaN(p.appliedTs) && p.isApplied?.()) {
+      p.appliedTs = now;
+      p.appliedInferred = true;
+    }
+    if (!Number.isNaN(p.appliedTs)) {
+      p.feedbackRenderStart = now;
+      p.feedbackFrame = p.frames;
+    }
+  }
+
+  endRender(now: number): void {
+    if (this.phase === 'recording') this.recorder!.endRender(now);
+    const p = this.pending;
+    if (p && !Number.isNaN(p.feedbackRenderStart) && Number.isNaN(p.feedbackRenderEnd)) {
+      p.feedbackRenderEnd = now;
+    }
+  }
+
+  private onPointerDownCapture(e: PointerEvent): void {
+    // при дозаписи новые клики не принимаются: иначе непрерывный поток кликов
+    // от harness не даёт «висящему» клику освободиться и завершить прогон
+    if (this.phase === 'idle' || this.phase === 'done' || this.phase === 'draining') return;
+    const now = performance.now();
+    const prev = this.pending;
+    if (prev) {
+      // отклик предыдущего клика уже отрисован, но следующий кадр ещё не начался:
+      // выборка валидна, только latency_frame неизвестна
+      if (!Number.isNaN(prev.feedbackRenderEnd)) this.finalize(prev, 'ok', NaN);
+      else this.finalize(prev, 'superseded', now);
+    }
+    this.pending = {
+      seq: ++this.seqCounter,
+      // клики, начавшиеся в прогреве или при дозаписи, в выборку не идут
+      recorded: this.phase === 'recording',
+      eventTs: e.timeStamp,
+      captureTs: now,
+      dispatchEndTs: NaN,
+      hit: false,
+      hitTs: NaN,
+      isApplied: null,
+      appliedTs: NaN,
+      appliedInferred: false,
+      feedbackRenderStart: NaN,
+      feedbackRenderEnd: NaN,
+      frames: 0,
+      feedbackFrame: NaN,
     };
+  }
+
+  private onPointerDownBubble(): void {
+    const p = this.pending;
+    if (!p || !Number.isNaN(p.dispatchEndTs)) return;
+    p.dispatchEndTs = performance.now();
+    if (!p.hit) this.finalize(p, 'miss', p.dispatchEndTs);
+  }
+
+  private finalize(p: Pending, outcome: InputSample['outcome'], now: number): void {
+    if (this.pending === p) this.pending = null;
+    if (!p.recorded) return;
+    const ok = outcome === 'ok';
+    const nan = NaN;
+    this.samples.push({
+      seq: p.seq,
+      t_ms: p.captureTs - this.recordStart,
+      outcome,
+      queue_ms: p.captureTs - p.eventTs,
+      dispatch_ms: p.dispatchEndTs - p.captureTs,
+      apply_ms: ok ? p.appliedTs - p.hitTs : nan,
+      commit_ms: ok ? Math.max(0, p.appliedTs - p.dispatchEndTs) : nan,
+      frame_wait_ms: ok ? p.feedbackRenderStart - Math.max(p.appliedTs, p.dispatchEndTs) : nan,
+      render_ms: ok ? p.feedbackRenderEnd - p.feedbackRenderStart : nan,
+      latency_render_ms: ok ? p.feedbackRenderEnd - p.eventTs : nan,
+      latency_frame_ms: ok ? now - p.eventTs : nan,
+      frames: ok ? p.feedbackFrame : nan,
+      applied_inferred: p.appliedInferred,
+    });
+    if (ok) bench.setHudValue(`lat ${(p.feedbackRenderEnd - p.eventTs).toFixed(1)} ms`);
+  }
+
+  private complete(): void {
+    this.phase = 'done';
+    this.detach?.();
+    const ok = this.samples.filter((s) => s.outcome === 'ok');
+    const count = (o: InputSample['outcome']): number =>
+      this.samples.filter((s) => s.outcome === o).length;
+    const col = (k: keyof InputSample): number[] => ok.map((s) => s[k] as number);
+    const rec = this.recorder!;
+    const frames: { summary: FrameSummary; raw: FrameRaw } = { summary: rec.summary(), raw: rec.raw() };
+    this.onDoneCb?.({
+      summary: {
+        clicks: this.samples.length,
+        ok: ok.length,
+        miss: count('miss'),
+        timeout: count('timeout'),
+        superseded: count('superseded'),
+        latency_render_ms_median: median(col('latency_render_ms')),
+        latency_render_ms_p95: percentile(sortedFinite(col('latency_render_ms')), 95),
+        latency_render_ms_mean: mean(col('latency_render_ms')),
+        latency_frame_ms_median: median(col('latency_frame_ms')),
+        queue_ms_median: median(col('queue_ms')),
+        dispatch_ms_median: median(col('dispatch_ms')),
+        apply_ms_median: median(col('apply_ms')),
+        commit_ms_median: median(col('commit_ms')),
+        frame_wait_ms_median: median(col('frame_wait_ms')),
+        render_ms_median: median(col('render_ms')),
+      },
+      samples: this.samples,
+      frames,
+    });
   }
 }

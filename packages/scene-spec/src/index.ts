@@ -1,6 +1,8 @@
 export * from './types.js';
 export * from './prng.js';
 export * from './animation.js';
+export * from './camera.js';
+export * from './feedback.js';
 export { S1_GPU_BOUND } from './scenarios/s1-gpu-bound.js';
 export { S2_CPU_BOUND } from './scenarios/s2-cpu-bound.js';
 export { S3_INIT } from './scenarios/s3-init.js';
@@ -30,4 +32,36 @@ export function getScenario(id: string): SceneSpec {
     );
   }
   return spec;
+}
+
+/** число мешей, которые должны оказаться в сцене (объекты + пол) */
+export function expectedMeshCount(spec: SceneSpec): number {
+  return spec.objects.length + (spec.floor ? 1 : 0);
+}
+
+/**
+ * Диагностическое масштабирование детализации процедурной геометрии
+ * (сегменты torusKnot). Вместе с renderScale отвечает на вопрос, во что
+ * упирается кадр: в заливку пикселей, в вершины или в число draw calls.
+ * Применяется к спецификации до построения сцены — одинаково в обеих
+ * реализациях.
+ */
+export function withDetailScale(spec: SceneSpec, factor: number): SceneSpec {
+  if (factor === 1) return spec;
+  const seg = (n: number, min: number) => Math.max(min, Math.round(n * factor));
+  return {
+    ...spec,
+    objects: spec.objects.map((o) =>
+      o.geometry.type === 'torusKnot'
+        ? {
+            ...o,
+            geometry: {
+              ...o.geometry,
+              tubularSegments: seg(o.geometry.tubularSegments, 3),
+              radialSegments: seg(o.geometry.radialSegments, 3),
+            },
+          }
+        : o
+    ),
+  };
 }

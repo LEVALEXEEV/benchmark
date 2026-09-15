@@ -1,174 +1,128 @@
-import type { BenchInitResult } from './types.js';
+import { readHeapMb } from './frame-recorder.js';
+import { bench, type FrameProbe } from './runtime.js';
+import type { InitRunResult } from './types.js';
 
 export interface InitCollectorConfig {
-  readonly scenarioId: string;
-  readonly implementation: 'threejs' | 'r3f';
-  readonly mode: 'ref' | 'state' | null;
-  /** длина "тихого окна" без longtask, после которого считаем достигнутым TTI */
-  readonly quietWindowMs: number;
-  /** максимальное время ожидания TTI с момента TTFR; при превышении публикуем результат с tti_ms = max */
-  readonly ttiTimeoutMs: number;
-  readonly publishToWindow: boolean;
+  /** ожидание long tasks после первого кадра, мс */
+  readonly settleMs: number;
+  /** true, когда в сцене все объекты спецификации (проверяется в endRender) */
+  readonly isSceneComplete: () => boolean;
 }
 
-type Phase = 'idle' | 'recording' | 'done';
+type InitMeasures = Omit<InitRunResult, 'kind' | 'meta'>;
 
-interface PerformanceMemory {
-  readonly usedJSHeapSize: number;
-}
-
-function readHeap(): number | null {
-  const perf = performance as Performance & { memory?: PerformanceMemory };
-  return perf.memory?.usedJSHeapSize ?? null;
-}
-
-interface LongTaskEntry {
-  readonly startTime: number;
-  readonly duration: number;
-}
+const LONG_TASK_BLOCKING_MS = 50;
 
 /**
- * Собирает метрики холодного старта (TTFR / TTI / heap).
+ * S3: холодный старт.
  *
- * Жизненный цикл:
- *   new InitCollector(...)   — подписываемся на longtask заранее (как можно раньше),
- *                              чтобы поймать "тяжёлый" момент инициализации.
- *   .markFirstFrame()        — вызывается ВНУТРИ rAF после первого render().
- *                              Здесь снимаем TTFR и первый замер heap.
- *   (после TTFR ждём тихого окна) — публикуем итог в window.__BENCH__.
+ * Метки ставятся в ОДНИХ И ТЕХ ЖЕ точках кадра обеих реализаций:
+ *   js_ready     — начало кода приложения (все модули исполнены);
+ *   ttfr_submit  — конец renderer.render() первого кадра с полной сценой;
+ *   ttfr_frame   — начало следующего кадра.
+ * В НИР2 three.js ставил метку после render(), а R3F — на втором useFrame,
+ * то есть с лишним ожиданием кадра, что завышало разницу.
+ *
+ * TTI заменён на TBT по long tasks. Старый TTI был вырожден (у R3F совпадал
+ * с TTFR во всех прогонах): наблюдатель подписывался уже после исполнения
+ * бандла и не видел основную long task. Теперь long tasks собирает инлайн-
+ * скрипт в <head> до загрузки модулей (window.__LT__).
  */
-export class InitCollector {
+export class InitCollector implements FrameProbe {
   private readonly cfg: InitCollectorConfig;
-  private phase: Phase = 'idle';
-  private firstFrameMs: number | null = null;
-  private firstFrameDurationMs = 0;
-  private heapAtFirstFrame: number | null = null;
-  private heapAtTti: number | null = null;
-  private result: BenchInitResult | null = null;
-  private onDoneCb: ((r: BenchInitResult) => void) | null = null;
-
-  private readonly longTasks: LongTaskEntry[] = [];
-  private observer: PerformanceObserver | null = null;
-  private observerSupported = true;
-
-  private quietTimer: ReturnType<typeof setTimeout> | null = null;
-  private ttiDeadlineTimer: ReturnType<typeof setTimeout> | null = null;
+  private jsReady = NaN;
+  private renderStart = NaN;
+  private ttfrSubmit = NaN;
+  private ttfrFrame = NaN;
+  private firstRender = NaN;
+  private framesBeforeReady = 0;
+  private heapAtTtfr: number | null = null;
+  private onDoneCb: ((m: InitMeasures) => void) | null = null;
 
   constructor(cfg: InitCollectorConfig) {
     this.cfg = cfg;
-    this.subscribeLongTasks();
-    this.publish();
   }
 
-  private subscribeLongTasks(): void {
-    if (typeof PerformanceObserver === 'undefined') {
-      this.observerSupported = false;
-      return;
-    }
-    try {
-      this.observer = new PerformanceObserver((list) => {
-        for (const entry of list.getEntries()) {
-          this.longTasks.push({
-            startTime: entry.startTime,
-            duration: entry.duration,
-          });
-        }
-        // longtask откладывает "тихое окно"
-        if (this.firstFrameMs !== null && this.phase === 'recording') {
-          this.scheduleQuietWindow();
-        }
-      });
-      this.observer.observe({ type: 'longtask', buffered: true });
-    } catch {
-      this.observerSupported = false;
-      this.observer = null;
-    }
-  }
-
-  onDone(cb: (r: BenchInitResult) => void): void {
+  onDone(cb: (m: InitMeasures) => void): void {
     this.onDoneCb = cb;
   }
 
-  /**
-   * Должен быть вызван внутри rAF сразу после первого render-вызова,
-   * либо в onAfterRender-хуке рендерера.
-   *
-   * frameStartMs — timestamp в шкале performance.now() в начале кадра.
-   * frameEndMs   — timestamp в той же шкале в конце кадра (после render).
-   */
-  markFirstFrame(frameStartMs: number, frameEndMs: number): void {
-    if (this.firstFrameMs !== null) return;
-    this.firstFrameMs = frameEndMs;
-    this.firstFrameDurationMs = frameEndMs - frameStartMs;
-    this.heapAtFirstFrame = readHeap();
-    this.phase = 'recording';
-    this.publish();
+  markJsReady(now: number): void {
+    if (Number.isNaN(this.jsReady)) this.jsReady = now;
+  }
 
-    if (!this.observerSupported) {
-      // longtask не поддерживается — TTI измерить не можем, заканчиваем сразу.
-      this.finish(null);
+  beginFrame(now: number): void {
+    if (!Number.isNaN(this.ttfrSubmit) && Number.isNaN(this.ttfrFrame)) {
+      this.ttfrFrame = now;
+      bench.setStatus('settling');
+      bench.setHudValue(`ttfr ${this.ttfrSubmit.toFixed(0)} ms`);
+      setTimeout(() => this.finish(), this.cfg.settleMs);
+    }
+  }
+
+  beginRender(now: number): void {
+    this.renderStart = now;
+  }
+
+  endRender(now: number): void {
+    if (!Number.isNaN(this.ttfrSubmit)) return;
+    if (!this.cfg.isSceneComplete()) {
+      this.framesBeforeReady++;
       return;
     }
-
-    this.scheduleQuietWindow();
-    this.ttiDeadlineTimer = setTimeout(() => {
-      // достигли максимального окна ожидания — фиксируем TTI как сейчас
-      this.finish(performance.now());
-    }, this.cfg.ttiTimeoutMs);
+    this.ttfrSubmit = now;
+    this.firstRender = now - this.renderStart;
+    this.heapAtTtfr = readHeapMb();
   }
 
-  private scheduleQuietWindow(): void {
-    if (this.quietTimer !== null) clearTimeout(this.quietTimer);
-    this.quietTimer = setTimeout(() => {
-      // достигли quietWindowMs без новых longtask
-      const lastTaskEnd =
-        this.longTasks.length === 0
-          ? this.firstFrameMs!
-          : Math.max(
-              ...this.longTasks.map((t) => t.startTime + t.duration)
-            );
-      const tti = Math.max(this.firstFrameMs!, lastTaskEnd);
-      this.finish(tti);
-    }, this.cfg.quietWindowMs);
-  }
-
-  private finish(ttiMs: number | null): void {
-    if (this.phase === 'done') return;
-    if (this.quietTimer !== null) clearTimeout(this.quietTimer);
-    if (this.ttiDeadlineTimer !== null) clearTimeout(this.ttiDeadlineTimer);
-    this.observer?.disconnect();
-
-    this.heapAtTti = readHeap();
-
-    const longTaskTotal = this.longTasks.reduce((s, t) => s + t.duration, 0);
-    const result: BenchInitResult = {
-      kind: 'init',
-      scenarioId: this.cfg.scenarioId,
-      implementation: this.cfg.implementation,
-      mode: this.cfg.mode,
-      ttfr_ms: this.firstFrameMs ?? 0,
-      tti_ms: ttiMs,
-      first_frame_duration_ms: this.firstFrameDurationMs,
-      heap_mb_at_first_frame:
-        this.heapAtFirstFrame === null ? null : this.heapAtFirstFrame / (1024 * 1024),
-      heap_mb_at_tti:
-        this.heapAtTti === null ? null : this.heapAtTti / (1024 * 1024),
-      long_tasks_count: this.longTasks.length,
-      long_tasks_total_ms: longTaskTotal,
-      finishedAt: performance.now(),
+  private finish(): void {
+    const nav = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined;
+    const supported = window.__LT_SUPPORTED__ === true;
+    const longTasks = (window.__LT__ ?? []).map(
+      ([s, d]) => [Math.round(s * 100) / 100, Math.round(d * 100) / 100] as const
+    );
+    const tbt = (until: number): number | null => {
+      if (!supported) return null;
+      let sum = 0;
+      for (const [start, dur] of longTasks) {
+        if (start >= until) continue;
+        const end = Math.min(start + dur, until);
+        sum += Math.max(0, end - start - LONG_TASK_BLOCKING_MS);
+      }
+      return sum;
     };
 
-    this.result = result;
-    this.phase = 'done';
-    this.publish();
-    this.onDoneCb?.(result);
-  }
+    const resources = performance.getEntriesByType('resource') as PerformanceResourceTiming[];
+    const scripts = resources.filter((r) => r.initiatorType === 'script' || /\.m?js(\?|$)/.test(r.name));
+    const kb = (xs: PerformanceResourceTiming[], k: 'encodedBodySize' | 'decodedBodySize'): number =>
+      xs.reduce((s, r) => s + r[k], 0) / 1024;
 
-  private publish(): void {
-    if (!this.cfg.publishToWindow) return;
-    window.__BENCH__ = {
-      status: this.phase === 'idle' ? 'idle' : this.phase === 'recording' ? 'recording' : 'done',
-      result: this.result,
-    };
+    this.onDoneCb?.({
+      nav: {
+        response_end_ms: nav?.responseEnd ?? NaN,
+        dom_interactive_ms: nav?.domInteractive ?? NaN,
+        dom_content_loaded_end_ms: nav?.domContentLoadedEventEnd ?? NaN,
+        load_event_end_ms: nav?.loadEventEnd ?? NaN,
+      },
+      js_ready_ms: this.jsReady,
+      ttfr_submit_ms: this.ttfrSubmit,
+      ttfr_frame_ms: this.ttfrFrame,
+      init_ms: this.ttfrSubmit - this.jsReady,
+      first_frame_render_ms: this.firstRender,
+      frames_before_ready: this.framesBeforeReady,
+      long_tasks_supported: supported,
+      long_tasks: longTasks,
+      tbt_to_ttfr_ms: tbt(this.ttfrFrame),
+      tbt_total_ms: tbt(Infinity),
+      resources: {
+        script_count: scripts.length,
+        script_encoded_kb: kb(scripts, 'encodedBodySize'),
+        script_decoded_kb: kb(scripts, 'decodedBodySize'),
+        total_count: resources.length,
+        total_encoded_kb: kb(resources, 'encodedBodySize'),
+      },
+      heap_mb_at_ttfr: this.heapAtTtfr,
+      heap_mb_at_end: readHeapMb(),
+    });
   }
 }

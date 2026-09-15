@@ -1,135 +1,70 @@
-import { mean, percentile, stddev } from './stats.js';
-import type { BenchResult } from './types.js';
+import { FrameRecorder } from './frame-recorder.js';
+import { bench, type FrameProbe } from './runtime.js';
+import type { FrameRaw, FrameSummary } from './types.js';
 
-export interface CollectorConfig {
-  readonly scenarioId: string;
-  readonly implementation: 'threejs' | 'r3f';
-  readonly mode: 'ref' | 'state' | null;
+export interface FrameCollectorConfig {
   readonly warmupMs: number;
   readonly recordMs: number;
-  /** автоматически выставлять window.__BENCH__ */
-  readonly publishToWindow: boolean;
-}
-
-type Phase = 'idle' | 'warmup' | 'recording' | 'done';
-
-interface PerformanceMemory {
-  readonly usedJSHeapSize: number;
-}
-
-function readHeap(): number | null {
-  const perf = performance as Performance & { memory?: PerformanceMemory };
-  return perf.memory?.usedJSHeapSize ?? null;
 }
 
 /**
- * MetricsCollector подключается к циклу рендера через .tick() на каждый кадр.
+ * S1/S2: прогрев → запись окна recordMs → публикация сводки и сырых рядов.
  *
- * Жизненный цикл:
- *   .start()  → warmup (warmupMs)  → recording (recordMs)  → result published.
- *
- * Результат публикуется в window.__BENCH__ для последующего считывания
- * из Playwright или devtools.
+ * Отсчёт прогрева начинается с ПЕРВОГО КАДРА, а не с создания коллектора:
+ * в R3F между монтированием и первым кадром проходит асинхронная настройка
+ * корня, в three.js — нет, и прогрев «от конструктора» был бы неравным.
  */
-export class MetricsCollector {
-  private readonly cfg: CollectorConfig;
-  private phase: Phase = 'idle';
-  private startTs = 0;
-  private recordStartTs = 0;
-  private lastFrameTs = 0;
-  private readonly frameTimesMs: number[] = [];
-  private heapPeak: number | null = null;
-  private result: BenchResult | null = null;
-  private onDoneCb: ((r: BenchResult) => void) | null = null;
+export class FrameCollector implements FrameProbe {
+  private readonly cfg: FrameCollectorConfig;
+  private phase: 'idle' | 'warmup' | 'recording' | 'done' = 'idle';
+  private warmStart = NaN;
+  private recordStart = NaN;
+  private recorder: FrameRecorder | null = null;
+  private onDoneCb: ((s: FrameSummary, raw: FrameRaw) => void) | null = null;
 
-  constructor(cfg: CollectorConfig) {
+  constructor(cfg: FrameCollectorConfig) {
     this.cfg = cfg;
-    this.publish();
   }
 
-  start(): void {
-    this.phase = 'warmup';
-    this.startTs = performance.now();
-    this.lastFrameTs = this.startTs;
-    this.publish();
-  }
-
-  onDone(cb: (r: BenchResult) => void): void {
+  onDone(cb: (s: FrameSummary, raw: FrameRaw) => void): void {
     this.onDoneCb = cb;
   }
 
-  /** вызывается на каждый кадр рендера */
-  tick(): void {
-    const now = performance.now();
-    const delta = now - this.lastFrameTs;
-    this.lastFrameTs = now;
+  beginFrame(now: number): void {
+    if (this.phase === 'done') return;
+    if (this.phase === 'idle') {
+      this.phase = 'warmup';
+      this.warmStart = now;
+      bench.setStatus('warmup');
+    }
+    if (this.phase === 'warmup' && now - this.warmStart >= this.cfg.warmupMs) {
+      this.phase = 'recording';
+      this.recordStart = now;
+      this.recorder = new FrameRecorder(now);
+      bench.mark('record-start');
+      bench.setStatus('recording');
+    }
+    if (this.phase !== 'recording') return;
 
-    if (this.phase === 'idle' || this.phase === 'done') return;
-
-    if (this.phase === 'warmup') {
-      if (now - this.startTs >= this.cfg.warmupMs) {
-        this.phase = 'recording';
-        this.recordStartTs = now;
-        this.publish();
-      }
+    const rec = this.recorder!;
+    if (now - this.recordStart >= this.cfg.recordMs) {
+      rec.finish(now);
+      bench.mark('record-end');
+      this.phase = 'done';
+      this.onDoneCb?.(rec.summary(), rec.raw());
       return;
     }
-
-    if (this.phase === 'recording') {
-      this.frameTimesMs.push(delta);
-      const heap = readHeap();
-      if (heap !== null) {
-        this.heapPeak = this.heapPeak === null ? heap : Math.max(this.heapPeak, heap);
-      }
-
-      if (now - this.recordStartTs >= this.cfg.recordMs) {
-        this.finish(now);
-      }
+    rec.beginFrame(now);
+    if (rec.frameCount > 0 && rec.frameCount % 30 === 0) {
+      bench.setHudValue(`${Math.round(1000 / (now - this.recordStart) * rec.frameCount)} fps`);
     }
   }
 
-  private finish(now: number): void {
-    const frames = this.frameTimesMs;
-    const durationMs = now - this.recordStartTs;
-    const sortedAsc = [...frames].sort((a, b) => a - b);
-    const sortedDesc = [...frames].sort((a, b) => b - a);
-    const avgFrame = mean(frames);
-
-    const worst1pct = sortedDesc.slice(0, Math.max(1, Math.floor(frames.length * 0.01)));
-    const worst5pct = sortedDesc.slice(0, Math.max(1, Math.floor(frames.length * 0.05)));
-
-    const result: BenchResult = {
-      kind: 'frame',
-      scenarioId: this.cfg.scenarioId,
-      implementation: this.cfg.implementation,
-      mode: this.cfg.mode,
-      recordedFrames: frames.length,
-      durationMs,
-      fps_avg: 1000 / avgFrame,
-      fps_median: 1000 / percentile(sortedAsc, 50),
-      fps_p1_low: 1000 / mean(worst1pct),
-      fps_p5_low: 1000 / mean(worst5pct),
-      frame_time_ms_avg: avgFrame,
-      frame_time_ms_median: percentile(sortedAsc, 50),
-      frame_time_ms_stddev: stddev(frames),
-      frame_time_ms_p95: percentile(sortedAsc, 95),
-      frame_time_ms_p99: percentile(sortedAsc, 99),
-      heap_mb_peak: this.heapPeak === null ? null : this.heapPeak / (1024 * 1024),
-      startedAt: this.recordStartTs,
-      finishedAt: now,
-    };
-
-    this.result = result;
-    this.phase = 'done';
-    this.publish();
-    this.onDoneCb?.(result);
+  beginRender(now: number): void {
+    this.recorder?.beginRender(now);
   }
 
-  private publish(): void {
-    if (!this.cfg.publishToWindow) return;
-    window.__BENCH__ = {
-      status: this.phase,
-      result: this.result,
-    };
+  endRender(now: number): void {
+    this.recorder?.endRender(now);
   }
 }

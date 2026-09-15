@@ -1,10 +1,15 @@
 import type { LightSpec, ObjectSpec, SceneSpec } from '../types.js';
 import { mulberry32, randRange } from '../prng.js';
 
-/** уровни свипа по числу объектов; свип идёт по возрастанию до деградации */
-export const S5_LEVELS: readonly number[] = [
-  100, 500, 1000, 2000, 5000, 10000, 20000, 50000,
-];
+/**
+ * Уровни свипа: геометрическая сетка с шагом √2 от 100 до 51200 объектов.
+ * В НИР2 шаг был ×2–2,5 (10k → 20k → 50k), и точка деградации определялась
+ * с точностью до уровня; √2 даёт достаточно точек для регрессии
+ * frame_time(N) и интерполяции ёмкости при 60/30 FPS.
+ */
+export const S5_LEVELS: readonly number[] = Array.from({ length: 19 }, (_, k) =>
+  Math.round(100 * 2 ** (k / 2))
+);
 
 const SEED = 5150;
 const PALETTE = [0xff5c7c, 0x6ec1e4, 0xf5d76e, 0x9b59b6, 0x2ecc71, 0xe67e22, 0x3498db, 0xe74c3c];
@@ -69,7 +74,11 @@ function baseSpec(count: number): SceneSpec {
       height: 720,
       pixelRatio: 1,
       antialias: false,
+      alpha: false,
+      toneMapping: 'none',
+      outputColorSpace: 'srgb',
       shadowMap: false,
+      shadowType: 'pcf',
       clearColor: 0x0d1117,
     },
     camera: {

@@ -1,0 +1,302 @@
+{
+  "config": {
+    "scenarioId": "s1",
+    "warmupMs": 5000,
+    "recordMs": 30000,
+    "iterations": 5,
+    "warmupRuns": 1,
+    "quietWindowMs": 2000,
+    "ttiTimeoutMs": 15000,
+    "clickIntervalMs": 250,
+    "seed": 4242,
+    "levels": [
+      100,
+      500,
+      1000,
+      2000,
+      5000,
+      10000,
+      20000,
+      50000
+    ],
+    "fpsFloor": 30,
+    "targets": [
+      {
+        "name": "threejs",
+        "mode": null,
+        "baseUrl": "http://localhost:5173",
+        "label": "threejs"
+      },
+      {
+        "name": "r3f",
+        "mode": "ref",
+        "baseUrl": "http://localhost:5174",
+        "label": "r3f"
+      }
+    ],
+    "resultsDir": "/Users/levalekseev/Documents/vscode/NIR/benchmark/results"
+  },
+  "bundleSize": null,
+  "outcomes": [
+    {
+      "label": "threejs",
+      "iteration": 1,
+      "result": {
+        "kind": "frame",
+        "scenarioId": "s1-gpu-bound",
+        "implementation": "threejs",
+        "mode": null,
+        "recordedFrames": 1549,
+        "durationMs": 30016.39999999851,
+        "fps_avg": 51.60512253301785,
+        "fps_median": 52.35602093832374,
+        "fps_p1_low": 40.95004094954119,
+        "fps_p5_low": 44.627332793012634,
+        "frame_time_ms_avg": 19.3779212395084,
+        "frame_time_ms_median": 19.100000001490116,
+        "frame_time_ms_stddev": 1.096083262463995,
+        "frame_time_ms_p95": 21.299999997019768,
+        "frame_time_ms_p99": 23.5,
+        "heap_mb_peak": 645.8114137649536,
+        "startedAt": 5776.60000000149,
+        "finishedAt": 35793
+      }
+    },
+    {
+      "label": "threejs",
+      "iteration": 2,
+      "result": {
+        "kind": "frame",
+        "scenarioId": "s1-gpu-bound",
+        "implementation": "threejs",
+        "mode": null,
+        "recordedFrames": 1555,
+        "durationMs": 30001.19999999553,
+        "fps_avg": 51.83126008293774,
+        "fps_median": 52.08333334545993,
+        "fps_p1_low": 44.33934377712618,
+        "fps_p5_low": 46.29072983071653,
+        "frame_time_ms_avg": 19.293376205784906,
+        "frame_time_ms_median": 19.19999999552965,
+        "frame_time_ms_stddev": 0.9448368721222474,
+        "frame_time_ms_p95": 21,
+        "frame_time_ms_p99": 21.899999998509884,
+        "heap_mb_peak": 645.6327524185181,
+        "startedAt": 5792.89999999851,
+        "finishedAt": 35794.09999999404
+      }
+    },
+    {
+      "label": "threejs",
+      "iteration": 3,
+      "result": {
+        "kind": "frame",
+        "scenarioId": "s1-gpu-bound",
+        "implementation": "threejs",
+        "mode": null,
+        "recordedFrames": 1538,
+        "durationMs": 30017.10000000149,
+        "fps_avg": 51.2374613137153,
+        "fps_median": 51.813471490589414,
+        "fps_p1_low": 41.96978175555999,
+        "fps_p5_low": 45.20849443812541,
+        "frame_time_ms_avg": 19.516970091028277,
+        "frame_time_ms_median": 19.30000000447035,
+        "frame_time_ms_stddev": 0.9884522186130325,
+        "frame_time_ms_p95": 21.200000002980232,
+        "frame_time_ms_p99": 22.5,
+        "heap_mb_peak": 646.4695749282837,
+        "startedAt": 5794.0999999940395,
+        "finishedAt": 35811.19999999553
+      }
+    },
+    {
+      "label": "threejs",
+      "iteration": 4,
+      "result": {
+        "kind": "frame",
+        "scenarioId": "s1-gpu-bound",
+        "implementation": "threejs",
+        "mode": null,
+        "recordedFrames": 1547,
+        "durationMs": 30000.5,
+        "fps_avg": 51.56580723654606,
+        "fps_median": 52.08333332524894,
+        "fps_p1_low": 42.13483145979233,
+        "fps_p5_low": 45.374189746014025,
+        "frame_time_ms_avg": 19.392695539754364,
+        "frame_time_ms_median": 19.200000002980232,
+        "frame_time_ms_stddev": 1.024956206999676,
+        "frame_time_ms_p95": 21.19999999552965,
+        "frame_time_ms_p99": 22.600000001490116,
+        "heap_mb_peak": 646.4921236038208,
+        "startedAt": 5732.69999999553,
+        "finishedAt": 35733.19999999553
+      }
+    },
+    {
+      "label": "threejs",
+      "iteration": 5,
+      "result": {
+        "kind": "frame",
+        "scenarioId": "s1-gpu-bound",
+        "implementation": "threejs",
+        "mode": null,
+        "recordedFrames": 1532,
+        "durationMs": 30012.20000000298,
+        "fps_avg": 51.04590799740932,
+        "fps_median": 51.5463917565366,
+        "fps_p1_low": 35.52818569373311,
+        "fps_p5_low": 42.31861462205455,
+        "frame_time_ms_avg": 19.59020887728654,
+        "frame_time_ms_median": 19.399999998509884,
+        "frame_time_ms_stddev": 1.5139484569180657,
+        "frame_time_ms_p95": 21.69999999552965,
+        "frame_time_ms_p99": 24.5,
+        "heap_mb_peak": 679.9902973175049,
+        "startedAt": 5824.39999999851,
+        "finishedAt": 35836.60000000149
+      }
+    },
+    {
+      "label": "r3f",
+      "iteration": 1,
+      "result": {
+        "kind": "frame",
+        "scenarioId": "s1-gpu-bound",
+        "implementation": "r3f",
+        "mode": "ref",
+        "recordedFrames": 1507,
+        "durationMs": 30005.09999999404,
+        "fps_avg": 50.224795118173226,
+        "fps_median": 51.282051282051285,
+        "fps_p1_low": 23.245002324607583,
+        "fps_p5_low": 27.75002775007365,
+        "frame_time_ms_avg": 19.91048440610089,
+        "frame_time_ms_median": 19.5,
+        "frame_time_ms_stddev": 4.733101930177603,
+        "frame_time_ms_p95": 22,
+        "frame_time_ms_p99": 41.899999998509884,
+        "heap_mb_peak": 765.6073789596558,
+        "startedAt": 5924.80000000447,
+        "finishedAt": 35929.89999999851
+      }
+    },
+    {
+      "label": "r3f",
+      "iteration": 2,
+      "result": {
+        "kind": "frame",
+        "scenarioId": "s1-gpu-bound",
+        "implementation": "r3f",
+        "mode": "ref",
+        "recordedFrames": 1481,
+        "durationMs": 30015.19999999553,
+        "fps_avg": 49.3416668887837,
+        "fps_median": 50.761421312117726,
+        "fps_p1_low": 21.95389681658236,
+        "fps_p5_low": 26.0041466073387,
+        "frame_time_ms_avg": 20.266846725182667,
+        "frame_time_ms_median": 19.700000002980232,
+        "frame_time_ms_stddev": 5.16921645566789,
+        "frame_time_ms_p95": 25,
+        "frame_time_ms_p99": 42.69999999552965,
+        "heap_mb_peak": 850.2756052017212,
+        "startedAt": 5931.60000000149,
+        "finishedAt": 35946.79999999702
+      }
+    },
+    {
+      "label": "r3f",
+      "iteration": 3,
+      "result": {
+        "kind": "frame",
+        "scenarioId": "s1-gpu-bound",
+        "implementation": "r3f",
+        "mode": "ref",
+        "recordedFrames": 1480,
+        "durationMs": 30016.19999999553,
+        "fps_avg": 49.30670771117664,
+        "fps_median": 50.505050493647715,
+        "fps_p1_low": 22.479126525745787,
+        "fps_p5_low": 26.484377795914927,
+        "frame_time_ms_avg": 20.281216216213195,
+        "frame_time_ms_median": 19.80000000447035,
+        "frame_time_ms_stddev": 4.9523966382435685,
+        "frame_time_ms_p95": 23.899999998509884,
+        "frame_time_ms_p99": 42.600000001490116,
+        "heap_mb_peak": 818.2253732681274,
+        "startedAt": 5911.60000000149,
+        "finishedAt": 35927.79999999702
+      }
+    },
+    {
+      "label": "r3f",
+      "iteration": 4,
+      "result": {
+        "kind": "frame",
+        "scenarioId": "s1-gpu-bound",
+        "implementation": "r3f",
+        "mode": "ref",
+        "recordedFrames": 1520,
+        "durationMs": 30018.70000000298,
+        "fps_avg": 50.63510411842782,
+        "fps_median": 51.813471490589414,
+        "fps_p1_low": 23.108920043614102,
+        "fps_p5_low": 27.800131684637307,
+        "frame_time_ms_avg": 19.749144736844066,
+        "frame_time_ms_median": 19.30000000447035,
+        "frame_time_ms_stddev": 4.766114959025157,
+        "frame_time_ms_p95": 21.900000005960464,
+        "frame_time_ms_p99": 41.80000000447035,
+        "heap_mb_peak": 835.4046430587769,
+        "startedAt": 5928.10000000149,
+        "finishedAt": 35946.80000000447
+      }
+    },
+    {
+      "label": "r3f",
+      "iteration": 5,
+      "result": {
+        "kind": "frame",
+        "scenarioId": "s1-gpu-bound",
+        "implementation": "r3f",
+        "mode": "ref",
+        "recordedFrames": 1521,
+        "durationMs": 30000.89999999851,
+        "fps_avg": 50.69847904563115,
+        "fps_median": 51.813471490589414,
+        "fps_p1_low": 23.499921667311803,
+        "fps_p5_low": 28.110667258454697,
+        "frame_time_ms_avg": 19.724457593687383,
+        "frame_time_ms_median": 19.30000000447035,
+        "frame_time_ms_stddev": 4.712909913597972,
+        "frame_time_ms_p95": 21.900000005960464,
+        "frame_time_ms_p99": 41.899999998509884,
+        "heap_mb_peak": 764.8244981765747,
+        "startedAt": 5920.70000000298,
+        "finishedAt": 35921.60000000149
+      }
+    }
+  ],
+  "summary": {
+    "threejs": {
+      "iterations": 5,
+      "fps_avg": 51.45711183272525,
+      "fps_p1_low": 40.98443672715056,
+      "frame_time_ms_avg": 19.434234390672497,
+      "frame_time_ms_stddev": 1.1136554034234032,
+      "frame_time_ms_p99": 23,
+      "heap_mb_peak": 652.8792324066162
+    },
+    "r3f": {
+      "iterations": 5,
+      "fps_avg": 50.04135057643851,
+      "fps_p1_low": 22.857373475572324,
+      "frame_time_ms_avg": 19.98642993560564,
+      "frame_time_ms_stddev": 4.866747979342438,
+      "frame_time_ms_p99": 42.17999999970198,
+      "heap_mb_peak": 806.8674997329712
+    }
+  }
+}

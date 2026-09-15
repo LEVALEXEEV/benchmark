@@ -92,7 +92,11 @@ export const S1_GPU_BOUND: SceneSpec = {
     height: 720,
     pixelRatio: 1,
     antialias: true,
+    alpha: false,
+    toneMapping: 'none',
+    outputColorSpace: 'srgb',
     shadowMap: true,
+    shadowType: 'pcf',
     clearColor: 0x1a1f2e,
   },
   camera: {

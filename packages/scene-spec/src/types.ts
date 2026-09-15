@@ -88,12 +88,28 @@ export interface CameraSpec {
   readonly autoRotateSpeed: number;
 }
 
+/**
+ * Параметры рендерера задаются ЯВНО, а не берутся из дефолтов библиотек:
+ * дефолты three.js и R3F различаются (R3F по умолчанию включает ACES tone
+ * mapping и нулевую альфу очистки), что в НИР2 сделало сцены неидентичными.
+ */
 export interface RendererSpec {
   readonly width: number;
   readonly height: number;
   readonly pixelRatio: number;
   readonly antialias: boolean;
+  /**
+   * Опция alpha рендерера. three.js ВСЕГДА создаёт контекст с alpha: true,
+   * опция задаёт лишь альфу очистки (false → 1). У R3F по умолчанию alpha: true
+   * (альфа очистки 0); задаём явно, чтобы конфигурация совпадала.
+   */
+  readonly alpha: false;
+  /** tone mapping отключён в обеих реализациях (в R3F — проп `flat`) */
+  readonly toneMapping: 'none';
+  readonly outputColorSpace: 'srgb';
   readonly shadowMap: boolean;
+  /** PCFSoftShadowMap удалён в three r18x — используем PCF явно */
+  readonly shadowType: 'pcf';
   readonly clearColor: number;
 }
 

@@ -1,109 +1,54 @@
-import { execSync } from 'node:child_process';
-import { readdir, readFile, stat } from 'node:fs/promises';
-import { gzipSync } from 'node:zlib';
+import { readdir, readFile } from 'node:fs/promises';
+import { brotliCompressSync, constants, gzipSync } from 'node:zlib';
 import { join } from 'node:path';
+import { ROOT } from './servers.js';
 
 export interface BundleSizeReport {
   readonly impl: 'threejs' | 'r3f';
-  readonly distDir: string;
-  readonly files: readonly { path: string; bytes: number; gzipBytes: number }[];
+  readonly files: readonly { path: string; bytes: number; gzipBytes: number; brotliBytes: number }[];
   readonly total_bytes: number;
-  readonly total_gz_bytes: number;
+  readonly total_gzip_bytes: number;
+  readonly total_brotli_bytes: number;
 }
 
-const ROOT = new URL('../../../', import.meta.url).pathname;
-
-const IMPL_PATHS: Record<'threejs' | 'r3f', { workspace: string; dist: string }> = {
-  threejs: {
-    workspace: '@bench/impl-threejs',
-    dist: join(ROOT, 'packages/impl-threejs/dist'),
-  },
-  r3f: {
-    workspace: '@bench/impl-r3f',
-    dist: join(ROOT, 'packages/impl-r3f/dist'),
-  },
-};
-
-/** Учитываем только реально доставляемые на клиент ассеты. */
-const COUNTED_EXTS = new Set(['.js', '.mjs', '.cjs', '.css', '.html']);
+/** доставляемые клиенту ассеты; source map в размер не входят */
+const COUNTED = /\.(m?js|css|html)$/;
 
 async function walk(dir: string, out: string[]): Promise<void> {
-  const entries = await readdir(dir, { withFileTypes: true });
-  for (const e of entries) {
+  for (const e of await readdir(dir, { withFileTypes: true })) {
     const p = join(dir, e.name);
-    if (e.isDirectory()) {
-      await walk(p, out);
-    } else if (e.isFile()) {
-      out.push(p);
-    }
+    if (e.isDirectory()) await walk(p, out);
+    else if (e.isFile()) out.push(p);
   }
-}
-
-async function measureDist(distDir: string): Promise<{
-  files: { path: string; bytes: number; gzipBytes: number }[];
-  total_bytes: number;
-  total_gz_bytes: number;
-}> {
-  const all: string[] = [];
-  await walk(distDir, all);
-  const files: { path: string; bytes: number; gzipBytes: number }[] = [];
-  let total = 0;
-  let totalGz = 0;
-  for (const f of all) {
-    const dot = f.lastIndexOf('.');
-    const ext = dot === -1 ? '' : f.slice(dot).toLowerCase();
-    if (!COUNTED_EXTS.has(ext)) continue;
-    const st = await stat(f);
-    const buf = await readFile(f);
-    const gz = gzipSync(buf).length;
-    files.push({
-      path: f.slice(distDir.length + 1),
-      bytes: st.size,
-      gzipBytes: gz,
-    });
-    total += st.size;
-    totalGz += gz;
-  }
-  files.sort((a, b) => b.gzipBytes - a.gzipBytes);
-  return { files, total_bytes: total, total_gz_bytes: totalGz };
-}
-
-export async function measureBundleSize(
-  impl: 'threejs' | 'r3f',
-  options: { build: boolean }
-): Promise<BundleSizeReport> {
-  const { workspace, dist } = IMPL_PATHS[impl];
-  if (options.build) {
-    console.log(`[bundle] building ${workspace}...`);
-    execSync(`npm run build -w ${workspace}`, { cwd: ROOT, stdio: 'inherit' });
-  }
-  const measured = await measureDist(dist);
-  return {
-    impl,
-    distDir: dist,
-    files: measured.files,
-    total_bytes: measured.total_bytes,
-    total_gz_bytes: measured.total_gz_bytes,
-  };
 }
 
 /**
- * Запускается отдельно (`npm run bench:s3-bundle`) либо вызывается
- * раннером перед прогонами TTFR/TTI, чтобы зафиксировать размер
- * скачиваемого с сервера приложения. Из gzipped-размера потом
- * считается H3-метрика "bundle size".
+ * Размер production-сборки: raw, gzip (уровень 9) и brotli (качество 11) —
+ * так сжимают статику типичные CDN. Считается по той же сборке, что
+ * раздаётся в прогонах.
  */
-export async function runBundleSizeReport(options: {
-  build: boolean;
-}): Promise<readonly BundleSizeReport[]> {
+export async function measureBundles(): Promise<BundleSizeReport[]> {
   const out: BundleSizeReport[] = [];
   for (const impl of ['threejs', 'r3f'] as const) {
-    const r = await measureBundleSize(impl, options);
-    out.push(r);
+    const dist = join(ROOT, 'packages', impl === 'threejs' ? 'impl-threejs' : 'impl-r3f', 'dist');
+    const all: string[] = [];
+    await walk(dist, all);
+    const files: BundleSizeReport['files'][number][] = [];
+    for (const f of all.filter((p) => COUNTED.test(p))) {
+      const buf = await readFile(f);
+      files.push({
+        path: f.slice(dist.length + 1),
+        bytes: buf.length,
+        gzipBytes: gzipSync(buf, { level: 9 }).length,
+        brotliBytes: brotliCompressSync(buf, { params: { [constants.BROTLI_PARAM_QUALITY]: 11 } }).length,
+      });
+    }
+    files.sort((a, b) => b.bytes - a.bytes);
+    const sum = (k: 'bytes' | 'gzipBytes' | 'brotliBytes') => files.reduce((s, f) => s + f[k], 0);
+    const r = { impl, files, total_bytes: sum('bytes'), total_gzip_bytes: sum('gzipBytes'), total_brotli_bytes: sum('brotliBytes') };
     const kb = (n: number) => (n / 1024).toFixed(1);
-    console.log(
-      `[bundle] ${impl}: ${kb(r.total_bytes)} KB raw, ${kb(r.total_gz_bytes)} KB gz, ${r.files.length} files`
-    );
+    console.log(`[bundle] ${impl}: ${kb(r.total_bytes)} КБ raw, ${kb(r.total_gzip_bytes)} КБ gzip, ${kb(r.total_brotli_bytes)} КБ brotli`);
+    out.push(r);
   }
   return out;
 }

@@ -92,7 +92,11 @@ export const S4_INPUT: SceneSpec = {
     height: 720,
     pixelRatio: 1,
     antialias: false,
+    alpha: false,
+    toneMapping: 'none',
+    outputColorSpace: 'srgb',
     shadowMap: false,
+    shadowType: 'pcf',
     clearColor: 0x0d1117,
   },
   camera: {

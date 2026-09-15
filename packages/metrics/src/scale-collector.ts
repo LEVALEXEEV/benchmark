@@ -1,196 +1,176 @@
-import { mean, percentile, stddev } from './stats.js';
-import type { BenchScaleResult, ScaleLevelResult } from './types.js';
+import { FrameRecorder } from './frame-recorder.js';
+import { bench, type FrameProbe } from './runtime.js';
+import type { ScaleLevel, ScaleRunResult } from './types.js';
 
 export interface ScaleCollectorConfig {
-  readonly scenarioId: string;
-  readonly implementation: 'threejs' | 'r3f';
-  readonly mode: 'ref' | 'state' | null;
-  /** возрастающий список чисел объектов: [100, 500, 1000, ...] */
   readonly levels: readonly number[];
-  /** прогрев на каждом уровне, мс */
   readonly warmupMs: number;
-  /** запись FPS на каждом уровне, мс */
   readonly recordMs: number;
-  /** порог median FPS, ниже которого фиксируем деградацию и останавливаем свип */
   readonly fpsFloor: number;
-  readonly publishToWindow: boolean;
+  /** сколько уровней пройти после первого падения ниже fpsFloor */
+  readonly levelsBeyondFloor: number;
+  /**
+   * Минимум кадров на уровне: на тяжёлых уровнях за recordMs набирается
+   * лишь десяток кадров, и медиана неустойчива. Запись продлевается, но не
+   * дольше MAX_RECORD_FACTOR × recordMs.
+   */
+  readonly minLevelFrames: number;
 }
 
-type Phase = 'idle' | 'warmup' | 'recording' | 'done';
+const MAX_RECORD_FACTOR = 5;
 
-interface PerformanceMemory {
-  readonly usedJSHeapSize: number;
-}
+/** уровень, на котором median FPS ниже этого, прекращает свип безусловно */
+const TOO_SLOW_FPS = 2;
 
-function readHeap(): number | null {
-  const perf = performance as Performance & { memory?: PerformanceMemory };
-  return perf.memory?.usedJSHeapSize ?? null;
-}
+type Phase = 'idle' | 'building' | 'warmup' | 'recording' | 'done';
 
 /**
- * ScaleCollector прогоняет одну и ту же анимированную сцену при возрастающем
- * числе объектов и ищет точку деградации производительности (S5).
+ * S5: свип по числу объектов.
  *
- * Сам коллектор НЕ строит сцену — он лишь управляет прогрессией уровней и
- * измеряет FPS. Перестроение сцены под новый уровень делегируется реализации
- * через onAdvanceLevel(count): three.js пересобирает сцену, R3F меняет state
- * с числом мешей. Это сохраняет инвариант «обе реализации строят сцену каждая
- * своим способом из общего числа объектов».
- *
- * Жизненный цикл:
- *   new ScaleCollector(cfg)
- *   .onAdvanceLevel(cb)   — РЕГИСТРИРУЕТСЯ до start(); вызывается на каждый
- *                           новый уровень (включая первый) с числом объектов.
- *   .start()              — строит уровень 0 (через onAdvanceLevel) и входит
- *                           в warmup.
- *   .tick()               — вызывается каждый кадр; ведёт warmup→recording,
- *                           по окончании recordMs финализирует уровень и либо
- *                           переходит к следующему, либо завершает свип.
- *
- * Свип завершается, когда median FPS уровня < fpsFloor (деградация найдена)
- * либо когда уровни закончились.
+ * Отличия от НИР2:
+ *   - прогрев уровня отсчитывается от ГОТОВНОСТИ сцены (levelReady), а не от
+ *     запроса уровня: в R3F монтирование десятков тысяч компонентов идёт
+ *     асинхронно и раньше «съедало» прогрев, а первый записанный кадр
+ *     содержал всё время монтирования;
+ *   - свип не обрывается на первом провале: проходится ещё
+ *     levelsBeyondFloor уровней, чтобы у всех вариантов была кривая за порогом;
+ *   - ёмкость при 60/30 FPS интерполируется, а не округляется до уровня сетки.
  */
-export class ScaleCollector {
+export class ScaleCollector implements FrameProbe {
   private readonly cfg: ScaleCollectorConfig;
   private phase: Phase = 'idle';
-  private levelIndex = 0;
-  private levelStartTs = 0;
-  private recordStartTs = 0;
-  private lastFrameTs = 0;
-  private frameTimesMs: number[] = [];
-  private heapPeak: number | null = null;
-
-  private readonly levelResults: ScaleLevelResult[] = [];
-  private degradationCount: number | null = null;
-
-  private result: BenchScaleResult | null = null;
+  private index = 0;
+  private enterTs = NaN;
+  private buildMs = NaN;
+  private warmStart = NaN;
+  private recordStart = NaN;
+  private recorder: FrameRecorder | null = null;
+  private readonly results: ScaleLevel[] = [];
+  private firstBelow: number | null = null;
+  private beyond = 0;
   private onAdvanceCb: ((count: number) => void) | null = null;
-  private onDoneCb: ((r: BenchScaleResult) => void) | null = null;
+  private onDoneCb:
+    | ((r: Omit<ScaleRunResult, 'kind' | 'meta'>) => void)
+    | null = null;
 
   constructor(cfg: ScaleCollectorConfig) {
+    if (cfg.levels.length === 0) throw new Error('S5: пустой список уровней');
     this.cfg = cfg;
-    this.publish();
   }
 
   onAdvanceLevel(cb: (count: number) => void): void {
     this.onAdvanceCb = cb;
   }
 
-  onDone(cb: (r: BenchScaleResult) => void): void {
+  onDone(cb: (r: Omit<ScaleRunResult, 'kind' | 'meta'>) => void): void {
     this.onDoneCb = cb;
   }
 
-  /** число объектов текущего уровня (для HUD реализации) */
   get currentCount(): number {
-    return this.cfg.levels[this.levelIndex] ?? 0;
+    return this.cfg.levels[this.index] ?? 0;
   }
 
   start(): void {
-    if (this.cfg.levels.length === 0) {
-      this.finishAll();
-      return;
-    }
-    this.levelIndex = 0;
-    this.enterLevel(performance.now());
+    this.enterLevel(0);
   }
 
-  private enterLevel(now: number): void {
+  /** реализация сообщает, что объекты уровня уже в графе сцены */
+  levelReady(): void {
+    if (this.phase !== 'building') return;
+    this.buildMs = performance.now() - this.enterTs;
     this.phase = 'warmup';
-    this.levelStartTs = now;
-    this.lastFrameTs = now;
-    this.frameTimesMs = [];
-    this.heapPeak = null;
-    this.publish();
-    // реализация строит сцену под этот уровень
-    this.onAdvanceCb?.(this.cfg.levels[this.levelIndex]!);
+    this.warmStart = NaN;
+    bench.setStatus('warmup');
   }
 
-  /** вызывается на каждый кадр рендера */
-  tick(): void {
-    const now = performance.now();
-    const delta = now - this.lastFrameTs;
-    this.lastFrameTs = now;
-
-    if (this.phase === 'idle' || this.phase === 'done') return;
-
+  beginFrame(now: number): void {
     if (this.phase === 'warmup') {
-      if (now - this.levelStartTs >= this.cfg.warmupMs) {
+      if (Number.isNaN(this.warmStart)) this.warmStart = now;
+      if (now - this.warmStart >= this.cfg.warmupMs) {
         this.phase = 'recording';
-        this.recordStartTs = now;
-        this.publish();
+        this.recordStart = now;
+        this.recorder = new FrameRecorder(now);
+        bench.mark(`level-${this.currentCount}-start`);
+        bench.setStatus('recording');
       }
+    }
+    if (this.phase !== 'recording') return;
+    const rec = this.recorder!;
+    const elapsed = now - this.recordStart;
+    const enough = rec.frameCount >= this.cfg.minLevelFrames || elapsed >= this.cfg.recordMs * MAX_RECORD_FACTOR;
+    if (elapsed >= this.cfg.recordMs && enough) {
+      rec.finish(now);
+      this.recorder = null;
+      bench.mark(`level-${this.currentCount}-end`);
+      this.finalizeLevel(rec);
       return;
     }
-
-    // recording
-    this.frameTimesMs.push(delta);
-    const heap = readHeap();
-    if (heap !== null) {
-      this.heapPeak = this.heapPeak === null ? heap : Math.max(this.heapPeak, heap);
-    }
-
-    if (now - this.recordStartTs >= this.cfg.recordMs) {
-      this.finalizeLevel();
-    }
+    rec.beginFrame(now);
   }
 
-  private finalizeLevel(): void {
-    const frames = this.frameTimesMs;
-    const sortedAsc = [...frames].sort((a, b) => a - b);
-    const sortedDesc = [...frames].sort((a, b) => b - a);
-    const avgFrame = mean(frames);
-    const worst1pct = sortedDesc.slice(0, Math.max(1, Math.floor(frames.length * 0.01)));
+  beginRender(now: number): void {
+    this.recorder?.beginRender(now);
+  }
 
-    const level: ScaleLevelResult = {
-      count: this.cfg.levels[this.levelIndex]!,
-      recordedFrames: frames.length,
-      fps_avg: avgFrame > 0 ? 1000 / avgFrame : 0,
-      fps_median: 1000 / percentile(sortedAsc, 50),
-      fps_p1_low: 1000 / mean(worst1pct),
-      frame_time_ms_avg: avgFrame,
-      frame_time_ms_stddev: stddev(frames),
-      frame_time_ms_p99: percentile(sortedAsc, 99),
-      heap_mb_peak: this.heapPeak === null ? null : this.heapPeak / (1024 * 1024),
-    };
-    this.levelResults.push(level);
+  endRender(now: number): void {
+    this.recorder?.endRender(now);
+  }
 
-    const degraded = level.fps_median < this.cfg.fpsFloor;
-    if (degraded && this.degradationCount === null) {
-      this.degradationCount = level.count;
-    }
+  private enterLevel(i: number): void {
+    this.index = i;
+    this.phase = 'building';
+    this.enterTs = performance.now();
+    bench.setStatus('building');
+    bench.setHudValue(`${this.currentCount} obj`);
+    this.onAdvanceCb?.(this.currentCount);
+  }
 
-    const isLast = this.levelIndex >= this.cfg.levels.length - 1;
-    if (degraded || isLast) {
-      this.finishAll();
+  private finalizeLevel(rec: FrameRecorder): void {
+    const summary = rec.summary();
+    this.results.push({ count: this.currentCount, build_ms: this.buildMs, summary, raw: rec.raw() });
+
+    const below = summary.fps_median < this.cfg.fpsFloor;
+    if (below && this.firstBelow === null) this.firstBelow = this.currentCount;
+    if (this.firstBelow !== null && this.currentCount !== this.firstBelow) this.beyond++;
+
+    let reason: ScaleRunResult['stopped_reason'] | null = null;
+    if (summary.fps_median < TOO_SLOW_FPS) reason = 'too-slow';
+    else if (this.firstBelow !== null && this.beyond >= this.cfg.levelsBeyondFloor) reason = 'beyond-floor';
+    else if (this.index >= this.cfg.levels.length - 1) reason = 'levels-exhausted';
+
+    if (reason === null) {
+      this.enterLevel(this.index + 1);
       return;
     }
-
-    this.levelIndex++;
-    this.enterLevel(performance.now());
-  }
-
-  private finishAll(): void {
-    if (this.phase === 'done') return;
-    this.result = {
-      kind: 'scale',
-      scenarioId: this.cfg.scenarioId,
-      implementation: this.cfg.implementation,
-      mode: this.cfg.mode,
-      levels: this.levelResults,
-      degradation_count: this.degradationCount,
-      fpsFloor: this.cfg.fpsFloor,
-      finishedAt: performance.now(),
-    };
     this.phase = 'done';
-    this.publish();
-    this.onDoneCb?.(this.result);
+    this.onDoneCb?.({
+      levels: this.results,
+      fpsFloor: this.cfg.fpsFloor,
+      first_below_floor: this.firstBelow,
+      capacity_fps60: capacityAt(this.results, 60),
+      capacity_fps30: capacityAt(this.results, 30),
+      stopped_reason: reason,
+    });
   }
+}
 
-  private publish(): void {
-    if (!this.cfg.publishToWindow) return;
-    window.__BENCH__ = {
-      status: this.phase,
-      result: this.result,
-    };
+/**
+ * Число объектов, при котором median FPS впервые опускается до target:
+ * линейная интерполяция в координатах (log N, log FPS) между соседними
+ * уровнями. null — порог не пересечён в пределах пройденных уровней.
+ */
+export function capacityAt(levels: readonly ScaleLevel[], target: number): number | null {
+  for (let i = 1; i < levels.length; i++) {
+    const a = levels[i - 1]!;
+    const b = levels[i]!;
+    const fa = a.summary.fps_median;
+    const fb = b.summary.fps_median;
+    if (fa >= target && fb < target) {
+      const la = Math.log(a.count);
+      const lb = Math.log(b.count);
+      const u = (Math.log(target) - Math.log(fa)) / (Math.log(fb) - Math.log(fa));
+      return Math.round(Math.exp(la + u * (lb - la)));
+    }
   }
+  return null;
 }

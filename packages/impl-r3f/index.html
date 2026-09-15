@@ -3,19 +3,40 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- пустая иконка: без неё браузер запрашивает /favicon.ico (404 в консоли) -->
+    <link rel="icon" href="data:," />
     <title>Bench • react-three-fiber</title>
+    <script>
+      // Long tasks собираются ДО загрузки бандла: основная long task холодного
+      // старта — исполнение модулей, и наблюдатель, созданный кодом приложения,
+      // её уже не видит (так было в НИР2). Скрипт идентичен в обеих реализациях.
+      window.__LT__ = [];
+      try {
+        new PerformanceObserver(function (list) {
+          list.getEntries().forEach(function (e) { window.__LT__.push([e.startTime, e.duration]); });
+        }).observe({ type: 'longtask', buffered: true });
+        window.__LT_SUPPORTED__ = PerformanceObserver.supportedEntryTypes.indexOf('longtask') !== -1;
+      } catch (e) {
+        window.__LT_SUPPORTED__ = false;
+      }
+    </script>
     <style>
       * { box-sizing: border-box; }
-      html, body, #root { margin: 0; padding: 0; height: 100%; background: #0d1117; color: #e6edf3; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+      html, body { margin: 0; padding: 0; height: 100%; background: #0d1117; color: #e6edf3; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
       #app { display: flex; flex-direction: column; align-items: center; padding: 16px; gap: 12px; }
-      .canvas-host canvas { display: block; border: 1px solid #30363d; }
-      .hud { font-size: 12px; opacity: 0.8; }
-      .hud .phase { color: #79c0ff; }
-      .hud .done { color: #56d364; }
+      #hud { font-size: 12px; opacity: 0.8; white-space: pre; }
+      #hud-phase { color: #79c0ff; }
+      /* outline, а не border: border при box-sizing:border-box сжимал canvas до
+         1278×718 при буфере 1280×720, и браузер масштабировал кадр при композитинге */
+      #canvas-host { width: 1280px; height: 720px; outline: 1px solid #30363d; }
+      #canvas-host canvas { display: block; }
     </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="app">
+      <div id="hud"><span id="hud-impl">react-three-fiber</span> • <span id="hud-phase">idle</span> • <span id="hud-value"></span></div>
+      <div id="canvas-host"></div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
