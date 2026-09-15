@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.vite/
+*.log
+.DS_Store
+results/*.json
+!results/.gitkeep
+playwright-report/
+test-results/

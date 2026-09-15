@@ -1,0 +1,27 @@
+{
+  "name": "r3f-vs-threejs-benchmark",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Исследовательский стенд для сравнения производительности three.js и react-three-fiber",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:threejs": "npm run dev -w @bench/impl-threejs",
+    "dev:r3f": "npm run dev -w @bench/impl-r3f",
+    "build": "npm run build --workspaces --if-present",
+    "bench": "npm run bench -w @bench/harness",
+    "bench:s1": "npm run bench -w @bench/harness -- --scenario s1",
+    "bench:s2": "npm run bench -w @bench/harness -- --scenario s2",
+    "bench:s3": "npm run bench -w @bench/harness -- --scenario s3",
+    "bench:s4": "npm run bench -w @bench/harness -- --scenario s4",
+    "bench:s5": "npm run bench -w @bench/harness -- --scenario s5",
+    "clean": "rm -rf packages/*/dist packages/*/node_modules node_modules"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
