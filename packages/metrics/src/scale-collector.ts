@@ -105,7 +105,7 @@ export class ScaleCollector implements FrameProbe {
       this.finalizeLevel(rec);
       return;
     }
-    rec.beginFrame(now);
+    rec.beginFrame(now, bench.frameIndex);
   }
 
   beginRender(now: number): void {
@@ -114,6 +114,10 @@ export class ScaleCollector implements FrameProbe {
 
   endRender(now: number): void {
     this.recorder?.endRender(now);
+  }
+
+  gpuSample(frame: number, gpuMs: number): void {
+    this.recorder?.gpuSample(frame, gpuMs);
   }
 
   private enterLevel(i: number): void {

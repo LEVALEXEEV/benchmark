@@ -44,6 +44,8 @@ export interface PageEnv {
     readonly canvasCssWidth: number;
     readonly canvasCssHeight: number;
   };
+  /** доступен ли GPU-таймер (EXT_disjoint_timer_query_webgl2) */
+  readonly gpuTimer: boolean;
   readonly renderer: {
     readonly pixelRatio: number;
     readonly clearAlpha: number;
@@ -67,6 +69,8 @@ export interface BenchMeta {
 
 export interface FrameRaw {
   readonly start_ms: readonly number[];
+  /** время GPU кадра, мс; NaN → null, если расширение недоступно */
+  readonly gpu_ms: readonly number[];
   readonly frame_ms: readonly number[];
   readonly update_ms: readonly number[];
   readonly render_ms: readonly number[];
@@ -96,6 +100,10 @@ export interface FrameSummary {
   readonly render_ms_median: number;
   readonly render_ms_p99: number;
   readonly other_ms_median: number;
+  /** время GPU (только там, где доступен EXT_disjoint_timer_query_webgl2) */
+  readonly gpu_ms_median: number;
+  readonly gpu_ms_p99: number;
+  readonly gpu_samples: number;
   readonly heap_mb_start: number | null;
   readonly heap_mb_peak: number | null;
   readonly heap_mb_end: number | null;

@@ -54,7 +54,7 @@ export class FrameCollector implements FrameProbe {
       this.onDoneCb?.(rec.summary(), rec.raw());
       return;
     }
-    rec.beginFrame(now);
+    rec.beginFrame(now, bench.frameIndex);
     if (rec.frameCount > 0 && rec.frameCount % 30 === 0) {
       bench.setHudValue(`${Math.round(1000 / (now - this.recordStart) * rec.frameCount)} fps`);
     }
@@ -66,5 +66,9 @@ export class FrameCollector implements FrameProbe {
 
   endRender(now: number): void {
     this.recorder?.endRender(now);
+  }
+
+  gpuSample(frame: number, gpuMs: number): void {
+    this.recorder?.gpuSample(frame, gpuMs);
   }
 }

@@ -1,4 +1,5 @@
 import type { WebGLRenderer } from 'three';
+import { bench } from './runtime.js';
 import type { PageEnv } from './types.js';
 
 /**
@@ -38,6 +39,7 @@ export function collectPageEnv(
     devicePixelRatio: window.devicePixelRatio,
     buildMode,
     libs,
+    gpuTimer: bench.gpuSupported,
     gl: {
       version: String(gl.getParameter(gl.VERSION)),
       vendor: dbg ? String(gl.getParameter(dbg.UNMASKED_VENDOR_WEBGL)) : null,

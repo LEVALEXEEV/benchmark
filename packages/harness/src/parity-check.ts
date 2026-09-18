@@ -1,7 +1,7 @@
 import type { ParitySnapshot } from '@bench/metrics';
 import { BenchPage } from './bench-page.js';
 import { newBenchContext, type LaunchedBrowser } from './browser.js';
-import { runUrl, type BenchConfig, type Target } from './config.js';
+import { runUrl, type BenchConfig, type LoadPoint, type Target } from './config.js';
 import { canvasBox, clickPoints } from './input-driver.js';
 
 /** время анимации, в котором сравниваются кадры */
@@ -30,16 +30,17 @@ export interface ParityEntry {
 
 export interface ParityReport {
   readonly scenario: string;
+  readonly load: string;
   readonly reference: string;
   readonly ok: boolean;
   readonly entries: readonly ParityEntry[];
 }
 
-async function snapshot(lb: LaunchedBrowser, cfg: BenchConfig, target: Target): Promise<ParitySnapshot> {
+async function snapshot(lb: LaunchedBrowser, cfg: BenchConfig, target: Target, load: LoadPoint): Promise<ParitySnapshot> {
   const ctx = await newBenchContext(lb);
   try {
     const bp = await BenchPage.open(ctx);
-    await bp.goto(runUrl(cfg, target, { parity: '1', freezeTime: PARITY_TIME, parityCount: PARITY_S5_COUNT }));
+    await bp.goto(runUrl(cfg, target, load, { parity: '1', freezeTime: PARITY_TIME, parityCount: PARITY_S5_COUNT }));
     await bp.waitFor(['parity-ready'], 120_000);
     if (cfg.scenario === 's4') {
       // одинаковые клики → один и тот же подсвеченный объект (паритет raycast)
@@ -114,13 +115,14 @@ function compare(ref: ParitySnapshot, s: ParitySnapshot): { issues: string[]; im
  * одинаковом t. Любое расхождение — повод остановить серию: данные с
  * неидентичными сценами сравнивать нельзя.
  */
-export async function runParity(lb: LaunchedBrowser, cfg: BenchConfig): Promise<ParityReport> {
+export async function runParity(lb: LaunchedBrowser, cfg: BenchConfig, load: LoadPoint): Promise<ParityReport> {
   const ref = cfg.targets.find((t) => t.impl === 'threejs');
   if (!ref) throw new Error('Для проверки паритета нужен вариант threejs в --targets');
-  const refSnap = await snapshot(lb, cfg, ref);
+  if (load.id !== '-') console.log(`[parity] точка нагрузки ${load.id}: ${load.note}`);
+  const refSnap = await snapshot(lb, cfg, ref, load);
   const entries: ParityEntry[] = [];
   for (const t of cfg.targets) {
-    const snap = t === ref ? refSnap : await snapshot(lb, cfg, t);
+    const snap = t === ref ? refSnap : await snapshot(lb, cfg, t, load);
     const { issues, image } = t === ref ? { issues: [], image: { exact: true, meanAbs: 0, maxAbs: 0 } } : compare(refSnap, snap);
     entries.push({
       label: t.label,
@@ -141,5 +143,5 @@ export async function runParity(lb: LaunchedBrowser, cfg: BenchConfig): Promise<
     console.log(`[parity] ${mark} ${t.label}: calls=${snap.renderer.calls} tris=${snap.renderer.triangles}, ${img}`);
     for (const i of issues) console.log(`         ${i}`);
   }
-  return { scenario: cfg.scenario, reference: ref.label, ok: entries.every((e) => e.ok), entries };
+  return { scenario: cfg.scenario, load: load.id, reference: ref.label, ok: entries.every((e) => e.ok), entries };
 }

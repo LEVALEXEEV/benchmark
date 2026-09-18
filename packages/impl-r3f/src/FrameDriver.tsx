@@ -1,4 +1,4 @@
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useLayoutEffect } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { version as reactVersion } from 'react';
@@ -21,7 +21,12 @@ const PRIORITY_FRAME_START = -1000;
  */
 const PRIORITY_RENDER = 1;
 
-export function FrameDriver({ clock }: { clock: FrameClock }) {
+export function FrameDriver({ clock, gpuTimer }: { clock: FrameClock; gpuTimer: boolean }) {
+  const gl = useThree((s) => s.gl);
+  useLayoutEffect(() => {
+    if (gpuTimer) bench.attachGpuTimer(gl.getContext());
+  }, [gl, gpuTimer]);
+
   useFrame(() => {
     const now = performance.now();
     bench.beginFrame(now);

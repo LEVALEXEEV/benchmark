@@ -144,7 +144,7 @@ export class InputCollector implements FrameProbe {
       this.complete();
       return;
     }
-    if (this.phase === 'recording') this.recorder!.beginFrame(now);
+    if (this.phase === 'recording') this.recorder!.beginFrame(now, bench.frameIndex);
   }
 
   beginRender(now: number): void {
@@ -167,6 +167,10 @@ export class InputCollector implements FrameProbe {
     if (p && !Number.isNaN(p.feedbackRenderStart) && Number.isNaN(p.feedbackRenderEnd)) {
       p.feedbackRenderEnd = now;
     }
+  }
+
+  gpuSample(frame: number, gpuMs: number): void {
+    this.recorder?.gpuSample(frame, gpuMs);
   }
 
   private onPointerDownCapture(e: PointerEvent): void {

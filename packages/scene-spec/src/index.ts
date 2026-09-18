@@ -3,18 +3,18 @@ export * from './prng.js';
 export * from './animation.js';
 export * from './camera.js';
 export * from './feedback.js';
-export { S1_GPU_BOUND } from './scenarios/s1-gpu-bound.js';
+export { S1_GPU_BOUND, makeS1Scene, type S1Options } from './scenarios/s1-gpu-bound.js';
 export { S2_CPU_BOUND } from './scenarios/s2-cpu-bound.js';
 export { S3_INIT } from './scenarios/s3-init.js';
 export { S4_INPUT } from './scenarios/s4-input.js';
 export { S5_SCALE, S5_LEVELS, makeS5Scene } from './scenarios/s5-scale.js';
 
 import type { SceneSpec } from './types.js';
-import { S1_GPU_BOUND } from './scenarios/s1-gpu-bound.js';
+import { makeS1Scene, S1_GPU_BOUND } from './scenarios/s1-gpu-bound.js';
 import { S2_CPU_BOUND } from './scenarios/s2-cpu-bound.js';
 import { S3_INIT } from './scenarios/s3-init.js';
 import { S4_INPUT } from './scenarios/s4-input.js';
-import { S5_SCALE } from './scenarios/s5-scale.js';
+import { makeS5Scene, S5_LEVELS, S5_SCALE } from './scenarios/s5-scale.js';
 
 export const SCENARIOS: Record<string, SceneSpec> = {
   s1: S1_GPU_BOUND,
@@ -64,4 +64,30 @@ export function withDetailScale(spec: SceneSpec, factor: number): SceneSpec {
         : o
     ),
   };
+}
+
+export interface ScenarioSpecOptions {
+  /** S1: число объектов (точка нагрузочного свипа) */
+  readonly objects?: number | null;
+  /** S1: размер карты теней */
+  readonly shadowMapSize?: number | null;
+  /** множитель сегментов геометрии */
+  readonly detailScale?: number;
+  /** S5: число объектов уровня */
+  readonly count?: number | null;
+}
+
+/**
+ * Сцена прогона по идентификатору сценария и параметрам. Обе реализации
+ * обязаны собирать спецификацию именно здесь: иначе точка нагрузочного свипа
+ * могла бы разойтись между three.js и R3F незаметно для проверки паритета.
+ */
+export function makeScenarioSpec(scenario: string, opts: ScenarioSpecOptions = {}): SceneSpec {
+  const base =
+    scenario === 's1'
+      ? makeS1Scene({ count: opts.objects ?? undefined, shadowMapSize: opts.shadowMapSize ?? undefined })
+      : scenario === 's5'
+        ? makeS5Scene(opts.count ?? S5_LEVELS[0]!)
+        : getScenario(scenario);
+  return withDetailScale(base, opts.detailScale ?? 1);
 }

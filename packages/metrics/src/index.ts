@@ -4,6 +4,7 @@ export * from './params.js';
 export { bench, type FrameProbe, type BenchControl } from './runtime.js';
 export { FrameClock } from './clock.js';
 export { FrameRecorder, readHeapMb } from './frame-recorder.js';
+export { GpuTimer } from './gpu-timer.js';
 export { FrameCollector, type FrameCollectorConfig } from './collector.js';
 export { InitCollector, type InitCollectorConfig } from './init-collector.js';
 export { InputCollector, type InputCollectorConfig } from './input-collector.js';

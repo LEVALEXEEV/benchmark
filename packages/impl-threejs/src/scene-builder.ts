@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { bench } from '@bench/metrics';
 import type {
   CameraSpec,
   GeometrySpec,
@@ -71,7 +72,12 @@ function addLight(scene: THREE.Scene, spec: LightSpec): void {
  * что R3F-реализация передаёт в <Canvas> (flat, alpha:false, shadows:'percentage'),
  * и проверяются снимком паритета.
  */
-export function createRenderer(spec: SceneSpec, renderScale: number, host: HTMLElement): THREE.WebGLRenderer {
+export function createRenderer(
+  spec: SceneSpec,
+  renderScale: number,
+  host: HTMLElement,
+  gpuTimer = true
+): THREE.WebGLRenderer {
   const r = spec.renderer;
   const renderer = new THREE.WebGLRenderer({
     antialias: r.antialias,
@@ -85,6 +91,7 @@ export function createRenderer(spec: SceneSpec, renderScale: number, host: HTMLE
   renderer.shadowMap.enabled = r.shadowMap;
   renderer.shadowMap.type = THREE.PCFShadowMap;
   host.appendChild(renderer.domElement);
+  if (gpuTimer) bench.attachGpuTimer(renderer.getContext());
   return renderer;
 }
 

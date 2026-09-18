@@ -20,10 +20,9 @@ import {
   expectedMeshCount,
   FEEDBACK_EMISSIVE_OFF,
   feedbackColorFor,
-  getScenario,
+  makeScenarioSpec,
   makeS5Scene,
   S5_LEVELS,
-  withDetailScale,
   type SceneSpec,
 } from '@bench/scene-spec';
 import { startLoop } from './loop.js';
@@ -49,7 +48,7 @@ function meta(params: RunParams, spec: SceneSpec, renderer: THREE.WebGLRenderer)
 
 /** S1, S2: статичная сцена с орбитой камеры либо per-object анимация */
 function runFrameScenario(params: RunParams, spec: SceneSpec): void {
-  const renderer = createRenderer(spec, params.renderScale, host);
+  const renderer = createRenderer(spec, params.renderScale, host, params.gpuTimer);
   const camera = createCamera(spec);
   const content = buildContent(spec);
   const clock = new FrameClock(params.freezeTime);
@@ -106,7 +105,7 @@ function runInitScenario(params: RunParams, spec: SceneSpec): void {
   collector.markJsReady(jsReady);
   bench.addProbe(collector);
 
-  const renderer = createRenderer(spec, params.renderScale, host);
+  const renderer = createRenderer(spec, params.renderScale, host, params.gpuTimer);
   const camera = createCamera(spec);
   const content = buildContent(spec);
   scene = content.scene;
@@ -132,7 +131,7 @@ function runInitScenario(params: RunParams, spec: SceneSpec): void {
 
 /** S4: raycast по pointerdown и императивная подсветка */
 function runInputScenario(params: RunParams, spec: SceneSpec): void {
-  const renderer = createRenderer(spec, params.renderScale, host);
+  const renderer = createRenderer(spec, params.renderScale, host, params.gpuTimer);
   const camera = createCamera(spec);
   const content = buildContent(spec);
   const canvas = renderer.domElement;
@@ -197,7 +196,7 @@ function runInputScenario(params: RunParams, spec: SceneSpec): void {
 function runScaleScenario(params: RunParams): void {
   const levels = params.levels ?? S5_LEVELS;
   const firstSpec = makeS5Scene(params.parity ? (params.parityCount ?? levels[0]!) : levels[0]!);
-  const renderer = createRenderer(firstSpec, params.renderScale, host);
+  const renderer = createRenderer(firstSpec, params.renderScale, host, params.gpuTimer);
   const camera = createCamera(firstSpec);
   const clock = new FrameClock(params.freezeTime);
   const pos: [number, number, number] = [0, 0, 0];
@@ -263,6 +262,15 @@ function runScaleScenario(params: RunParams): void {
   collector.start();
 }
 
+/** сцена прогона — общая с R3F логика из scene-spec */
+function specFor(params: RunParams): SceneSpec {
+  return makeScenarioSpec(params.scenario, {
+    objects: params.objects,
+    shadowMapSize: params.shadowMapSize,
+    detailScale: params.detailScale,
+  });
+}
+
 function main(): void {
   const params = readRunParams();
   resolveMode(params, 'threejs');
@@ -272,11 +280,11 @@ function main(): void {
   switch (params.scenario) {
     case 's1':
     case 's2':
-      return runFrameScenario(params, withDetailScale(getScenario(params.scenario), params.detailScale));
+      return runFrameScenario(params, specFor(params));
     case 's3':
-      return runInitScenario(params, withDetailScale(getScenario('s3'), params.detailScale));
+      return runInitScenario(params, specFor(params));
     case 's4':
-      return runInputScenario(params, getScenario('s4'));
+      return runInputScenario(params, specFor(params));
     case 's5':
       return runScaleScenario(params);
     default:

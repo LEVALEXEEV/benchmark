@@ -24,7 +24,10 @@ const JANK_30_MS = 1000 / 30;
  *              между кадрами (React-коммиты вне rAF, GC, композитинг, ожидание);
  *   update   — beginRender − beginFrame: анимация/доставка значений в сцену;
  *   render   — endRender − beginRender: renderer.render() на CPU
- *              (подготовка и отправка команд; GPU работает асинхронно).
+ *              (подготовка и отправка команд; GPU работает асинхронно);
+ *   gpu      — время GPU на кадр (EXT_disjoint_timer_query_webgl2), приходит
+ *              с задержкой в несколько кадров и привязывается по номеру кадра;
+ *              null там, где расширения нет или замер отброшен.
  * other = frame − update − render считается при анализе.
  *
  * Сырые ряды сохраняются целиком: в НИР2 оставались только сводки, и
@@ -37,6 +40,9 @@ export class FrameRecorder {
   private readonly updates: number[] = [];
   private readonly renders: number[] = [];
   private readonly heap: [number, number][] = [];
+  private readonly ids: number[] = [];
+  private readonly gpuById = new Map<number, number>();
+  private curId = -1;
 
   private curStart = NaN;
   private curRenderStart = NaN;
@@ -48,9 +54,10 @@ export class FrameRecorder {
     this.origin = origin;
   }
 
-  beginFrame(now: number): void {
+  beginFrame(now: number, frameId: number): void {
     this.closeCurrent(now);
     this.curStart = now;
+    this.curId = frameId;
     this.curUpdate = NaN;
     this.curRender = NaN;
     this.curRenderStart = NaN;
@@ -72,6 +79,11 @@ export class FrameRecorder {
     this.curRender = now - this.curRenderStart;
   }
 
+  /** замер GPU приходит позже кадра, поэтому кладётся по номеру кадра */
+  gpuSample(frameId: number, gpuMs: number): void {
+    this.gpuById.set(frameId, gpuMs);
+  }
+
   /** закрывает последний кадр моментом `now` и прекращает запись */
   finish(now: number): void {
     this.closeCurrent(now);
@@ -85,14 +97,21 @@ export class FrameRecorder {
   private closeCurrent(now: number): void {
     if (Number.isNaN(this.curStart)) return;
     this.starts.push(this.curStart - this.origin);
+    this.ids.push(this.curId);
     this.frames.push(now - this.curStart);
     this.updates.push(this.curUpdate);
     this.renders.push(this.curRender);
   }
 
+  /** значения GPU в порядке строк; NaN — замера нет */
+  private gpuSeries(): number[] {
+    return this.ids.map((id) => this.gpuById.get(id) ?? NaN);
+  }
+
   raw(): FrameRaw {
     return {
       start_ms: this.starts.map(round4),
+      gpu_ms: this.gpuSeries().map(round4),
       frame_ms: this.frames.map(round4),
       update_ms: this.updates.map(round4),
       render_ms: this.renders.map(round4),
@@ -113,6 +132,7 @@ export class FrameRecorder {
     const sUpd = sortedFinite(this.updates);
     const sRen = sortedFinite(this.renders);
     const heapVals = this.heap.map((h) => h[1]);
+    const sGpu = sortedFinite(this.gpuSeries());
     let jank60 = 0;
     let jank30 = 0;
     for (const f of sorted) {
@@ -139,6 +159,9 @@ export class FrameRecorder {
       render_ms_median: percentile(sRen, 50),
       render_ms_p99: percentile(sRen, 99),
       other_ms_median: percentile(sortedFinite(others), 50),
+      gpu_ms_median: percentile(sGpu, 50),
+      gpu_ms_p99: percentile(sGpu, 99),
+      gpu_samples: sGpu.length,
       heap_mb_start: heapVals.length ? heapVals[0]! : null,
       heap_mb_peak: heapVals.length ? Math.max(...heapVals) : null,
       heap_mb_end: heapVals.length ? heapVals[heapVals.length - 1]! : null,

@@ -24,12 +24,18 @@ export interface RunParams {
   readonly renderScale: number;
   /** множитель сегментов процедурной геометрии (диагностика S1) */
   readonly detailScale: number;
+  /** S1: число объектов в точке нагрузочного свипа */
+  readonly objects: number | null;
+  /** S1: размер карты теней */
+  readonly shadowMapSize: number | null;
   /** фиксированное время анимации, с — для проверки паритета кадров */
   readonly freezeTime: number | null;
   /** режим проверки паритета: сцена рендерится, замеры не ведутся */
   readonly parity: boolean;
   /** S5 в режиме паритета: число объектов */
   readonly parityCount: number | null;
+  /** включать GPU-таймер; отключение позволяет оценить его собственные накладные расходы */
+  readonly gpuTimer: boolean;
   /** обновлять HUD (для ручного просмотра); harness выключает */
   readonly hud: boolean;
   /** R3F-антипаттерн: state в родителе Canvas меняется 2 раза в секунду */
@@ -81,9 +87,12 @@ export function readRunParams(search: string = window.location.search): RunParam
     minLevelFrames: num(p, 'minLevelFrames', 60),
     renderScale: num(p, 'renderScale', 1, 0.05),
     detailScale: num(p, 'detailScale', 1, 0.01),
+    objects: p.get('objects') === null ? null : num(p, 'objects', 0, 1),
+    shadowMapSize: p.get('shadowMapSize') === null ? null : num(p, 'shadowMapSize', 0, 16),
     freezeTime: freezeRaw === null ? null : num(p, 'freezeTime', 0),
     parity: flag(p, 'parity', false),
     parityCount: parityCountRaw === null ? null : num(p, 'parityCount', 0, 1),
+    gpuTimer: flag(p, 'gpuTimer', true),
     hud: flag(p, 'hud', true),
     parentState: flag(p, 'parentState', false),
   };

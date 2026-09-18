@@ -11,7 +11,7 @@ import type {
 import { BenchPage } from './bench-page.js';
 import { launchBrowser, newBenchContext, type LaunchedBrowser } from './browser.js';
 import { measureBundles } from './bundle-size.js';
-import { parseArgs, runUrl, type BenchConfig, type Target } from './config.js';
+import { effRenderScale, parseArgs, runUrl, type BenchConfig, type LoadPoint, type Target } from './config.js';
 import { deviceSlug, hostEnv, thermalSnapshot } from './host-env.js';
 import { canvasBox, startClickDriver } from './input-driver.js';
 import { runParity } from './parity-check.js';
@@ -20,6 +20,7 @@ import { Tracer, type GcWindowStats } from './trace.js';
 
 interface ScheduleItem {
   readonly target: Target;
+  readonly load: LoadPoint;
   readonly warmup: boolean;
   /** номер итерации (для прогревов — номер прогрева) */
   readonly iteration: number;
@@ -45,16 +46,20 @@ function shuffled<T>(xs: readonly T[], rng: () => number): T[] {
 function buildSchedule(cfg: BenchConfig): ScheduleItem[] {
   const rng = mulberry32(cfg.orderSeed);
   const items: ScheduleItem[] = [];
+  // ячейка плана — пара «вариант × точка нагрузки»
+  const cells: { target: Target; load: LoadPoint }[] = [];
+  for (const load of cfg.loads) for (const target of cfg.targets) cells.push({ target, load });
+
   for (let w = 1; w <= cfg.warmupRuns; w++) {
-    for (const target of shuffled(cfg.targets, rng)) items.push({ target, warmup: true, iteration: w });
+    for (const c of shuffled(cells, rng)) items.push({ ...c, warmup: true, iteration: w });
   }
   if (cfg.order === 'blocked') {
-    for (const target of cfg.targets) {
-      for (let i = 1; i <= cfg.iterations; i++) items.push({ target, warmup: false, iteration: i });
+    for (const c of cells) {
+      for (let i = 1; i <= cfg.iterations; i++) items.push({ ...c, warmup: false, iteration: i });
     }
   } else {
     for (let i = 1; i <= cfg.iterations; i++) {
-      for (const target of shuffled(cfg.targets, rng)) items.push({ target, warmup: false, iteration: i });
+      for (const c of shuffled(cells, rng)) items.push({ ...c, warmup: false, iteration: i });
     }
   }
   return items;
@@ -76,15 +81,16 @@ function runTimeoutMs(cfg: BenchConfig): number {
  * Проверки валидности прогона. fatal — нарушение условий эксперимента
  * (серия прерывается), остальные — предупреждения в манифесте.
  */
-function validate(cfg: BenchConfig, lb: LaunchedBrowser, r: BenchResult, consoleErrors: string[]) {
+function validate(cfg: BenchConfig, lb: LaunchedBrowser, load: LoadPoint, r: BenchResult, consoleErrors: string[]) {
   const fatal: string[] = [];
   const warnings: string[] = [];
   const env = r.meta.env;
   if (cfg.serve === 'preview' && env.buildMode !== 'production') fatal.push(`buildMode=${env.buildMode}`);
   if (!env.crossOriginIsolated) fatal.push('страница не cross-origin isolated');
   if (env.timerResolutionMs > 0.1) warnings.push(`грубый таймер: ${env.timerResolutionMs} мс`);
-  const w = Math.round(1280 * cfg.renderScale);
-  const h = Math.round(720 * cfg.renderScale);
+  const scale = effRenderScale(cfg, load);
+  const w = Math.round(1280 * scale);
+  const h = Math.round(720 * scale);
   if (env.gl.drawingBufferWidth !== w || env.gl.drawingBufferHeight !== h) {
     fatal.push(`drawing buffer ${env.gl.drawingBufferWidth}×${env.gl.drawingBufferHeight} ≠ ${w}×${h}`);
   }
@@ -126,7 +132,7 @@ async function runOne(
     }
     const tracer = tracePath && lb.supportsCdp ? await Tracer.start(bp.page) : null;
 
-    await bp.goto(runUrl(cfg, item.target));
+    await bp.goto(runUrl(cfg, item.target, item.load));
 
     let driver: { stop(): Promise<number> } | null = null;
     if (cfg.scenario === 's4') {
@@ -167,6 +173,7 @@ function brief(r: BenchResult): Record<string, number | null> {
         jank_60_share: n(s.jank_60_share),
         update_ms_median: n(s.update_ms_median),
         render_ms_median: n(s.render_ms_median),
+        gpu_ms_median: n(s.gpu_ms_median),
         other_ms_median: n(s.other_ms_median),
         heap_mb_peak: n(s.heap_mb_peak),
       };
@@ -277,33 +284,38 @@ async function main(): Promise<void> {
     await saveManifest();
 
     if (!cfg.skipParity) {
-      const parity = await runParity(lb, cfg);
-      manifest.parity = parity;
-      await writeFile(join(outDir, 'parity.json'), JSON.stringify(parity, null, 2));
+      const reports = [];
+      for (const load of cfg.loads) reports.push(await runParity(lb, cfg, load));
+      manifest.parity = reports;
+      await writeFile(join(outDir, 'parity.json'), JSON.stringify(reports, null, 2));
       await saveManifest();
-      if (!parity.ok) throw new Error('Паритет сцен нарушен — замеры не проводятся (см. parity.json)');
+      if (reports.some((r) => !r.ok)) {
+        throw new Error('Паритет сцен нарушен — замеры не проводятся (см. parity.json)');
+      }
     } else {
       console.warn('[harness] ВНИМАНИЕ: проверка паритета пропущена');
     }
     if (cfg.parityOnly) return;
 
     const schedule = buildSchedule(cfg);
-    manifest.schedule = schedule.map((s) => ({ label: s.target.label, warmup: s.warmup, iteration: s.iteration }));
+    manifest.schedule = schedule.map((s) => ({ label: s.target.label, load: s.load.id, warmup: s.warmup, iteration: s.iteration }));
     const briefs: { label: string; warmup: boolean; brief: Record<string, number | null> }[] = [];
 
     for (let idx = 0; idx < schedule.length; idx++) {
       const item = schedule[idx]!;
-      const tag = `${String(idx + 1).padStart(3, '0')}_${item.target.label}_${item.warmup ? 'w' : 'i'}${item.iteration}`;
+      const loadTag = item.load.id === '-' ? '' : `_${item.load.id}`;
+      const tag = `${String(idx + 1).padStart(3, '0')}_${item.target.label}${loadTag}_${item.warmup ? 'w' : 'i'}${item.iteration}`;
       if (idx > 0) await sleep(cfg.cooldownMs);
       const thermal = thermalSnapshot();
       const startedAt = new Date().toISOString();
       const t0 = Date.now();
       console.log(
-        `[harness] ${idx + 1}/${schedule.length} ${item.target.label} ${item.warmup ? `прогрев ${item.iteration}` : `итерация ${item.iteration}`}`
+        `[harness] ${idx + 1}/${schedule.length} ${item.target.label}${item.load.id === '-' ? '' : ` [${item.load.id}]`} ` +
+          `${item.warmup ? `прогрев ${item.iteration}` : `итерация ${item.iteration}`}`
       );
       const tracePath = cfg.trace ? join(outDir, 'traces', `${tag}.json.gz`) : null;
       const { result, consoleErrors, gc, clicks } = await runOne(lb, cfg, item, tracePath);
-      const validity = validate(cfg, lb, result, consoleErrors);
+      const validity = validate(cfg, lb, item.load, result, consoleErrors);
       const b = brief(result);
       console.log(`           ${JSON.stringify(b)}`);
       for (const wmsg of validity.warnings) console.warn(`           ⚠ ${wmsg}`);
@@ -313,6 +325,7 @@ async function main(): Promise<void> {
         join(outDir, file),
         JSON.stringify({
           label: item.target.label,
+          load: item.load.id,
           warmup: item.warmup,
           iteration: item.iteration,
           startedAt,
@@ -328,6 +341,7 @@ async function main(): Promise<void> {
       manifest.runs.push({
         file,
         label: item.target.label,
+        load: item.load.id,
         warmup: item.warmup,
         iteration: item.iteration,
         startedAt,
@@ -336,7 +350,7 @@ async function main(): Promise<void> {
         validity,
         brief: b,
       });
-      briefs.push({ label: item.target.label, warmup: item.warmup, brief: b });
+      briefs.push({ label: item.target.label + (item.load.id === '-' ? '' : ` [${item.load.id}]`), warmup: item.warmup, brief: b });
       await saveManifest();
       if (validity.fatal.length > 0) {
         throw new Error(`Нарушены условия эксперимента в ${tag}: ${validity.fatal.join('; ')}`);

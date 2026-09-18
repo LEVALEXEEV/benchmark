@@ -1,3 +1,4 @@
+import { GpuTimer } from './gpu-timer.js';
 import type { BenchStatus, BenchWindowState } from './types.js';
 
 /**
@@ -15,6 +16,8 @@ export interface FrameProbe {
   beginFrame?(now: number): void;
   beginRender?(now: number): void;
   endRender?(now: number): void;
+  /** время GPU кадра `frame`; приходит с задержкой в несколько кадров */
+  gpuSample?(frame: number, gpuMs: number): void;
 }
 
 export interface BenchControl {
@@ -48,6 +51,8 @@ class BenchRuntime {
   private hudEnabled = true;
   private hudValue = '';
   private lastHudTs = 0;
+  private gpu: GpuTimer | null = null;
+  private frameIdx = 0;
   private nextRenderCallbacks: ((now: number) => void)[] = [];
 
   constructor() {
@@ -62,6 +67,28 @@ class BenchRuntime {
     if (el) el.textContent = implLabel;
   }
 
+  /**
+   * Подключает GPU-таймер к контексту рендерера. Вызывается реализацией сразу
+   * после создания рендерера; дальше замером управляет рантайм, поэтому точки
+   * начала и конца одинаковы в three.js и R3F.
+   */
+  attachGpuTimer(gl: WebGLRenderingContext | WebGL2RenderingContext): void {
+    this.gpu = GpuTimer.create(gl);
+  }
+
+  get gpuSupported(): boolean {
+    return this.gpu !== null;
+  }
+
+  get gpuDisjointDrops(): number {
+    return this.gpu?.disjointDrops ?? 0;
+  }
+
+  /** номер текущего кадра — по нему привязываются отложенные замеры GPU */
+  get frameIndex(): number {
+    return this.frameIdx;
+  }
+
   addProbe(p: FrameProbe): () => void {
     this.probes.push(p);
     return () => {
@@ -70,6 +97,7 @@ class BenchRuntime {
   }
 
   beginFrame(now: number): void {
+    this.frameIdx++;
     const ps = this.probes;
     for (let i = 0; i < ps.length; i++) ps[i]!.beginFrame?.(now);
     if (this.hudEnabled && now - this.lastHudTs >= HUD_INTERVAL_MS) {
@@ -81,11 +109,16 @@ class BenchRuntime {
   beginRender(now: number): void {
     const ps = this.probes;
     for (let i = 0; i < ps.length; i++) ps[i]!.beginRender?.(now);
+    this.gpu?.begin(this.frameIdx);
   }
 
   endRender(now: number): void {
+    this.gpu?.end();
     const ps = this.probes;
     for (let i = 0; i < ps.length; i++) ps[i]!.endRender?.(now);
+    this.gpu?.poll((frame, gpuMs) => {
+      for (let i = 0; i < ps.length; i++) ps[i]!.gpuSample?.(frame, gpuMs);
+    });
     if (this.nextRenderCallbacks.length > 0) {
       const cbs = this.nextRenderCallbacks;
       this.nextRenderCallbacks = [];

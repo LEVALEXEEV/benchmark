@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import * as THREE from 'three';
 import { FrameClock, type RunParams } from '@bench/metrics';
-import { getScenario, makeS5Scene, S5_LEVELS, withDetailScale, type SceneSpec } from '@bench/scene-spec';
+import { makeScenarioSpec, S5_LEVELS, type SceneSpec } from '@bench/scene-spec';
 import { FrameClockContext, FrameDriver } from './FrameDriver.js';
 import { FrameRun } from './runs/FrameRun.js';
 import { InitRun } from './runs/InitRun.js';
@@ -10,9 +10,13 @@ import { InputRun } from './runs/InputRun.js';
 import { ScaleRun } from './runs/ScaleRun.js';
 
 function initialSpec(params: RunParams): SceneSpec {
-  if (params.scenario !== 's5') return withDetailScale(getScenario(params.scenario), params.detailScale);
   const levels = params.levels ?? S5_LEVELS;
-  return makeS5Scene(params.parity ? (params.parityCount ?? levels[0]!) : levels[0]!);
+  return makeScenarioSpec(params.scenario, {
+    objects: params.objects,
+    shadowMapSize: params.shadowMapSize,
+    detailScale: params.detailScale,
+    count: params.parity ? (params.parityCount ?? levels[0]!) : levels[0]!,
+  });
 }
 
 /**
@@ -61,7 +65,7 @@ export function App({ params, mode }: { params: RunParams; mode: string | null }
       style={{ width: r.width, height: r.height }}
     >
       <FrameClockContext.Provider value={clock}>
-        <FrameDriver clock={clock} />
+        <FrameDriver clock={clock} gpuTimer={params.gpuTimer} />
         {params.scenario === 's3' ? (
           <InitRun params={params} spec={spec} />
         ) : params.scenario === 's4' ? (

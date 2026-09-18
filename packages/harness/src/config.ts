@@ -40,9 +40,36 @@ const DEFAULT_TARGETS: Record<ScenarioId, readonly string[]> = {
   s5: ['threejs', 'r3f-ref', 'r3f-ref-central', 'r3f-state'],
 };
 
+/**
+ * Точка нагрузочного свипа S1. Кадр S1 определяется стоимостью рендера, и
+ * важно, ЧЕМ именно он ограничен: заливкой пикселей, обработкой вершин или
+ * числом draw calls. Точки разводят эти оси, чтобы гипотезу «при насыщении
+ * GPU технология не влияет» можно было проверить не в одной конфигурации,
+ * а вдоль всей оси нагрузки.
+ */
+export interface LoadPoint {
+  readonly id: string;
+  readonly note: string;
+  readonly objects?: number;
+  readonly shadowMapSize?: number;
+  readonly renderScale?: number;
+  readonly detailScale?: number;
+}
+
+export const S1_LOADS: Record<string, LoadPoint> = {
+  A: { id: 'A', note: 'заливка: мало объектов, 2× разрешение, тени 4096', objects: 300, shadowMapSize: 4096, renderScale: 2 },
+  B: { id: 'B', note: 'вершины: 3000 объектов, половинное разрешение', objects: 3000, renderScale: 0.5 },
+  C: { id: 'C', note: 'draw calls: 3000 объектов, лёгкая геометрия и разрешение', objects: 3000, renderScale: 0.5, detailScale: 0.25 },
+  D: { id: 'D', note: 'исходная сцена НИР2 (смешанная нагрузка)' },
+};
+
+/** сценарии без свипа идут одной точкой */
+export const NO_LOAD: LoadPoint = { id: '-', note: 'базовая конфигурация' };
+
 export interface BenchConfig {
   readonly scenario: ScenarioId;
   readonly targets: readonly Target[];
+  readonly loads: readonly LoadPoint[];
   readonly browser: BrowserName;
   readonly serve: 'preview' | 'dev';
   readonly build: boolean;
@@ -66,21 +93,36 @@ export interface BenchConfig {
   readonly parityOnly: boolean;
   readonly skipParity: boolean;
   readonly trace: boolean;
+  readonly gpuTimer: boolean;
   readonly device: string | null;
   readonly resultsDir: string;
 }
 
+/**
+ * Протокол основной серии. Число повторов выведено из пилота 2026-09-18
+ * (140 прогонов, Chrome, Apple M4): по разбросу МЕЖДУ прогонами рассчитано n,
+ * достаточное для заявленной разрешающей способности при alpha = 0,05 и
+ * мощности 0,8. Расчёт и таблица CV — analysis/pilot_variance.py и nir3-plan.md.
+ *
+ *   S1 — CV ≤ 1,6%: 10 повторов дают границу эквивалентности ±5%;
+ *   S2 — CV до 4,5%: 15 повторов на центральные метрики (±5%), хвосты ±10%;
+ *   S3 — CV до 21%, но прогон дешёвый и эффект двукратный: 30 загрузок;
+ *   S4 — CV до 7,3%: 20 повторов на эквивалентность с границей ±10%;
+ *   S5 — CV ≤ 6,5%: 8 свипов.
+ *
+ * Фактически применённые значения сохраняются в manifest.json каждой серии.
+ */
 const SCENARIO_DEFAULTS: Record<
   ScenarioId,
   { iterations: number; warmupMs: number; recordMs: number }
 > = {
   s1: { iterations: 10, warmupMs: 5000, recordMs: 30000 },
-  s2: { iterations: 10, warmupMs: 5000, recordMs: 30000 },
+  s2: { iterations: 15, warmupMs: 5000, recordMs: 30000 },
   // S3: одна загрузка страницы — дёшево, повторов больше
   s3: { iterations: 30, warmupMs: 0, recordMs: 1 },
-  s4: { iterations: 10, warmupMs: 5000, recordMs: 30000 },
+  s4: { iterations: 20, warmupMs: 5000, recordMs: 30000 },
   // S5: warmup/record — поуровневые
-  s5: { iterations: 5, warmupMs: 1500, recordMs: 3000 },
+  s5: { iterations: 8, warmupMs: 1500, recordMs: 3000 },
 };
 
 function usage(msg: string): never {
@@ -89,7 +131,7 @@ function usage(msg: string): never {
       'Флаги: --scenario --targets --browser (chrome|chromium|firefox|webkit) --serve (preview|dev) --no-build\n' +
       '       --iterations --warmupRuns --cooldown --order (random|blocked) --orderSeed\n' +
       '       --warmup --record --settle --clickInterval --clickSeed --levels --fpsFloor --levelsBeyondFloor --minLevelFrames\n' +
-      '       --renderScale --detailScale --parity-only --skip-parity --trace --device --out'
+      '       --renderScale --detailScale --loads (s1: A,B,C,D) --parity-only --skip-parity --trace --no-gpu-timer --device --out'
   );
 }
 
@@ -100,7 +142,7 @@ export function parseArgs(argv: readonly string[]): BenchConfig {
     const a = argv[i]!;
     if (!a.startsWith('--')) usage(`Неожиданный аргумент ${a}`);
     const key = a.slice(2);
-    if (['no-build', 'parity-only', 'skip-parity', 'trace'].includes(key)) {
+    if (['no-build', 'parity-only', 'skip-parity', 'trace', 'no-gpu-timer'].includes(key)) {
       flags.add(key);
       continue;
     }
@@ -112,7 +154,7 @@ export function parseArgs(argv: readonly string[]): BenchConfig {
   const known = new Set([
     'scenario', 'targets', 'browser', 'serve', 'iterations', 'warmupRuns', 'cooldown', 'order',
     'orderSeed', 'warmup', 'record', 'settle', 'clickInterval', 'clickSeed', 'levels', 'fpsFloor',
-    'levelsBeyondFloor', 'minLevelFrames', 'renderScale', 'detailScale', 'device', 'out',
+    'levelsBeyondFloor', 'minLevelFrames', 'renderScale', 'detailScale', 'loads', 'device', 'out',
   ]);
   for (const k of values.keys()) if (!known.has(k)) usage(`Неизвестный флаг --${k}`);
 
@@ -141,6 +183,17 @@ export function parseArgs(argv: readonly string[]): BenchConfig {
   const order = values.get('order') ?? 'random';
   if (order !== 'random' && order !== 'blocked') usage('--order: random | blocked');
 
+  const loadsRaw = values.get('loads');
+  const loads: LoadPoint[] =
+    scenario === 's1'
+      ? (loadsRaw?.split(',') ?? Object.keys(S1_LOADS)).map((id) => {
+          const l = S1_LOADS[id];
+          if (!l) usage(`Точка нагрузки ${id} неизвестна; есть: ${Object.keys(S1_LOADS).join(', ')}`);
+          return l;
+        })
+      : [NO_LOAD];
+  if (loadsRaw && scenario !== 's1') usage('--loads применим только к s1');
+
   const d = SCENARIO_DEFAULTS[scenario];
   const levels = values.get('levels')?.split(',').map(Number) ?? S5_LEVELS;
   if (levels.some((n) => !Number.isInteger(n) || n <= 0)) usage('--levels: список целых > 0');
@@ -148,6 +201,7 @@ export function parseArgs(argv: readonly string[]): BenchConfig {
   return {
     scenario,
     targets,
+    loads,
     browser,
     serve,
     build: !flags.has('no-build'),
@@ -170,6 +224,7 @@ export function parseArgs(argv: readonly string[]): BenchConfig {
     parityOnly: flags.has('parity-only'),
     skipParity: flags.has('skip-parity'),
     trace: flags.has('trace'),
+    gpuTimer: !flags.has('no-gpu-timer'),
     device: values.get('device') ?? null,
     resultsDir: values.get('out') ?? fileURLToPath(new URL('../../../results', import.meta.url)),
   };
@@ -183,10 +238,20 @@ export function baseUrl(cfg: BenchConfig, impl: 'threejs' | 'r3f'): string {
   return `http://localhost:${port}`;
 }
 
+/** эффективные множители нагрузки: точка свипа перекрывает значения по умолчанию */
+export function effRenderScale(cfg: BenchConfig, load: LoadPoint): number {
+  return load.renderScale ?? cfg.renderScale;
+}
+
+export function effDetailScale(cfg: BenchConfig, load: LoadPoint): number {
+  return load.detailScale ?? cfg.detailScale;
+}
+
 /** URL прогона; hud=0 — HUD не трогает DOM во время замеров */
 export function runUrl(
   cfg: BenchConfig,
   target: Target,
+  load: LoadPoint,
   extra: Record<string, string> = {}
 ): string {
   const p = new URLSearchParams({
@@ -198,12 +263,15 @@ export function runUrl(
     levels: cfg.levels.join(','),
     levelsBeyondFloor: String(cfg.levelsBeyondFloor),
     minLevelFrames: String(cfg.minLevelFrames),
-    renderScale: String(cfg.renderScale),
-    detailScale: String(cfg.detailScale),
+    renderScale: String(effRenderScale(cfg, load)),
+    detailScale: String(effDetailScale(cfg, load)),
     hud: '0',
+    gpuTimer: cfg.gpuTimer ? '1' : '0',
     ...(target.extraParams ?? {}),
     ...extra,
   });
+  if (load.objects !== undefined) p.set('objects', String(load.objects));
+  if (load.shadowMapSize !== undefined) p.set('shadowMapSize', String(load.shadowMapSize));
   if (target.mode) p.set('mode', target.mode);
   return `${baseUrl(cfg, target.impl)}/?${p.toString()}`;
 }
