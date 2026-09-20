@@ -176,7 +176,7 @@ export function parseArgs(argv: readonly string[]): BenchConfig {
     return t;
   });
 
-  const browser = (values.get('browser') ?? 'chrome') as BrowserName;
+  const browser = (values.get('browser') ?? 'firefox') as BrowserName;
   if (!['chrome', 'chromium', 'firefox', 'webkit'].includes(browser)) usage(`Неизвестный браузер ${browser}`);
   const serve = values.get('serve') ?? 'preview';
   if (serve !== 'preview' && serve !== 'dev') usage('--serve: preview | dev');

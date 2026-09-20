@@ -1,0 +1,2951 @@
+{
+  "schema": 2,
+  "createdAt": "2026-09-19T17:06:02.156Z",
+  "config": {
+    "scenario": "s4",
+    "targets": [
+      {
+        "label": "threejs",
+        "impl": "threejs",
+        "mode": null
+      },
+      {
+        "label": "r3f-ref",
+        "impl": "r3f",
+        "mode": "ref"
+      },
+      {
+        "label": "r3f-state",
+        "impl": "r3f",
+        "mode": "state"
+      },
+      {
+        "label": "r3f-events",
+        "impl": "r3f",
+        "mode": "events"
+      }
+    ],
+    "loads": [
+      {
+        "id": "-",
+        "note": "базовая конфигурация"
+      }
+    ],
+    "browser": "chrome",
+    "serve": "preview",
+    "build": true,
+    "iterations": 20,
+    "warmupRuns": 1,
+    "cooldownMs": 3000,
+    "order": "random",
+    "orderSeed": 983677122,
+    "warmupMs": 5000,
+    "recordMs": 30000,
+    "settleMs": 3000,
+    "clickIntervalMs": 250,
+    "clickSeed": 4242,
+    "levels": [
+      100,
+      141,
+      200,
+      283,
+      400,
+      566,
+      800,
+      1131,
+      1600,
+      2263,
+      3200,
+      4525,
+      6400,
+      9051,
+      12800,
+      18102,
+      25600,
+      36204,
+      51200
+    ],
+    "fpsFloor": 30,
+    "levelsBeyondFloor": 2,
+    "minLevelFrames": 60,
+    "renderScale": 1,
+    "detailScale": 1,
+    "parityOnly": false,
+    "skipParity": false,
+    "trace": false,
+    "gpuTimer": true,
+    "device": null,
+    "resultsDir": "C:\\Users\\morko\\Documents\\VScode\\benchmark\\results"
+  },
+  "host": {
+    "node": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "osRelease": "10.0.26200",
+    "osVersion": "Windows 11 Pro",
+    "cpuModel": "AMD Ryzen 5 3550H with Radeon Vega Mobile Gfx  ",
+    "cpuCount": 8,
+    "totalMemGb": 13.9,
+    "lowPowerMode": null,
+    "git": {
+      "commit": "954a694534cafd030eb7b7bd7ffa566d3037f93f",
+      "dirty": true
+    },
+    "libs": {
+      "three": "0.186.0",
+      "react": "19.2.8",
+      "react-dom": "19.2.8",
+      "@react-three/fiber": "9.7.0",
+      "vite": "8.3.0",
+      "playwright": "1.63.0",
+      "typescript": "5.9.3"
+    },
+    "therm": null,
+    "power": null
+  },
+  "browser": {
+    "name": "chrome",
+    "version": "153.0.8010.52",
+    "launchArgs": [
+      "--use-gl=angle",
+      "--enable-gpu",
+      "--ignore-gpu-blocklist",
+      "--disable-frame-rate-limit",
+      "--disable-gpu-vsync",
+      "--enable-precise-memory-info",
+      "--disable-renderer-backgrounding",
+      "--disable-background-timer-throttling",
+      "--disable-backgrounding-occluded-windows"
+    ],
+    "prefs": null,
+    "vsyncUncapped": true
+  },
+  "servers": {
+    "threejs": {
+      "url": "http://localhost:4173/",
+      "coop": "same-origin",
+      "coep": "require-corp"
+    },
+    "r3f": {
+      "url": "http://localhost:4174/",
+      "coop": "same-origin",
+      "coep": "require-corp"
+    }
+  },
+  "bundles": [
+    {
+      "impl": "threejs",
+      "files": [
+        {
+          "path": "assets\\index-CWSjg4EL.js",
+          "bytes": 566834,
+          "gzipBytes": 142496,
+          "brotliBytes": 117260
+        },
+        {
+          "path": "index.html",
+          "bytes": 1973,
+          "gzipBytes": 1190,
+          "brotliBytes": 861
+        }
+      ],
+      "total_bytes": 568807,
+      "total_gzip_bytes": 143686,
+      "total_brotli_bytes": 118121
+    },
+    {
+      "impl": "r3f",
+      "files": [
+        {
+          "path": "assets\\index-DFy9cP-C.js",
+          "bytes": 1124722,
+          "gzipBytes": 304907,
+          "brotliBytes": 236173
+        },
+        {
+          "path": "index.html",
+          "bytes": 1991,
+          "gzipBytes": 1194,
+          "brotliBytes": 867
+        }
+      ],
+      "total_bytes": 1126713,
+      "total_gzip_bytes": 306101,
+      "total_brotli_bytes": 237040
+    }
+  ],
+  "parity": [
+    {
+      "scenario": "s4",
+      "load": "-",
+      "reference": "threejs",
+      "ok": true,
+      "entries": [
+        {
+          "label": "threejs",
+          "ok": true,
+          "issues": [],
+          "image": {
+            "exact": true,
+            "meanAbs": 0,
+            "maxAbs": 0
+          },
+          "summary": {
+            "meshCount": 2000,
+            "meshDigest": "82b88fe7",
+            "camera": "PerspectiveCamera|55.00000|1.77778|0.10000|300.00000|1.00000|1.0000,0.0000,0.0000,0.0000,0.0000,1.0000,0.0000,0.0000,0.0000,0.0000,1.0000,0.0000,0.0000,0.0000,60.0000,1.0000|1.08055,0.00000,0.00000,0.00000,0.00000,1.92098,0.00000,0.00000,0.00000,0.00000,-1.00067,-1.00000,0.00000,0.00000,-0.20007,0.00000",
+            "calls": 2000,
+            "triangles": 24000,
+            "imageHash": "accd8c20"
+          }
+        },
+        {
+          "label": "r3f-ref",
+          "ok": true,
+          "issues": [],
+          "image": {
+            "exact": true,
+            "meanAbs": 0,
+            "maxAbs": 0
+          },
+          "summary": {
+            "meshCount": 2000,
+            "meshDigest": "82b88fe7",
+            "camera": "PerspectiveCamera|55.00000|1.77778|0.10000|300.00000|1.00000|1.0000,0.0000,0.0000,0.0000,0.0000,1.0000,0.0000,0.0000,0.0000,0.0000,1.0000,0.0000,0.0000,0.0000,60.0000,1.0000|1.08055,0.00000,0.00000,0.00000,0.00000,1.92098,0.00000,0.00000,0.00000,0.00000,-1.00067,-1.00000,0.00000,0.00000,-0.20007,0.00000",
+            "calls": 2000,
+            "triangles": 24000,
+            "imageHash": "accd8c20"
+          }
+        },
+        {
+          "label": "r3f-state",
+          "ok": true,
+          "issues": [],
+          "image": {
+            "exact": true,
+            "meanAbs": 0,
+            "maxAbs": 0
+          },
+          "summary": {
+            "meshCount": 2000,
+            "meshDigest": "82b88fe7",
+            "camera": "PerspectiveCamera|55.00000|1.77778|0.10000|300.00000|1.00000|1.0000,0.0000,0.0000,0.0000,0.0000,1.0000,0.0000,0.0000,0.0000,0.0000,1.0000,0.0000,0.0000,0.0000,60.0000,1.0000|1.08055,0.00000,0.00000,0.00000,0.00000,1.92098,0.00000,0.00000,0.00000,0.00000,-1.00067,-1.00000,0.00000,0.00000,-0.20007,0.00000",
+            "calls": 2000,
+            "triangles": 24000,
+            "imageHash": "accd8c20"
+          }
+        },
+        {
+          "label": "r3f-events",
+          "ok": true,
+          "issues": [],
+          "image": {
+            "exact": true,
+            "meanAbs": 0,
+            "maxAbs": 0
+          },
+          "summary": {
+            "meshCount": 2000,
+            "meshDigest": "82b88fe7",
+            "camera": "PerspectiveCamera|55.00000|1.77778|0.10000|300.00000|1.00000|1.0000,0.0000,0.0000,0.0000,0.0000,1.0000,0.0000,0.0000,0.0000,0.0000,1.0000,0.0000,0.0000,0.0000,60.0000,1.0000|1.08055,0.00000,0.00000,0.00000,0.00000,1.92098,0.00000,0.00000,0.00000,0.00000,-1.00067,-1.00000,0.00000,0.00000,-0.20007,0.00000",
+            "calls": 2000,
+            "triangles": 24000,
+            "imageHash": "accd8c20"
+          }
+        }
+      ]
+    }
+  ],
+  "schedule": [
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": true,
+      "iteration": 1
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": true,
+      "iteration": 1
+    },
+    {
+      "label": "r3f-events",
+      "load": "-",
+      "warmup": true,
+      "iteration": 1
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": true,
+      "iteration": 1
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 1
+    },
+    {
+      "label": "r3f-events",
+      "load": "-",
+      "warmup": false,
+      "iteration": 1
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 1
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 1
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 2
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 2
+    },
+    {
+      "label": "r3f-events",
+      "load": "-",
+      "warmup": false,
+      "iteration": 2
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 2
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 3
+    },
+    {
+      "label": "r3f-events",
+      "load": "-",
+      "warmup": false,
+      "iteration": 3
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 3
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 3
+    },
+    {
+      "label": "r3f-events",
+      "load": "-",
+      "warmup": false,
+      "iteration": 4
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 4
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 4
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 4
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 5
+    },
+    {
+      "label": "r3f-events",
+      "load": "-",
+      "warmup": false,
+      "iteration": 5
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 5
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 5
+    },
+    {
+      "label": "r3f-events",
+      "load": "-",
+      "warmup": false,
+      "iteration": 6
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 6
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 6
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 6
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 7
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 7
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 7
+    },
+    {
+      "label": "r3f-events",
+      "load": "-",
+      "warmup": false,
+      "iteration": 7
+    },
+    {
+      "label": "r3f-events",
+      "load": "-",
+      "warmup": false,
+      "iteration": 8
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 8
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 8
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 8
+    },
+    {
+      "label": "r3f-events",
+      "load": "-",
+      "warmup": false,
+      "iteration": 9
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 9
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 9
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 9
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 10
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 10
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 10
+    },
+    {
+      "label": "r3f-events",
+      "load": "-",
+      "warmup": false,
+      "iteration": 10
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 11
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 11
+    },
+    {
+      "label": "r3f-events",
+      "load": "-",
+      "warmup": false,
+      "iteration": 11
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 11
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 12
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 12
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 12
+    },
+    {
+      "label": "r3f-events",
+      "load": "-",
+      "warmup": false,
+      "iteration": 12
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 13
+    },
+    {
+      "label": "r3f-events",
+      "load": "-",
+      "warmup": false,
+      "iteration": 13
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 13
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 13
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 14
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 14
+    },
+    {
+      "label": "r3f-events",
+      "load": "-",
+      "warmup": false,
+      "iteration": 14
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 14
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 15
+    },
+    {
+      "label": "r3f-events",
+      "load": "-",
+      "warmup": false,
+      "iteration": 15
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 15
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 15
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 16
+    },
+    {
+      "label": "r3f-events",
+      "load": "-",
+      "warmup": false,
+      "iteration": 16
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 16
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 16
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 17
+    },
+    {
+      "label": "r3f-events",
+      "load": "-",
+      "warmup": false,
+      "iteration": 17
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 17
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 17
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 18
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 18
+    },
+    {
+      "label": "r3f-events",
+      "load": "-",
+      "warmup": false,
+      "iteration": 18
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 18
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 19
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 19
+    },
+    {
+      "label": "r3f-events",
+      "load": "-",
+      "warmup": false,
+      "iteration": 19
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 19
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 20
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 20
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 20
+    },
+    {
+      "label": "r3f-events",
+      "load": "-",
+      "warmup": false,
+      "iteration": 20
+    }
+  ],
+  "runs": [
+    {
+      "file": "runs/001_threejs_w1.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": true,
+      "iteration": 1,
+      "startedAt": "2026-09-19T17:06:14.998Z",
+      "durationMs": 36028,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 57,
+        "miss": 29,
+        "latency_render_ms_median": 22.67,
+        "latency_render_ms_p95": 25.848,
+        "queue_ms_median": 10.54,
+        "dispatch_ms_median": 0.655,
+        "apply_ms_median": 0,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.195,
+        "render_ms_median": 11.075
+      }
+    },
+    {
+      "file": "runs/002_r3f-state_w1.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": true,
+      "iteration": 1,
+      "startedAt": "2026-09-19T17:06:54.036Z",
+      "durationMs": 36055,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 56,
+        "miss": 27,
+        "latency_render_ms_median": 39.263,
+        "latency_render_ms_p95": 43.939,
+        "queue_ms_median": 11.542,
+        "dispatch_ms_median": 15.98,
+        "apply_ms_median": 15.22,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.213,
+        "render_ms_median": 11.313
+      }
+    },
+    {
+      "file": "runs/003_r3f-events_w1.json",
+      "label": "r3f-events",
+      "load": "-",
+      "warmup": true,
+      "iteration": 1,
+      "startedAt": "2026-09-19T17:07:33.094Z",
+      "durationMs": 36101,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 57,
+        "miss": 28,
+        "latency_render_ms_median": 25.67,
+        "latency_render_ms_p95": 29.255,
+        "queue_ms_median": 11.33,
+        "dispatch_ms_median": 2.11,
+        "apply_ms_median": 0.685,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.215,
+        "render_ms_median": 11.995
+      }
+    },
+    {
+      "file": "runs/004_r3f-ref_w1.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": true,
+      "iteration": 1,
+      "startedAt": "2026-09-19T17:08:12.200Z",
+      "durationMs": 36372,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 57,
+        "miss": 28,
+        "latency_render_ms_median": 24.495,
+        "latency_render_ms_p95": 27.165,
+        "queue_ms_median": 11.535,
+        "dispatch_ms_median": 0.66,
+        "apply_ms_median": 0,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.23,
+        "render_ms_median": 12.19
+      }
+    },
+    {
+      "file": "runs/005_r3f-ref_i1.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 1,
+      "startedAt": "2026-09-19T17:08:51.585Z",
+      "durationMs": 36181,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 45,
+        "miss": 39,
+        "latency_render_ms_median": 24.105,
+        "latency_render_ms_p95": 28.038,
+        "queue_ms_median": 11.465,
+        "dispatch_ms_median": 0.71,
+        "apply_ms_median": 0,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.225,
+        "render_ms_median": 11.895
+      }
+    },
+    {
+      "file": "runs/006_r3f-events_i1.json",
+      "label": "r3f-events",
+      "load": "-",
+      "warmup": false,
+      "iteration": 1,
+      "startedAt": "2026-09-19T17:09:30.769Z",
+      "durationMs": 35981,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 45,
+        "miss": 38,
+        "latency_render_ms_median": 26.25,
+        "latency_render_ms_p95": 29.955,
+        "queue_ms_median": 11.735,
+        "dispatch_ms_median": 2.06,
+        "apply_ms_median": 0.725,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.215,
+        "render_ms_median": 12.335
+      }
+    },
+    {
+      "file": "runs/007_r3f-state_i1.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 1,
+      "startedAt": "2026-09-19T17:10:09.770Z",
+      "durationMs": 36321,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 45,
+        "miss": 37,
+        "latency_render_ms_median": 38.35,
+        "latency_render_ms_p95": 42.325,
+        "queue_ms_median": 11.195,
+        "dispatch_ms_median": 15.3,
+        "apply_ms_median": 14.49,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.21,
+        "render_ms_median": 11.245
+      }
+    },
+    {
+      "file": "runs/008_threejs_i1.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 1,
+      "startedAt": "2026-09-19T17:10:49.119Z",
+      "durationMs": 35967,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 46,
+        "miss": 39,
+        "latency_render_ms_median": 24.087,
+        "latency_render_ms_p95": 27.134,
+        "queue_ms_median": 11.31,
+        "dispatch_ms_median": 0.623,
+        "apply_ms_median": 0,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.2,
+        "render_ms_median": 11.93
+      }
+    },
+    {
+      "file": "runs/009_r3f-state_i2.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 2,
+      "startedAt": "2026-09-19T17:11:28.105Z",
+      "durationMs": 35999,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 48,
+        "miss": 38,
+        "latency_render_ms_median": 39.43,
+        "latency_render_ms_p95": 44.325,
+        "queue_ms_median": 11.682,
+        "dispatch_ms_median": 16.025,
+        "apply_ms_median": 15.09,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.215,
+        "render_ms_median": 11.442
+      }
+    },
+    {
+      "file": "runs/010_threejs_i2.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 2,
+      "startedAt": "2026-09-19T17:12:07.124Z",
+      "durationMs": 35778,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 50,
+        "miss": 39,
+        "latency_render_ms_median": 24.208,
+        "latency_render_ms_p95": 25.86,
+        "queue_ms_median": 11.292,
+        "dispatch_ms_median": 0.603,
+        "apply_ms_median": 0,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.203,
+        "render_ms_median": 11.982
+      }
+    },
+    {
+      "file": "runs/011_r3f-events_i2.json",
+      "label": "r3f-events",
+      "load": "-",
+      "warmup": false,
+      "iteration": 2,
+      "startedAt": "2026-09-19T17:12:45.923Z",
+      "durationMs": 35991,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 49,
+        "miss": 39,
+        "latency_render_ms_median": 26.045,
+        "latency_render_ms_p95": 29.665,
+        "queue_ms_median": 11.335,
+        "dispatch_ms_median": 2.17,
+        "apply_ms_median": 0.705,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.215,
+        "render_ms_median": 12.065
+      }
+    },
+    {
+      "file": "runs/012_r3f-ref_i2.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 2,
+      "startedAt": "2026-09-19T17:13:24.927Z",
+      "durationMs": 36165,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 50,
+        "miss": 39,
+        "latency_render_ms_median": 24.598,
+        "latency_render_ms_p95": 26.149,
+        "queue_ms_median": 11.55,
+        "dispatch_ms_median": 0.58,
+        "apply_ms_median": 0,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.215,
+        "render_ms_median": 12.177
+      }
+    },
+    {
+      "file": "runs/013_threejs_i3.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 3,
+      "startedAt": "2026-09-19T17:14:04.116Z",
+      "durationMs": 35695,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 48,
+        "miss": 40,
+        "latency_render_ms_median": 23.285,
+        "latency_render_ms_p95": 25.165,
+        "queue_ms_median": 10.857,
+        "dispatch_ms_median": 0.58,
+        "apply_ms_median": 0,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.2,
+        "render_ms_median": 11.695
+      }
+    },
+    {
+      "file": "runs/014_r3f-events_i3.json",
+      "label": "r3f-events",
+      "load": "-",
+      "warmup": false,
+      "iteration": 3,
+      "startedAt": "2026-09-19T17:14:42.827Z",
+      "durationMs": 35962,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 48,
+        "miss": 38,
+        "latency_render_ms_median": 25.768,
+        "latency_render_ms_p95": 27.955,
+        "queue_ms_median": 11.592,
+        "dispatch_ms_median": 1.993,
+        "apply_ms_median": 0.658,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.215,
+        "render_ms_median": 11.668
+      }
+    },
+    {
+      "file": "runs/015_r3f-state_i3.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 3,
+      "startedAt": "2026-09-19T17:15:21.796Z",
+      "durationMs": 35909,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 48,
+        "miss": 37,
+        "latency_render_ms_median": 37.468,
+        "latency_render_ms_p95": 42.693,
+        "queue_ms_median": 11.307,
+        "dispatch_ms_median": 14.46,
+        "apply_ms_median": 13.73,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.21,
+        "render_ms_median": 11.265
+      }
+    },
+    {
+      "file": "runs/016_r3f-ref_i3.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 3,
+      "startedAt": "2026-09-19T17:16:00.732Z",
+      "durationMs": 36241,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 49,
+        "miss": 39,
+        "latency_render_ms_median": 24.095,
+        "latency_render_ms_p95": 26.898,
+        "queue_ms_median": 11.34,
+        "dispatch_ms_median": 0.615,
+        "apply_ms_median": 0,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.215,
+        "render_ms_median": 11.97
+      }
+    },
+    {
+      "file": "runs/017_r3f-events_i4.json",
+      "label": "r3f-events",
+      "load": "-",
+      "warmup": false,
+      "iteration": 4,
+      "startedAt": "2026-09-19T17:16:39.997Z",
+      "durationMs": 36058,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 44,
+        "miss": 42,
+        "latency_render_ms_median": 25.38,
+        "latency_render_ms_p95": 28.238,
+        "queue_ms_median": 11.465,
+        "dispatch_ms_median": 1.84,
+        "apply_ms_median": 0.56,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.215,
+        "render_ms_median": 11.5
+      }
+    },
+    {
+      "file": "runs/018_threejs_i4.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 4,
+      "startedAt": "2026-09-19T17:17:19.075Z",
+      "durationMs": 35855,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 44,
+        "miss": 43,
+        "latency_render_ms_median": 22.84,
+        "latency_render_ms_p95": 26.362,
+        "queue_ms_median": 10.957,
+        "dispatch_ms_median": 0.627,
+        "apply_ms_median": 0,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.2,
+        "render_ms_median": 11.135
+      }
+    },
+    {
+      "file": "runs/019_r3f-ref_i4.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 4,
+      "startedAt": "2026-09-19T17:17:57.952Z",
+      "durationMs": 36063,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 44,
+        "miss": 42,
+        "latency_render_ms_median": 24.138,
+        "latency_render_ms_p95": 26.39,
+        "queue_ms_median": 11.2,
+        "dispatch_ms_median": 0.618,
+        "apply_ms_median": 0,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.223,
+        "render_ms_median": 11.943
+      }
+    },
+    {
+      "file": "runs/020_r3f-state_i4.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 4,
+      "startedAt": "2026-09-19T17:18:37.036Z",
+      "durationMs": 36094,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 44,
+        "miss": 41,
+        "latency_render_ms_median": 38.385,
+        "latency_render_ms_p95": 43.621,
+        "queue_ms_median": 11.375,
+        "dispatch_ms_median": 15.95,
+        "apply_ms_median": 15.205,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.208,
+        "render_ms_median": 11.135
+      }
+    },
+    {
+      "file": "runs/021_threejs_i5.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 5,
+      "startedAt": "2026-09-19T17:19:16.153Z",
+      "durationMs": 35653,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 50,
+        "miss": 35,
+        "latency_render_ms_median": 24.367,
+        "latency_render_ms_p95": 27.416,
+        "queue_ms_median": 11.455,
+        "dispatch_ms_median": 0.688,
+        "apply_ms_median": 0,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.2,
+        "render_ms_median": 12.085
+      }
+    },
+    {
+      "file": "runs/022_r3f-events_i5.json",
+      "label": "r3f-events",
+      "load": "-",
+      "warmup": false,
+      "iteration": 5,
+      "startedAt": "2026-09-19T17:19:54.820Z",
+      "durationMs": 36067,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 50,
+        "miss": 34,
+        "latency_render_ms_median": 26.152,
+        "latency_render_ms_p95": 29.635,
+        "queue_ms_median": 11.585,
+        "dispatch_ms_median": 2.232,
+        "apply_ms_median": 0.75,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.22,
+        "render_ms_median": 12.117
+      }
+    },
+    {
+      "file": "runs/023_r3f-ref_i5.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 5,
+      "startedAt": "2026-09-19T17:20:33.902Z",
+      "durationMs": 36013,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 50,
+        "miss": 35,
+        "latency_render_ms_median": 24.668,
+        "latency_render_ms_p95": 26.585,
+        "queue_ms_median": 11.567,
+        "dispatch_ms_median": 0.625,
+        "apply_ms_median": 0,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.23,
+        "render_ms_median": 12.213
+      }
+    },
+    {
+      "file": "runs/024_r3f-state_i5.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 5,
+      "startedAt": "2026-09-19T17:21:12.938Z",
+      "durationMs": 36162,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 49,
+        "miss": 35,
+        "latency_render_ms_median": 37.875,
+        "latency_render_ms_p95": 43.061,
+        "queue_ms_median": 10.99,
+        "dispatch_ms_median": 15.38,
+        "apply_ms_median": 14.445,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.21,
+        "render_ms_median": 11.08
+      }
+    },
+    {
+      "file": "runs/025_r3f-events_i6.json",
+      "label": "r3f-events",
+      "load": "-",
+      "warmup": false,
+      "iteration": 6,
+      "startedAt": "2026-09-19T17:21:52.109Z",
+      "durationMs": 36196,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 45,
+        "miss": 41,
+        "latency_render_ms_median": 25.69,
+        "latency_render_ms_p95": 27.668,
+        "queue_ms_median": 11.555,
+        "dispatch_ms_median": 2.185,
+        "apply_ms_median": 0.73,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.22,
+        "render_ms_median": 11.54
+      }
+    },
+    {
+      "file": "runs/026_r3f-state_i6.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 6,
+      "startedAt": "2026-09-19T17:22:31.324Z",
+      "durationMs": 35963,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 44,
+        "miss": 40,
+        "latency_render_ms_median": 38.912,
+        "latency_render_ms_p95": 43.795,
+        "queue_ms_median": 11.323,
+        "dispatch_ms_median": 15.845,
+        "apply_ms_median": 15.138,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.207,
+        "render_ms_median": 11.103
+      }
+    },
+    {
+      "file": "runs/027_threejs_i6.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 6,
+      "startedAt": "2026-09-19T17:23:10.310Z",
+      "durationMs": 35772,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 45,
+        "miss": 41,
+        "latency_render_ms_median": 24.175,
+        "latency_render_ms_p95": 26.323,
+        "queue_ms_median": 11.35,
+        "dispatch_ms_median": 0.655,
+        "apply_ms_median": 0,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.195,
+        "render_ms_median": 11.95
+      }
+    },
+    {
+      "file": "runs/028_r3f-ref_i6.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 6,
+      "startedAt": "2026-09-19T17:23:49.096Z",
+      "durationMs": 35945,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 45,
+        "miss": 41,
+        "latency_render_ms_median": 24.15,
+        "latency_render_ms_p95": 26.79,
+        "queue_ms_median": 11.345,
+        "dispatch_ms_median": 0.61,
+        "apply_ms_median": 0,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.225,
+        "render_ms_median": 12.015
+      }
+    },
+    {
+      "file": "runs/029_r3f-state_i7.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 7,
+      "startedAt": "2026-09-19T17:24:28.045Z",
+      "durationMs": 36217,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 57,
+        "miss": 32,
+        "latency_render_ms_median": 38.48,
+        "latency_render_ms_p95": 43.75,
+        "queue_ms_median": 11.525,
+        "dispatch_ms_median": 15.695,
+        "apply_ms_median": 14.895,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.215,
+        "render_ms_median": 11.145
+      }
+    },
+    {
+      "file": "runs/030_r3f-ref_i7.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 7,
+      "startedAt": "2026-09-19T17:25:07.276Z",
+      "durationMs": 36039,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 57,
+        "miss": 34,
+        "latency_render_ms_median": 24.505,
+        "latency_render_ms_p95": 26.924,
+        "queue_ms_median": 11.62,
+        "dispatch_ms_median": 0.655,
+        "apply_ms_median": 0,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.22,
+        "render_ms_median": 12.105
+      }
+    },
+    {
+      "file": "runs/031_threejs_i7.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 7,
+      "startedAt": "2026-09-19T17:25:46.339Z",
+      "durationMs": 35806,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 57,
+        "miss": 34,
+        "latency_render_ms_median": 23.295,
+        "latency_render_ms_p95": 27.202,
+        "queue_ms_median": 10.88,
+        "dispatch_ms_median": 0.615,
+        "apply_ms_median": 0,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.205,
+        "render_ms_median": 11.535
+      }
+    },
+    {
+      "file": "runs/032_r3f-events_i7.json",
+      "label": "r3f-events",
+      "load": "-",
+      "warmup": false,
+      "iteration": 7,
+      "startedAt": "2026-09-19T17:26:25.163Z",
+      "durationMs": 36191,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 57,
+        "miss": 34,
+        "latency_render_ms_median": 25.75,
+        "latency_render_ms_p95": 29.84,
+        "queue_ms_median": 11.485,
+        "dispatch_ms_median": 2.08,
+        "apply_ms_median": 0.725,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.22,
+        "render_ms_median": 11.905
+      }
+    },
+    {
+      "file": "runs/033_r3f-events_i8.json",
+      "label": "r3f-events",
+      "load": "-",
+      "warmup": false,
+      "iteration": 8,
+      "startedAt": "2026-09-19T17:27:04.382Z",
+      "durationMs": 36327,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 40,
+        "miss": 45,
+        "latency_render_ms_median": 25.46,
+        "latency_render_ms_p95": 27.436,
+        "queue_ms_median": 11.593,
+        "dispatch_ms_median": 1.98,
+        "apply_ms_median": 0.617,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.215,
+        "render_ms_median": 11.965
+      }
+    },
+    {
+      "file": "runs/034_threejs_i8.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 8,
+      "startedAt": "2026-09-19T17:27:43.731Z",
+      "durationMs": 35747,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 40,
+        "miss": 46,
+        "latency_render_ms_median": 23.435,
+        "latency_render_ms_p95": 26.616,
+        "queue_ms_median": 11.118,
+        "dispatch_ms_median": 0.617,
+        "apply_ms_median": 0,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.2,
+        "render_ms_median": 11.508
+      }
+    },
+    {
+      "file": "runs/035_r3f-state_i8.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 8,
+      "startedAt": "2026-09-19T17:28:22.484Z",
+      "durationMs": 36130,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 41,
+        "miss": 44,
+        "latency_render_ms_median": 38.26,
+        "latency_render_ms_p95": 42.02,
+        "queue_ms_median": 11.6,
+        "dispatch_ms_median": 15.125,
+        "apply_ms_median": 14.355,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.215,
+        "render_ms_median": 11.22
+      }
+    },
+    {
+      "file": "runs/036_r3f-ref_i8.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 8,
+      "startedAt": "2026-09-19T17:29:01.619Z",
+      "durationMs": 36239,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 40,
+        "miss": 46,
+        "latency_render_ms_median": 23.915,
+        "latency_render_ms_p95": 26.686,
+        "queue_ms_median": 11.35,
+        "dispatch_ms_median": 0.555,
+        "apply_ms_median": 0,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.215,
+        "render_ms_median": 11.938
+      }
+    },
+    {
+      "file": "runs/037_r3f-events_i9.json",
+      "label": "r3f-events",
+      "load": "-",
+      "warmup": false,
+      "iteration": 9,
+      "startedAt": "2026-09-19T17:29:40.869Z",
+      "durationMs": 35920,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 51,
+        "miss": 34,
+        "latency_render_ms_median": 26.21,
+        "latency_render_ms_p95": 29.133,
+        "queue_ms_median": 11.56,
+        "dispatch_ms_median": 2.035,
+        "apply_ms_median": 0.645,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.22,
+        "render_ms_median": 12.2
+      }
+    },
+    {
+      "file": "runs/038_r3f-state_i9.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 9,
+      "startedAt": "2026-09-19T17:30:19.815Z",
+      "durationMs": 35984,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 50,
+        "miss": 33,
+        "latency_render_ms_median": 38.36,
+        "latency_render_ms_p95": 41.993,
+        "queue_ms_median": 11.375,
+        "dispatch_ms_median": 15.242,
+        "apply_ms_median": 14.503,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.22,
+        "render_ms_median": 11.168
+      }
+    },
+    {
+      "file": "runs/039_threejs_i9.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 9,
+      "startedAt": "2026-09-19T17:30:58.817Z",
+      "durationMs": 35734,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 52,
+        "miss": 34,
+        "latency_render_ms_median": 24.345,
+        "latency_render_ms_p95": 26.569,
+        "queue_ms_median": 11.357,
+        "dispatch_ms_median": 0.625,
+        "apply_ms_median": 0,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.203,
+        "render_ms_median": 12.037
+      }
+    },
+    {
+      "file": "runs/040_r3f-ref_i9.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 9,
+      "startedAt": "2026-09-19T17:31:37.571Z",
+      "durationMs": 36010,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 52,
+        "miss": 34,
+        "latency_render_ms_median": 24.38,
+        "latency_render_ms_p95": 27.061,
+        "queue_ms_median": 11.387,
+        "dispatch_ms_median": 0.62,
+        "apply_ms_median": 0,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.225,
+        "render_ms_median": 12.077
+      }
+    },
+    {
+      "file": "runs/041_r3f-ref_i10.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 10,
+      "startedAt": "2026-09-19T17:32:16.606Z",
+      "durationMs": 36300,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 53,
+        "miss": 35,
+        "latency_render_ms_median": 23.93,
+        "latency_render_ms_p95": 27.163,
+        "queue_ms_median": 11.195,
+        "dispatch_ms_median": 0.615,
+        "apply_ms_median": 0,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.225,
+        "render_ms_median": 11.895
+      }
+    },
+    {
+      "file": "runs/042_threejs_i10.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 10,
+      "startedAt": "2026-09-19T17:32:55.924Z",
+      "durationMs": 35813,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 54,
+        "miss": 35,
+        "latency_render_ms_median": 23.143,
+        "latency_render_ms_p95": 26.22,
+        "queue_ms_median": 10.94,
+        "dispatch_ms_median": 0.565,
+        "apply_ms_median": 0,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.205,
+        "render_ms_median": 11.232
+      }
+    },
+    {
+      "file": "runs/043_r3f-state_i10.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 10,
+      "startedAt": "2026-09-19T17:33:34.756Z",
+      "durationMs": 36154,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 52,
+        "miss": 34,
+        "latency_render_ms_median": 38.17,
+        "latency_render_ms_p95": 43.093,
+        "queue_ms_median": 11.277,
+        "dispatch_ms_median": 15.492,
+        "apply_ms_median": 14.72,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.215,
+        "render_ms_median": 11.018
+      }
+    },
+    {
+      "file": "runs/044_r3f-events_i10.json",
+      "label": "r3f-events",
+      "load": "-",
+      "warmup": false,
+      "iteration": 10,
+      "startedAt": "2026-09-19T17:34:13.926Z",
+      "durationMs": 36048,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 54,
+        "miss": 34,
+        "latency_render_ms_median": 25.772,
+        "latency_render_ms_p95": 29.392,
+        "queue_ms_median": 11.23,
+        "dispatch_ms_median": 1.938,
+        "apply_ms_median": 0.623,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.223,
+        "render_ms_median": 12.22
+      }
+    },
+    {
+      "file": "runs/045_threejs_i11.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 11,
+      "startedAt": "2026-09-19T17:34:52.993Z",
+      "durationMs": 35920,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 44,
+        "miss": 43,
+        "latency_render_ms_median": 24.34,
+        "latency_render_ms_p95": 27.945,
+        "queue_ms_median": 11.512,
+        "dispatch_ms_median": 0.622,
+        "apply_ms_median": 0,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.2,
+        "render_ms_median": 12.035
+      }
+    },
+    {
+      "file": "runs/046_r3f-ref_i11.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 11,
+      "startedAt": "2026-09-19T17:35:31.928Z",
+      "durationMs": 36025,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 44,
+        "miss": 42,
+        "latency_render_ms_median": 23.897,
+        "latency_render_ms_p95": 26.884,
+        "queue_ms_median": 11.305,
+        "dispatch_ms_median": 0.588,
+        "apply_ms_median": 0,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.215,
+        "render_ms_median": 11.697
+      }
+    },
+    {
+      "file": "runs/047_r3f-events_i11.json",
+      "label": "r3f-events",
+      "load": "-",
+      "warmup": false,
+      "iteration": 11,
+      "startedAt": "2026-09-19T17:36:10.963Z",
+      "durationMs": 35917,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 44,
+        "miss": 42,
+        "latency_render_ms_median": 25.477,
+        "latency_render_ms_p95": 30.083,
+        "queue_ms_median": 11.317,
+        "dispatch_ms_median": 2.045,
+        "apply_ms_median": 0.668,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.22,
+        "render_ms_median": 11.788
+      }
+    },
+    {
+      "file": "runs/048_r3f-state_i11.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 11,
+      "startedAt": "2026-09-19T17:36:49.892Z",
+      "durationMs": 36250,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 44,
+        "miss": 41,
+        "latency_render_ms_median": 37.705,
+        "latency_render_ms_p95": 41.261,
+        "queue_ms_median": 11.045,
+        "dispatch_ms_median": 14.42,
+        "apply_ms_median": 13.772,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.21,
+        "render_ms_median": 11.105
+      }
+    },
+    {
+      "file": "runs/049_r3f-ref_i12.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 12,
+      "startedAt": "2026-09-19T17:37:29.164Z",
+      "durationMs": 36044,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 55,
+        "miss": 36,
+        "latency_render_ms_median": 24.19,
+        "latency_render_ms_p95": 27.758,
+        "queue_ms_median": 11.395,
+        "dispatch_ms_median": 0.74,
+        "apply_ms_median": 0,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.24,
+        "render_ms_median": 11.9
+      }
+    },
+    {
+      "file": "runs/050_threejs_i12.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 12,
+      "startedAt": "2026-09-19T17:38:08.211Z",
+      "durationMs": 35741,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 54,
+        "miss": 36,
+        "latency_render_ms_median": 23.91,
+        "latency_render_ms_p95": 27.239,
+        "queue_ms_median": 11.168,
+        "dispatch_ms_median": 0.68,
+        "apply_ms_median": 0,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.195,
+        "render_ms_median": 11.883
+      }
+    },
+    {
+      "file": "runs/051_r3f-state_i12.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 12,
+      "startedAt": "2026-09-19T17:38:46.982Z",
+      "durationMs": 36031,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 53,
+        "miss": 35,
+        "latency_render_ms_median": 38.325,
+        "latency_render_ms_p95": 42.587,
+        "queue_ms_median": 11.385,
+        "dispatch_ms_median": 15.37,
+        "apply_ms_median": 14.41,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.21,
+        "render_ms_median": 11.34
+      }
+    },
+    {
+      "file": "runs/052_r3f-events_i12.json",
+      "label": "r3f-events",
+      "load": "-",
+      "warmup": false,
+      "iteration": 12,
+      "startedAt": "2026-09-19T17:39:26.017Z",
+      "durationMs": 36039,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 53,
+        "miss": 35,
+        "latency_render_ms_median": 28.295,
+        "latency_render_ms_p95": 36.712,
+        "queue_ms_median": 12.415,
+        "dispatch_ms_median": 2.42,
+        "apply_ms_median": 0.755,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.28,
+        "render_ms_median": 13.195
+      }
+    },
+    {
+      "file": "runs/053_r3f-ref_i13.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 13,
+      "startedAt": "2026-09-19T17:40:05.080Z",
+      "durationMs": 36135,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 49,
+        "miss": 38,
+        "latency_render_ms_median": 27.38,
+        "latency_render_ms_p95": 34.373,
+        "queue_ms_median": 12.19,
+        "dispatch_ms_median": 0.77,
+        "apply_ms_median": 0,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.295,
+        "render_ms_median": 14.065
+      }
+    },
+    {
+      "file": "runs/054_r3f-events_i13.json",
+      "label": "r3f-events",
+      "load": "-",
+      "warmup": false,
+      "iteration": 13,
+      "startedAt": "2026-09-19T17:40:44.233Z",
+      "durationMs": 36149,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 50,
+        "miss": 38,
+        "latency_render_ms_median": 25.97,
+        "latency_render_ms_p95": 28.881,
+        "queue_ms_median": 11.4,
+        "dispatch_ms_median": 2.058,
+        "apply_ms_median": 0.732,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.22,
+        "render_ms_median": 11.98
+      }
+    },
+    {
+      "file": "runs/055_threejs_i13.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 13,
+      "startedAt": "2026-09-19T17:41:23.405Z",
+      "durationMs": 35669,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 50,
+        "miss": 38,
+        "latency_render_ms_median": 23.938,
+        "latency_render_ms_p95": 27.2,
+        "queue_ms_median": 11.26,
+        "dispatch_ms_median": 0.673,
+        "apply_ms_median": 0,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.197,
+        "render_ms_median": 11.877
+      }
+    },
+    {
+      "file": "runs/056_r3f-state_i13.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 13,
+      "startedAt": "2026-09-19T17:42:02.088Z",
+      "durationMs": 36078,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 49,
+        "miss": 37,
+        "latency_render_ms_median": 39.42,
+        "latency_render_ms_p95": 43.146,
+        "queue_ms_median": 11.9,
+        "dispatch_ms_median": 15.585,
+        "apply_ms_median": 14.795,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.21,
+        "render_ms_median": 11.63
+      }
+    },
+    {
+      "file": "runs/057_r3f-ref_i14.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 14,
+      "startedAt": "2026-09-19T17:42:41.173Z",
+      "durationMs": 36003,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 47,
+        "miss": 36,
+        "latency_render_ms_median": 24.46,
+        "latency_render_ms_p95": 27.906,
+        "queue_ms_median": 11.435,
+        "dispatch_ms_median": 0.695,
+        "apply_ms_median": 0,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.23,
+        "render_ms_median": 12.01
+      }
+    },
+    {
+      "file": "runs/058_r3f-state_i14.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 14,
+      "startedAt": "2026-09-19T17:43:20.186Z",
+      "durationMs": 35903,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 46,
+        "miss": 35,
+        "latency_render_ms_median": 37.06,
+        "latency_render_ms_p95": 41.935,
+        "queue_ms_median": 11.067,
+        "dispatch_ms_median": 14.7,
+        "apply_ms_median": 13.825,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.215,
+        "render_ms_median": 10.888
+      }
+    },
+    {
+      "file": "runs/059_r3f-events_i14.json",
+      "label": "r3f-events",
+      "load": "-",
+      "warmup": false,
+      "iteration": 14,
+      "startedAt": "2026-09-19T17:43:59.092Z",
+      "durationMs": 36151,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 46,
+        "miss": 36,
+        "latency_render_ms_median": 25.517,
+        "latency_render_ms_p95": 28.25,
+        "queue_ms_median": 11.605,
+        "dispatch_ms_median": 2.197,
+        "apply_ms_median": 0.65,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.22,
+        "render_ms_median": 11.475
+      }
+    },
+    {
+      "file": "runs/060_threejs_i14.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 14,
+      "startedAt": "2026-09-19T17:44:38.260Z",
+      "durationMs": 35905,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 46,
+        "miss": 36,
+        "latency_render_ms_median": 23.59,
+        "latency_render_ms_p95": 27.308,
+        "queue_ms_median": 11.11,
+        "dispatch_ms_median": 0.595,
+        "apply_ms_median": 0,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.197,
+        "render_ms_median": 11.745
+      }
+    },
+    {
+      "file": "runs/061_r3f-state_i15.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 15,
+      "startedAt": "2026-09-19T17:45:17.195Z",
+      "durationMs": 35963,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 58,
+        "miss": 28,
+        "latency_render_ms_median": 38.335,
+        "latency_render_ms_p95": 43.172,
+        "queue_ms_median": 11.277,
+        "dispatch_ms_median": 15.303,
+        "apply_ms_median": 14.42,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.21,
+        "render_ms_median": 11.197
+      }
+    },
+    {
+      "file": "runs/062_r3f-events_i15.json",
+      "label": "r3f-events",
+      "load": "-",
+      "warmup": false,
+      "iteration": 15,
+      "startedAt": "2026-09-19T17:45:56.180Z",
+      "durationMs": 35919,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 60,
+        "miss": 28,
+        "latency_render_ms_median": 25.397,
+        "latency_render_ms_p95": 28.159,
+        "queue_ms_median": 11.322,
+        "dispatch_ms_median": 1.975,
+        "apply_ms_median": 0.658,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.213,
+        "render_ms_median": 11.32
+      }
+    },
+    {
+      "file": "runs/063_r3f-ref_i15.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 15,
+      "startedAt": "2026-09-19T17:46:35.123Z",
+      "durationMs": 36055,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 61,
+        "miss": 28,
+        "latency_render_ms_median": 23.905,
+        "latency_render_ms_p95": 27.715,
+        "queue_ms_median": 11.25,
+        "dispatch_ms_median": 0.645,
+        "apply_ms_median": 0,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.22,
+        "render_ms_median": 11.815
+      }
+    },
+    {
+      "file": "runs/064_threejs_i15.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 15,
+      "startedAt": "2026-09-19T17:47:14.187Z",
+      "durationMs": 36177,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 61,
+        "miss": 28,
+        "latency_render_ms_median": 23.64,
+        "latency_render_ms_p95": 27.41,
+        "queue_ms_median": 11.04,
+        "dispatch_ms_median": 0.655,
+        "apply_ms_median": 0,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.21,
+        "render_ms_median": 11.765
+      }
+    },
+    {
+      "file": "runs/065_threejs_i16.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 16,
+      "startedAt": "2026-09-19T17:47:53.382Z",
+      "durationMs": 36092,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 48,
+        "miss": 41,
+        "latency_render_ms_median": 22.782,
+        "latency_render_ms_p95": 26.626,
+        "queue_ms_median": 10.732,
+        "dispatch_ms_median": 0.578,
+        "apply_ms_median": 0,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.203,
+        "render_ms_median": 11.157
+      }
+    },
+    {
+      "file": "runs/066_r3f-events_i16.json",
+      "label": "r3f-events",
+      "load": "-",
+      "warmup": false,
+      "iteration": 16,
+      "startedAt": "2026-09-19T17:48:32.484Z",
+      "durationMs": 36203,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 46,
+        "miss": 41,
+        "latency_render_ms_median": 25.822,
+        "latency_render_ms_p95": 28.845,
+        "queue_ms_median": 11.498,
+        "dispatch_ms_median": 2.105,
+        "apply_ms_median": 0.647,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.22,
+        "render_ms_median": 11.985
+      }
+    },
+    {
+      "file": "runs/067_r3f-ref_i16.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 16,
+      "startedAt": "2026-09-19T17:49:11.701Z",
+      "durationMs": 36072,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 46,
+        "miss": 41,
+        "latency_render_ms_median": 24.878,
+        "latency_render_ms_p95": 28.25,
+        "queue_ms_median": 11.605,
+        "dispatch_ms_median": 0.668,
+        "apply_ms_median": 0,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.225,
+        "render_ms_median": 12.372
+      }
+    },
+    {
+      "file": "runs/068_r3f-state_i16.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 16,
+      "startedAt": "2026-09-19T17:49:50.799Z",
+      "durationMs": 35987,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 47,
+        "miss": 39,
+        "latency_render_ms_median": 38.815,
+        "latency_render_ms_p95": 43.572,
+        "queue_ms_median": 11.61,
+        "dispatch_ms_median": 15.51,
+        "apply_ms_median": 14.745,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.225,
+        "render_ms_median": 11.385
+      }
+    },
+    {
+      "file": "runs/069_r3f-state_i17.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 17,
+      "startedAt": "2026-09-19T17:50:29.804Z",
+      "durationMs": 36041,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 51,
+        "miss": 34,
+        "latency_render_ms_median": 39.63,
+        "latency_render_ms_p95": 45.053,
+        "queue_ms_median": 11.36,
+        "dispatch_ms_median": 16.625,
+        "apply_ms_median": 15.93,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.21,
+        "render_ms_median": 11.075
+      }
+    },
+    {
+      "file": "runs/070_r3f-events_i17.json",
+      "label": "r3f-events",
+      "load": "-",
+      "warmup": false,
+      "iteration": 17,
+      "startedAt": "2026-09-19T17:51:08.871Z",
+      "durationMs": 36118,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 52,
+        "miss": 35,
+        "latency_render_ms_median": 25.675,
+        "latency_render_ms_p95": 29.653,
+        "queue_ms_median": 11.535,
+        "dispatch_ms_median": 2.088,
+        "apply_ms_median": 0.65,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.22,
+        "render_ms_median": 11.78
+      }
+    },
+    {
+      "file": "runs/071_threejs_i17.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 17,
+      "startedAt": "2026-09-19T17:51:48.007Z",
+      "durationMs": 35831,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 52,
+        "miss": 35,
+        "latency_render_ms_median": 24.048,
+        "latency_render_ms_p95": 26.577,
+        "queue_ms_median": 11.467,
+        "dispatch_ms_median": 0.625,
+        "apply_ms_median": 0,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.2,
+        "render_ms_median": 11.87
+      }
+    },
+    {
+      "file": "runs/072_r3f-ref_i17.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 17,
+      "startedAt": "2026-09-19T17:52:26.857Z",
+      "durationMs": 36001,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 52,
+        "miss": 35,
+        "latency_render_ms_median": 24.353,
+        "latency_render_ms_p95": 27.556,
+        "queue_ms_median": 11.355,
+        "dispatch_ms_median": 0.703,
+        "apply_ms_median": 0,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.235,
+        "render_ms_median": 12.202
+      }
+    },
+    {
+      "file": "runs/073_r3f-state_i18.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 18,
+      "startedAt": "2026-09-19T17:53:05.884Z",
+      "durationMs": 36143,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 47,
+        "miss": 37,
+        "latency_render_ms_median": 38.06,
+        "latency_render_ms_p95": 43.086,
+        "queue_ms_median": 11.485,
+        "dispatch_ms_median": 14.865,
+        "apply_ms_median": 14.23,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.205,
+        "render_ms_median": 11.215
+      }
+    },
+    {
+      "file": "runs/074_r3f-ref_i18.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 18,
+      "startedAt": "2026-09-19T17:53:45.039Z",
+      "durationMs": 36200,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 48,
+        "miss": 37,
+        "latency_render_ms_median": 23.262,
+        "latency_render_ms_p95": 27.843,
+        "queue_ms_median": 10.73,
+        "dispatch_ms_median": 0.688,
+        "apply_ms_median": 0,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.223,
+        "render_ms_median": 11.88
+      }
+    },
+    {
+      "file": "runs/075_r3f-events_i18.json",
+      "label": "r3f-events",
+      "load": "-",
+      "warmup": false,
+      "iteration": 18,
+      "startedAt": "2026-09-19T17:54:24.258Z",
+      "durationMs": 36001,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 47,
+        "miss": 37,
+        "latency_render_ms_median": 25.705,
+        "latency_render_ms_p95": 27.606,
+        "queue_ms_median": 11.475,
+        "dispatch_ms_median": 2.145,
+        "apply_ms_median": 0.67,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.21,
+        "render_ms_median": 11.62
+      }
+    },
+    {
+      "file": "runs/076_threejs_i18.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 18,
+      "startedAt": "2026-09-19T17:55:03.277Z",
+      "durationMs": 35910,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 48,
+        "miss": 37,
+        "latency_render_ms_median": 23.957,
+        "latency_render_ms_p95": 26.803,
+        "queue_ms_median": 11.147,
+        "dispatch_ms_median": 0.585,
+        "apply_ms_median": 0,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.205,
+        "render_ms_median": 11.968
+      }
+    },
+    {
+      "file": "runs/077_r3f-ref_i19.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 19,
+      "startedAt": "2026-09-19T17:55:42.212Z",
+      "durationMs": 36130,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 62,
+        "miss": 30,
+        "latency_render_ms_median": 23.65,
+        "latency_render_ms_p95": 27.077,
+        "queue_ms_median": 11.095,
+        "dispatch_ms_median": 0.62,
+        "apply_ms_median": 0,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.22,
+        "render_ms_median": 11.865
+      }
+    },
+    {
+      "file": "runs/078_threejs_i19.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 19,
+      "startedAt": "2026-09-19T17:56:21.353Z",
+      "durationMs": 35745,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 62,
+        "miss": 30,
+        "latency_render_ms_median": 23.885,
+        "latency_render_ms_p95": 27.466,
+        "queue_ms_median": 11.29,
+        "dispatch_ms_median": 0.623,
+        "apply_ms_median": 0,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.205,
+        "render_ms_median": 11.925
+      }
+    },
+    {
+      "file": "runs/079_r3f-events_i19.json",
+      "label": "r3f-events",
+      "load": "-",
+      "warmup": false,
+      "iteration": 19,
+      "startedAt": "2026-09-19T17:57:00.126Z",
+      "durationMs": 36019,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 61,
+        "miss": 29,
+        "latency_render_ms_median": 25.39,
+        "latency_render_ms_p95": 28.615,
+        "queue_ms_median": 11.485,
+        "dispatch_ms_median": 2.075,
+        "apply_ms_median": 0.595,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.22,
+        "render_ms_median": 11.715
+      }
+    },
+    {
+      "file": "runs/080_r3f-state_i19.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 19,
+      "startedAt": "2026-09-19T17:57:39.164Z",
+      "durationMs": 35966,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 60,
+        "miss": 29,
+        "latency_render_ms_median": 37.878,
+        "latency_render_ms_p95": 42.333,
+        "queue_ms_median": 11.63,
+        "dispatch_ms_median": 14.678,
+        "apply_ms_median": 13.973,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.215,
+        "render_ms_median": 11.207
+      }
+    },
+    {
+      "file": "runs/081_r3f-state_i20.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 20,
+      "startedAt": "2026-09-19T17:58:18.150Z",
+      "durationMs": 36153,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 51,
+        "miss": 37,
+        "latency_render_ms_median": 37.775,
+        "latency_render_ms_p95": 43.28,
+        "queue_ms_median": 11.27,
+        "dispatch_ms_median": 15.32,
+        "apply_ms_median": 14.62,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.21,
+        "render_ms_median": 10.975
+      }
+    },
+    {
+      "file": "runs/082_r3f-ref_i20.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 20,
+      "startedAt": "2026-09-19T17:58:57.317Z",
+      "durationMs": 36010,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 51,
+        "miss": 38,
+        "latency_render_ms_median": 23.775,
+        "latency_render_ms_p95": 26.897,
+        "queue_ms_median": 11.32,
+        "dispatch_ms_median": 0.68,
+        "apply_ms_median": 0,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.23,
+        "render_ms_median": 11.76
+      }
+    },
+    {
+      "file": "runs/083_threejs_i20.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 20,
+      "startedAt": "2026-09-19T17:59:36.344Z",
+      "durationMs": 35673,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 51,
+        "miss": 37,
+        "latency_render_ms_median": 24.495,
+        "latency_render_ms_p95": 27.85,
+        "queue_ms_median": 11.52,
+        "dispatch_ms_median": 0.635,
+        "apply_ms_median": 0,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.21,
+        "render_ms_median": 12.145
+      }
+    },
+    {
+      "file": "runs/084_r3f-events_i20.json",
+      "label": "r3f-events",
+      "load": "-",
+      "warmup": false,
+      "iteration": 20,
+      "startedAt": "2026-09-19T18:00:15.036Z",
+      "durationMs": 36139,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "ok": 51,
+        "miss": 38,
+        "latency_render_ms_median": 25.58,
+        "latency_render_ms_p95": 27.555,
+        "queue_ms_median": 11.355,
+        "dispatch_ms_median": 1.99,
+        "apply_ms_median": 0.61,
+        "commit_ms_median": 0,
+        "frame_wait_ms_median": 0.225,
+        "render_ms_median": 11.98
+      }
+    }
+  ]
+}
