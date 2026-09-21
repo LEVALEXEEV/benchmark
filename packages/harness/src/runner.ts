@@ -95,6 +95,9 @@ function withControls(cfg: BenchConfig, main: ScheduleItem[]): ScheduleItem[] {
   return out;
 }
 
+/** пауза после открытия окна до загрузки стенда (см. runOne) */
+const WINDOW_READY_MS = 1000;
+
 /** все контрольные прогоны S4 получают одинаковые клики — иначе они несравнимы между собой */
 const CONTROL_CLICK_SEED_OFFSET = 999_983;
 
@@ -180,6 +183,13 @@ async function runOne(
     }
     const tracer = tracePath && lb.supportsCdp ? await Tracer.start(bp.page) : null;
 
+    // Каждый прогон — новый контекст, то есть новое окно. Если страница
+    // успевала исполнить скрипт раньше, чем окно готово показывать кадры,
+    // первый requestAnimationFrame ждал ≈ 40 мс (на M4 — в 40% холодных
+    // загрузок S3, отсюда бимодальность TTFR). Окно открывается заранее,
+    // как вкладка у пользователя; кэш остаётся холодным — контекст новый.
+    await bp.page.goto('about:blank');
+    await sleep(WINDOW_READY_MS);
     await bp.goto(runUrl(cfg, item.target, item.load));
 
     let driver: { stop(): Promise<number> } | null = null;
