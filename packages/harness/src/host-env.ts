@@ -21,21 +21,32 @@ function pkgVersion(name: string): string | null {
 }
 
 /**
- * Термальное состояние и питание — источники дрейфа между прогонами
- * (в НИР2 два свипа S5 на одной машине разошлись на 43%). Снимается перед
- * каждым прогоном; на macOS через pmset, на других ОС — null.
+ * Пути, от которых зависят замеры. results/ и analysis/ лежат в том же
+ * репозитории, но на данные не влияют: иначе каждая новая серия делала бы
+ * рабочую копию «грязной» для следующей.
  */
-export function thermalSnapshot(): { therm: string | null; power: string | null } {
-  if (process.platform !== 'darwin') return { therm: null, power: null };
+export const CODE_PATHS = ['packages', 'package.json', 'package-lock.json', 'tsconfig.base.json'];
+
+export function codeGitState(): { commit: string | null; dirty: boolean | null; dirtyFiles: string[]; diff: string | null } {
+  const paths = CODE_PATHS.join(' ');
+  const status = sh(`git status --porcelain -- ${paths}`);
+  const dirtyFiles = status ? status.split('\n').map((l) => l.trim()).filter(Boolean) : [];
   return {
-    therm: sh('pmset -g therm'),
-    power: sh('pmset -g batt')?.split('\n')[0] ?? null,
+    commit: sh('git rev-parse HEAD'),
+    dirty: status === null ? null : dirtyFiles.length > 0,
+    dirtyFiles,
+    diff: dirtyFiles.length > 0 ? sh(`git diff HEAD -- ${paths}`) : null,
   };
 }
 
+/**
+ * Паспорт машины — статичное описание для таблицы пула. Показания датчиков
+ * (температура, питание, частоты) стенд не снимает: влияние среды
+ * контролируется контрольными прогонами three.js и повтором уровня в S5.
+ */
 export function hostEnv() {
   const cpus = os.cpus();
-  const dirty = sh('git status --porcelain');
+  const git = codeGitState();
   return {
     node: process.version,
     platform: process.platform,
@@ -45,18 +56,14 @@ export function hostEnv() {
     cpuModel: cpus[0]?.model ?? null,
     cpuCount: cpus.length,
     totalMemGb: Math.round((os.totalmem() / 1024 ** 3) * 10) / 10,
-    lowPowerMode: process.platform === 'darwin' ? sh('pmset -g | grep lowpowermode') : null,
-    git: {
-      commit: sh('git rev-parse HEAD'),
-      dirty: dirty === null ? null : dirty.length > 0,
-    },
+    // сам diff — в отдельном файле серии, в манифесте только список файлов
+    git: { commit: git.commit, dirty: git.dirty, dirtyFiles: git.dirtyFiles, scope: CODE_PATHS },
     libs: Object.fromEntries(
       ['three', 'react', 'react-dom', '@react-three/fiber', 'vite', 'playwright', 'typescript'].map((n) => [
         n,
         pkgVersion(n),
       ])
     ),
-    ...thermalSnapshot(),
   };
 }
 

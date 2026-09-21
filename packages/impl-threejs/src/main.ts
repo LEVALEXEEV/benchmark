@@ -246,6 +246,7 @@ function runScaleScenario(params: RunParams): void {
     fpsFloor: params.fpsFloor,
     levelsBeyondFloor: params.levelsBeyondFloor,
     minLevelFrames: params.minLevelFrames,
+    levelControl: params.levelControl,
   });
   collector.onAdvanceLevel((count) => {
     setLevel(count);

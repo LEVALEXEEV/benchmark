@@ -1,6 +1,6 @@
 import { FrameRecorder } from './frame-recorder.js';
 import { bench, type FrameProbe } from './runtime.js';
-import type { ScaleLevel, ScaleRunResult } from './types.js';
+import type { ScaleControl, ScaleLevel, ScaleRunResult } from './types.js';
 
 export interface ScaleCollectorConfig {
   readonly levels: readonly number[];
@@ -15,6 +15,8 @@ export interface ScaleCollectorConfig {
    * дольше MAX_RECORD_FACTOR × recordMs.
    */
   readonly minLevelFrames: number;
+  /** после свипа повторить контрольный уровень (см. ScaleControl) */
+  readonly levelControl: boolean;
 }
 
 const MAX_RECORD_FACTOR = 5;
@@ -40,6 +42,9 @@ export class ScaleCollector implements FrameProbe {
   private readonly cfg: ScaleCollectorConfig;
   private phase: Phase = 'idle';
   private index = 0;
+  private count = 0;
+  /** идёт контрольный повтор; причина остановки свипа уже известна */
+  private controlFor: ScaleRunResult['stopped_reason'] | null = null;
   private enterTs = NaN;
   private buildMs = NaN;
   private warmStart = NaN;
@@ -67,7 +72,12 @@ export class ScaleCollector implements FrameProbe {
   }
 
   get currentCount(): number {
-    return this.cfg.levels[this.index] ?? 0;
+    return this.count;
+  }
+
+  /** окно в трассе: контрольный повтор не должен совпасть по имени с уровнем свипа */
+  private get markName(): string {
+    return `level-${this.currentCount}${this.controlFor !== null ? '-control' : ''}`;
   }
 
   start(): void {
@@ -90,7 +100,7 @@ export class ScaleCollector implements FrameProbe {
         this.phase = 'recording';
         this.recordStart = now;
         this.recorder = new FrameRecorder(now);
-        bench.mark(`level-${this.currentCount}-start`);
+        bench.mark(`${this.markName}-start`);
         bench.setStatus('recording');
       }
     }
@@ -101,7 +111,7 @@ export class ScaleCollector implements FrameProbe {
     if (elapsed >= this.cfg.recordMs && enough) {
       rec.finish(now);
       this.recorder = null;
-      bench.mark(`level-${this.currentCount}-end`);
+      bench.mark(`${this.markName}-end`);
       this.finalizeLevel(rec);
       return;
     }
@@ -122,6 +132,11 @@ export class ScaleCollector implements FrameProbe {
 
   private enterLevel(i: number): void {
     this.index = i;
+    this.enterCount(this.cfg.levels[i]!);
+  }
+
+  private enterCount(count: number): void {
+    this.count = count;
     this.phase = 'building';
     this.enterTs = performance.now();
     bench.setStatus('building');
@@ -131,7 +146,17 @@ export class ScaleCollector implements FrameProbe {
 
   private finalizeLevel(rec: FrameRecorder): void {
     const summary = rec.summary();
-    this.results.push({ count: this.currentCount, build_ms: this.buildMs, summary, raw: rec.raw() });
+    const level: ScaleLevel = { count: this.currentCount, build_ms: this.buildMs, summary, raw: rec.raw() };
+    if (this.controlFor !== null) {
+      const first = this.results.find((l) => l.count === level.count)!;
+      this.finish(this.controlFor, {
+        count: level.count,
+        repeat: level,
+        frame_ratio: summary.frame_ms_median / first.summary.frame_ms_median,
+      });
+      return;
+    }
+    this.results.push(level);
 
     const below = summary.fps_median < this.cfg.fpsFloor;
     if (below && this.firstBelow === null) this.firstBelow = this.currentCount;
@@ -146,6 +171,15 @@ export class ScaleCollector implements FrameProbe {
       this.enterLevel(this.index + 1);
       return;
     }
+    if (this.cfg.levelControl) {
+      this.controlFor = reason;
+      this.enterCount(controlCount(this.results));
+      return;
+    }
+    this.finish(reason, null);
+  }
+
+  private finish(reason: ScaleRunResult['stopped_reason'], control: ScaleControl | null): void {
     this.phase = 'done';
     this.onDoneCb?.({
       levels: this.results,
@@ -154,8 +188,20 @@ export class ScaleCollector implements FrameProbe {
       capacity_fps60: capacityAt(this.results, 60),
       capacity_fps30: capacityAt(this.results, 30),
       stopped_reason: reason,
+      control,
     });
   }
+}
+
+/**
+ * Контрольный уровень — последний с median FPS ≥ 60: соседний с ним уровень
+ * определяет ёмкость при 60 FPS, поэтому дрейф важен именно здесь. Если
+ * такого нет (вариант не держит 60 FPS даже на первом уровне), — первый.
+ */
+function controlCount(levels: readonly ScaleLevel[]): number {
+  let pick = levels[0]!.count;
+  for (const l of levels) if (l.summary.fps_median >= 60) pick = l.count;
+  return pick;
 }
 
 /**

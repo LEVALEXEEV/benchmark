@@ -233,6 +233,21 @@ export interface ScaleRunResult {
   readonly capacity_fps60: number | null;
   readonly capacity_fps30: number | null;
   readonly stopped_reason: 'beyond-floor' | 'levels-exhausted' | 'too-slow';
+  /**
+   * Контрольный повтор уровня после свипа. Уровни идут по возрастанию, и
+   * число объектов совпадает со временем от старта (прогрев JIT, нагрев);
+   * повтор того же уровня в конце показывает, насколько за время свипа
+   * изменилась сама среда. null — повтор не запрашивался.
+   */
+  readonly control: ScaleControl | null;
+}
+
+export interface ScaleControl {
+  readonly count: number;
+  /** тот же уровень при повторе; в ёмкость не входит */
+  readonly repeat: ScaleLevel;
+  /** frame_ms_median повтора / frame_ms_median того же уровня в свипе */
+  readonly frame_ratio: number;
 }
 
 export type BenchResult = FrameRunResult | InitRunResult | InputRunResult | ScaleRunResult;

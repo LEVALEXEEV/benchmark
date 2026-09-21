@@ -20,6 +20,8 @@ export interface RunParams {
   readonly levelsBeyondFloor: number;
   /** S5: минимум кадров на уровень */
   readonly minLevelFrames: number;
+  /** S5: после свипа повторно записать контрольный уровень (дрейф внутри прогона) */
+  readonly levelControl: boolean;
   /** множитель pixelRatio; 0.5 — проверка GPU-bound (S1) на половинном разрешении */
   readonly renderScale: number;
   /** множитель сегментов процедурной геометрии (диагностика S1) */
@@ -85,6 +87,7 @@ export function readRunParams(search: string = window.location.search): RunParam
     levels,
     levelsBeyondFloor: num(p, 'levelsBeyondFloor', 2),
     minLevelFrames: num(p, 'minLevelFrames', 60),
+    levelControl: flag(p, 'levelControl', false),
     renderScale: num(p, 'renderScale', 1, 0.05),
     detailScale: num(p, 'detailScale', 1, 0.01),
     objects: p.get('objects') === null ? null : num(p, 'objects', 0, 1),

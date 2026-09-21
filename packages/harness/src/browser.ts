@@ -9,12 +9,11 @@ import type { BrowserName } from './config.js';
  *   --disable-renderer-backgrounding и др. — окно без фокуса не должно
  *     троттлиться (headed-окно может оказаться перекрыто).
  */
+const CHROMIUM_UNCAP_ARGS = ['--disable-frame-rate-limit', '--disable-gpu-vsync'];
 const CHROMIUM_ARGS = [
   '--use-gl=angle',
   '--enable-gpu',
   '--ignore-gpu-blocklist',
-  '--disable-frame-rate-limit',
-  '--disable-gpu-vsync',
   '--enable-precise-memory-info',
   '--disable-renderer-backgrounding',
   '--disable-background-timer-throttling',
@@ -27,8 +26,8 @@ const CHROMIUM_ARGS = [
  * WebKit (Playwright-сборка) не позволяет снять vsync: FPS там упирается в
  * частоту монитора, сравнивать нужно фазы кадра (update/render), а не FPS.
  */
+const FIREFOX_UNCAP_PREFS = { 'layout.frame_rate': 0 };
 const FIREFOX_PREFS = {
-  'layout.frame_rate': 0,
   'privacy.reduceTimerPrecision': false,
   'webgl.force-enabled': true,
   'dom.timeout.enable_budget_timer_throttling': false,
@@ -44,17 +43,23 @@ export interface LaunchedBrowser {
   readonly supportsCdp: boolean;
 }
 
-export async function launchBrowser(name: BrowserName): Promise<LaunchedBrowser> {
+/**
+ * vsync = true — условие «как видит пользователь»: частота кадров привязана
+ * к монитору, и сравнивается уже не время кадра, а доля пропущенных кадров.
+ */
+export async function launchBrowser(name: BrowserName, opts: { vsync: boolean }): Promise<LaunchedBrowser> {
+  const args = opts.vsync ? CHROMIUM_ARGS : [...CHROMIUM_ARGS, ...CHROMIUM_UNCAP_ARGS];
+  const prefs = opts.vsync ? FIREFOX_PREFS : { ...FIREFOX_PREFS, ...FIREFOX_UNCAP_PREFS };
   let browser: Browser;
   switch (name) {
     case 'chrome':
-      browser = await chromium.launch({ channel: 'chrome', headless: false, args: CHROMIUM_ARGS });
+      browser = await chromium.launch({ channel: 'chrome', headless: false, args });
       break;
     case 'chromium':
-      browser = await chromium.launch({ headless: false, args: CHROMIUM_ARGS });
+      browser = await chromium.launch({ headless: false, args });
       break;
     case 'firefox':
-      browser = await firefox.launch({ headless: false, firefoxUserPrefs: FIREFOX_PREFS });
+      browser = await firefox.launch({ headless: false, firefoxUserPrefs: prefs });
       break;
     case 'webkit':
       browser = await webkit.launch({ headless: false });
@@ -65,9 +70,9 @@ export async function launchBrowser(name: BrowserName): Promise<LaunchedBrowser>
     browser,
     name,
     version: browser.version(),
-    launchArgs: chromiumLike ? CHROMIUM_ARGS : [],
-    prefs: name === 'firefox' ? FIREFOX_PREFS : null,
-    vsyncUncapped: name !== 'webkit',
+    launchArgs: chromiumLike ? args : [],
+    prefs: name === 'firefox' ? prefs : null,
+    vsyncUncapped: name !== 'webkit' && !opts.vsync,
     supportsCdp: chromiumLike,
   };
 }

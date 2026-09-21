@@ -7,7 +7,7 @@ import { useRunFinish } from '../FrameDriver.js';
 import { Objects, SceneEnvironment } from '../nodes.js';
 
 /**
- * S5. Смена уровня — смена state `count`. Объекты уровня монтируются заново
+ * S5. Смена уровня — смена state `level`. Объекты уровня монтируются заново
  * (key по уровню), как three.js заново строит содержимое сцены: иначе React
  * переиспользовал бы узлы obj_0…obj_N и сравнивались бы разные операции.
  */
@@ -34,12 +34,18 @@ export function ScaleRun({
         fpsFloor: params.fpsFloor,
         levelsBeyondFloor: params.levelsBeyondFloor,
         minLevelFrames: params.minLevelFrames,
+        levelControl: params.levelControl,
       }),
     [params]
   );
-  const [count, setCount] = useState<number | null>(params.parity ? initialSpec.objects.length : null);
+  // gen — номер уровня: контрольный повтор может запросить то же число
+  // объектов, что и предыдущий уровень, и сцена всё равно должна собраться
+  // заново (как setLevel в three.js), иначе levelReady не придёт
+  const [level, setLevel] = useState<{ count: number; gen: number } | null>(
+    params.parity ? { count: initialSpec.objects.length, gen: 0 } : null
+  );
   const [finished, setFinished] = useState(false);
-  const spec = useMemo(() => (count === null ? null : makeS5Scene(count)), [count]);
+  const spec = useMemo(() => (level === null ? null : makeS5Scene(level.count)), [level]);
 
   useLayoutEffect(() => {
     if (params.parity) {
@@ -50,7 +56,7 @@ export function ScaleRun({
       );
       return;
     }
-    collector.onAdvanceLevel((c) => setCount(c));
+    collector.onAdvanceLevel((c) => setLevel((prev) => ({ count: c, gen: (prev?.gen ?? 0) + 1 })));
     collector.onDone((m) => {
       finish.stopLoop();
       bench.complete({ kind: 'scale', meta: finish.meta(initialSpec.id), ...m });
@@ -80,7 +86,7 @@ export function ScaleRun({
   return (
     <>
       <SceneEnvironment spec={spec} />
-      <Fragment key={count}>
+      <Fragment key={level!.gen}>
         <Objects objects={spec.objects} mode={mode} />
       </Fragment>
     </>

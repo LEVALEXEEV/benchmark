@@ -2,6 +2,29 @@ import { fileURLToPath } from 'node:url';
 import { S5_LEVELS } from '@bench/scene-spec';
 
 export type BrowserName = 'chrome' | 'chromium' | 'firefox' | 'webkit';
+
+/**
+ * Версии браузеров пула (nir3-plan.md, «Протокол измерений и пул платформ»).
+ * chromium / firefox / webkit — сборки, которые Playwright 1.63.0 скачивает
+ * командой `npm run browsers` (node_modules/playwright-core/browsers.json):
+ * версия браузера задаётся точной версией Playwright в package.json и на всех
+ * устройствах пула одинакова. chromium — это Chrome for Testing: тот же код и
+ * графический стек (ANGLE), что у Chrome, но без автообновления.
+ *
+ * chrome — установленный в системе Google Chrome; он обновляется сам, и его
+ * версию проект не контролирует (в первой серии было 152 на M4 и 153 на AMD).
+ * Он оставлен для контрольной серии «Chrome for Testing ≈ Chrome», не для
+ * основных данных.
+ *
+ * Несовпадение версии останавливает серию: браузер обновился или Playwright
+ * сменили — тогда меняются эта таблица и протокол, до серии.
+ */
+export const PINNED_BROWSER_VERSIONS: Record<BrowserName, string | null> = {
+  chromium: '153.0.8010.12',
+  firefox: '155.0',
+  webkit: '26.6',
+  chrome: null,
+};
 export type ScenarioId = 's1' | 's2' | 's3' | 's4' | 's5';
 
 export interface Target {
@@ -66,6 +89,22 @@ export const S1_LOADS: Record<string, LoadPoint> = {
 /** сценарии без свипа идут одной точкой */
 export const NO_LOAD: LoadPoint = { id: '-', note: 'базовая конфигурация' };
 
+/**
+ * Профили сети для S3 (CDP Network.emulateNetworkConditions). slow4g —
+ * пресет Lighthouse «Slow 4G» в варианте для devtools-троттлинга: RTT 150 мс
+ * и 1,6 Мбит/с, пересчитанные Lighthouse в задержку запроса ×3,75 и
+ * пропускную способность ×0,9. Без троттлинга загрузка идёт с localhost, и
+ * разница в размере бандла почти ничего не стоит.
+ */
+export const NETWORK_PROFILES = {
+  none: null,
+  slow4g: { latencyMs: 562.5, downloadKbps: 1474.56, uploadKbps: 607.5 },
+} as const;
+export type NetworkProfile = keyof typeof NETWORK_PROFILES;
+
+/** сценарии с контрольными прогонами three.js (S3 чередуется и дёшев, у S5 свой повтор уровня) */
+const CONTROL_SCENARIOS: readonly ScenarioId[] = ['s1', 's2', 's4'];
+
 export interface BenchConfig {
   readonly scenario: ScenarioId;
   readonly targets: readonly Target[];
@@ -96,6 +135,23 @@ export interface BenchConfig {
   readonly gpuTimer: boolean;
   readonly device: string | null;
   readonly resultsDir: string;
+  /** имя кампании; папка серии — «<кампания> <время>», анализ отбирает серии по нему */
+  readonly campaign: string | null;
+  /**
+   * Контрольные прогоны three.js, равномерно по серии (начало, середина,
+   * конец). По ним виден дрейф среды; в сравнение вариантов не входят.
+   */
+  readonly controlRuns: number;
+  /** S5: повтор контрольного уровня в конце каждого свипа */
+  readonly levelControl: boolean;
+  /** замедление CPU через CDP (1 — без замедления); только Chromium */
+  readonly cpuThrottle: number;
+  /** эмуляция сети через CDP; только Chromium и только S3 */
+  readonly network: NetworkProfile;
+  /** оставить vsync (что видит пользователь); по умолчанию снят */
+  readonly vsync: boolean;
+  /** разрешить незакоммиченные изменения кода — только для отладки, не для данных */
+  readonly allowDirty: boolean;
 }
 
 /**
@@ -127,11 +183,13 @@ const SCENARIO_DEFAULTS: Record<
 
 function usage(msg: string): never {
   throw new Error(
-    `${msg}\n\nПример: npm run bench -- --scenario s2 --iterations 10 --browser chrome\n` +
-      'Флаги: --scenario --targets --browser (chrome|chromium|firefox|webkit) --serve (preview|dev) --no-build\n' +
+    `${msg}\n\nПример: npm run bench -- --scenario s2 --iterations 10 --browser chromium\n` +
+      'Флаги: --scenario --targets --browser (chromium|firefox|webkit|chrome) --serve (preview|dev) --no-build\n' +
       '       --iterations --warmupRuns --cooldown --order (random|blocked) --orderSeed\n' +
       '       --warmup --record --settle --clickInterval --clickSeed --levels --fpsFloor --levelsBeyondFloor --minLevelFrames\n' +
-      '       --renderScale --detailScale --loads (s1: A,B,C,D) --parity-only --skip-parity --trace --no-gpu-timer --device --out'
+      '       --renderScale --detailScale --loads (s1: A,B,C,D) --parity-only --skip-parity --trace --no-gpu-timer --device --out\n' +
+      '       --campaign --controlRuns --no-control --cpuThrottle --network (none|slow4g) --vsync\n' +
+      '       --allow-dirty (только для отладки: серия помечается как непригодная)'
   );
 }
 
@@ -142,7 +200,9 @@ export function parseArgs(argv: readonly string[]): BenchConfig {
     const a = argv[i]!;
     if (!a.startsWith('--')) usage(`Неожиданный аргумент ${a}`);
     const key = a.slice(2);
-    if (['no-build', 'parity-only', 'skip-parity', 'trace', 'no-gpu-timer'].includes(key)) {
+    if (
+      ['no-build', 'parity-only', 'skip-parity', 'trace', 'no-gpu-timer', 'no-control', 'vsync', 'allow-dirty'].includes(key)
+    ) {
       flags.add(key);
       continue;
     }
@@ -155,6 +215,7 @@ export function parseArgs(argv: readonly string[]): BenchConfig {
     'scenario', 'targets', 'browser', 'serve', 'iterations', 'warmupRuns', 'cooldown', 'order',
     'orderSeed', 'warmup', 'record', 'settle', 'clickInterval', 'clickSeed', 'levels', 'fpsFloor',
     'levelsBeyondFloor', 'minLevelFrames', 'renderScale', 'detailScale', 'loads', 'device', 'out',
+    'campaign', 'controlRuns', 'cpuThrottle', 'network',
   ]);
   for (const k of values.keys()) if (!known.has(k)) usage(`Неизвестный флаг --${k}`);
 
@@ -176,7 +237,7 @@ export function parseArgs(argv: readonly string[]): BenchConfig {
     return t;
   });
 
-  const browser = (values.get('browser') ?? 'chrome') as BrowserName;
+  const browser = (values.get('browser') ?? 'chromium') as BrowserName;
   if (!['chrome', 'chromium', 'firefox', 'webkit'].includes(browser)) usage(`Неизвестный браузер ${browser}`);
   const serve = values.get('serve') ?? 'preview';
   if (serve !== 'preview' && serve !== 'dev') usage('--serve: preview | dev');
@@ -193,6 +254,22 @@ export function parseArgs(argv: readonly string[]): BenchConfig {
         })
       : [NO_LOAD];
   if (loadsRaw && scenario !== 's1') usage('--loads применим только к s1');
+
+  const chromiumLike = browser === 'chrome' || browser === 'chromium';
+  const cpuThrottle = num('cpuThrottle', 1);
+  if (cpuThrottle < 1) usage('--cpuThrottle: множитель ≥ 1');
+  if (cpuThrottle !== 1 && !chromiumLike) usage('--cpuThrottle доступен только в Chromium (CDP)');
+  const network = (values.get('network') ?? 'none') as NetworkProfile;
+  if (!(network in NETWORK_PROFILES)) usage(`--network: ${Object.keys(NETWORK_PROFILES).join(' | ')}`);
+  if (network !== 'none' && !chromiumLike) usage('--network доступен только в Chromium (CDP)');
+  if (network !== 'none' && scenario !== 's3') usage('--network имеет смысл только для s3 (загрузка)');
+  if (flags.has('vsync') && browser === 'webkit') usage('--vsync: в WebKit vsync не снимается и так');
+  const campaign = values.get('campaign') ?? null;
+  if (campaign !== null && !/^[a-z0-9][a-z0-9-]*$/.test(campaign)) usage('--campaign: латиница в нижнем регистре, цифры, дефис');
+  const noControl = flags.has('no-control');
+  const controlRuns = noControl ? 0 : num('controlRuns', CONTROL_SCENARIOS.includes(scenario) ? 3 : 0);
+  if (!Number.isInteger(controlRuns)) usage('--controlRuns: целое число');
+  if (controlRuns > 0 && !targets.some((t) => t.label === 'threejs')) usage('контрольные прогоны требуют варианта threejs (или --no-control)');
 
   const d = SCENARIO_DEFAULTS[scenario];
   const levels = values.get('levels')?.split(',').map(Number) ?? S5_LEVELS;
@@ -227,6 +304,13 @@ export function parseArgs(argv: readonly string[]): BenchConfig {
     gpuTimer: !flags.has('no-gpu-timer'),
     device: values.get('device') ?? null,
     resultsDir: values.get('out') ?? fileURLToPath(new URL('../../../results', import.meta.url)),
+    campaign,
+    controlRuns,
+    levelControl: scenario === 's5' && !noControl,
+    cpuThrottle,
+    network,
+    vsync: flags.has('vsync'),
+    allowDirty: flags.has('allow-dirty'),
   };
 }
 
@@ -263,6 +347,7 @@ export function runUrl(
     levels: cfg.levels.join(','),
     levelsBeyondFloor: String(cfg.levelsBeyondFloor),
     minLevelFrames: String(cfg.minLevelFrames),
+    levelControl: cfg.levelControl ? '1' : '0',
     renderScale: String(effRenderScale(cfg, load)),
     detailScale: String(effDetailScale(cfg, load)),
     hud: '0',
