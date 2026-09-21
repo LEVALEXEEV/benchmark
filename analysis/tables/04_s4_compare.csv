@@ -1,0 +1,10 @@
+платформа,вариант,отношение к three.js [95% ДИ],p (Холм),вывод
+AMD Ryzen 5 · Chrome,R3F ref,×1.01 [1.00–1.03],0.024,≈ равны
+AMD Ryzen 5 · Chrome,R3F events,×1.08 [1.06–1.10],"< 0,001",больше на 8%
+AMD Ryzen 5 · Chrome,R3F state,×1.60 [1.58–1.63],"< 0,001",больше на 60%
+AMD Ryzen 5 · Firefox,R3F ref,×0.98 [0.94–1.03],0.394,не ясно
+AMD Ryzen 5 · Firefox,R3F events,×1.08 [1.04–1.14],"< 0,001",больше на 8%
+AMD Ryzen 5 · Firefox,R3F state,×1.99 [1.92–2.09],"< 0,001",больше на 99%
+Apple M4 · Chrome,R3F ref,×1.01 [0.98–1.05],0.267,не ясно
+Apple M4 · Chrome,R3F events,×1.12 [1.07–1.16],"< 0,001",больше на 12%
+Apple M4 · Chrome,R3F state,×1.70 [1.67–1.76],"< 0,001",больше на 70%

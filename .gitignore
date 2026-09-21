@@ -7,3 +7,7 @@ playwright-report/
 test-results/
 # Трассы CDP большие и нужны только для разового разбора GC — в датасет не входят
 results/**/traces/
+# Анализ: локальное окружение Python
+analysis/.venv/
+.ipynb_checkpoints/
+__pycache__/
