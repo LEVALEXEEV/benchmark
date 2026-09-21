@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "bench": "tsx src/runner.ts"
+    "bench": "tsx src/runner.ts",
+    "campaign": "tsx src/campaign.ts"
   },
   "dependencies": {
     "@bench/metrics": "0.1.0",

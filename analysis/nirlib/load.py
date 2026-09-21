@@ -47,7 +47,7 @@ def _run_values(result: dict) -> dict[str, float]:
 
 
 def condition(cfg: dict) -> str:
-    """Условие серии из пула (nir3-plan.md): base, cpu×N, slow4g, vsync."""
+    """Условие серии из пула (nir3-plan.md): base, cpu×N, slow4g, vsync, trace."""
     parts = []
     if cfg.get("cpuThrottle", 1) != 1:
         parts.append(f"cpu×{cfg['cpuThrottle']:g}")
@@ -55,6 +55,9 @@ def condition(cfg: dict) -> str:
         parts.append(cfg["network"])
     if cfg.get("vsync"):
         parts.append("vsync")
+    # трасса CDP замедляет прогон — серия для разбора GC, не для основных метрик
+    if cfg.get("trace"):
+        parts.append("trace")
     return "+".join(parts) or "base"
 
 
@@ -70,6 +73,10 @@ def _series(root: Path, campaigns, conditions):
         manifest = json.loads(manifest_path.read_text())
         # schema < 3 — серии до протокола 2026-09-21, поля protocol в них нет
         if not manifest.get("protocol", {}).get("usable", True):
+            continue
+        # прерванная серия (сбой, Ctrl+C): кампания снимет её заново целиком
+        schedule = manifest.get("schedule") or []
+        if schedule and len(manifest["runs"]) < len(schedule):
             continue
         cond = condition(manifest["config"])
         if cond not in conditions:

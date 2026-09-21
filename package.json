@@ -15,6 +15,7 @@
     "typecheck": "tsc --noEmit -p packages/scene-spec && tsc --noEmit -p packages/metrics && tsc --noEmit -p packages/impl-threejs && tsc --noEmit -p packages/impl-r3f && tsc --noEmit -p packages/harness",
     "browsers": "playwright install chromium firefox webkit",
     "bench": "npm run bench -w @bench/harness --",
+    "campaign": "npm run campaign -w @bench/harness --",
     "bench:parity": "npm run bench -w @bench/harness -- --parity-only --scenario",
     "bench:s1": "npm run bench -w @bench/harness -- --scenario s1",
     "bench:s2": "npm run bench -w @bench/harness -- --scenario s2",

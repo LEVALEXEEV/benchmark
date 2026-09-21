@@ -11,3 +11,6 @@ results/**/traces/
 analysis/.venv/
 .ipynb_checkpoints/
 __pycache__/
+# Состояние и лог подготовки ОС к замерам (scripts/macos, scripts/windows) — локальные
+scripts/.os-state-*
+scripts/.os-log-*
