@@ -1,0 +1,1199 @@
+{
+  "schema": 2,
+  "createdAt": "2026-09-19T21:42:24.247Z",
+  "config": {
+    "scenario": "s5",
+    "targets": [
+      {
+        "label": "threejs",
+        "impl": "threejs",
+        "mode": null
+      },
+      {
+        "label": "r3f-ref",
+        "impl": "r3f",
+        "mode": "ref"
+      },
+      {
+        "label": "r3f-ref-central",
+        "impl": "r3f",
+        "mode": "ref-central"
+      },
+      {
+        "label": "r3f-state",
+        "impl": "r3f",
+        "mode": "state"
+      }
+    ],
+    "loads": [
+      {
+        "id": "-",
+        "note": "базовая конфигурация"
+      }
+    ],
+    "browser": "chrome",
+    "serve": "preview",
+    "build": true,
+    "iterations": 8,
+    "warmupRuns": 1,
+    "cooldownMs": 3000,
+    "order": "random",
+    "orderSeed": 1000263079,
+    "warmupMs": 1500,
+    "recordMs": 3000,
+    "settleMs": 3000,
+    "clickIntervalMs": 250,
+    "clickSeed": 4242,
+    "levels": [
+      100,
+      141,
+      200,
+      283,
+      400,
+      566,
+      800,
+      1131,
+      1600,
+      2263,
+      3200,
+      4525,
+      6400,
+      9051,
+      12800,
+      18102,
+      25600,
+      36204,
+      51200
+    ],
+    "fpsFloor": 30,
+    "levelsBeyondFloor": 2,
+    "minLevelFrames": 60,
+    "renderScale": 1,
+    "detailScale": 1,
+    "parityOnly": false,
+    "skipParity": false,
+    "trace": false,
+    "gpuTimer": true,
+    "device": null,
+    "resultsDir": "/Users/levalekseev/Documents/vscode/NIR/benchmark/results"
+  },
+  "host": {
+    "node": "v22.20.0",
+    "platform": "darwin",
+    "arch": "arm64",
+    "osRelease": "27.0.0",
+    "osVersion": "27.0",
+    "cpuModel": "Apple M4",
+    "cpuCount": 10,
+    "totalMemGb": 16,
+    "lowPowerMode": "lowpowermode         0",
+    "git": {
+      "commit": "954a694534cafd030eb7b7bd7ffa566d3037f93f",
+      "dirty": true
+    },
+    "libs": {
+      "three": "0.186.0",
+      "react": "19.2.8",
+      "react-dom": "19.2.8",
+      "@react-three/fiber": "9.7.0",
+      "vite": "8.3.0",
+      "playwright": "1.63.0",
+      "typescript": "5.9.3"
+    },
+    "therm": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+    "power": "Now drawing from 'AC Power'"
+  },
+  "browser": {
+    "name": "chrome",
+    "version": "152.0.7977.83",
+    "launchArgs": [
+      "--use-gl=angle",
+      "--enable-gpu",
+      "--ignore-gpu-blocklist",
+      "--disable-frame-rate-limit",
+      "--disable-gpu-vsync",
+      "--enable-precise-memory-info",
+      "--disable-renderer-backgrounding",
+      "--disable-background-timer-throttling",
+      "--disable-backgrounding-occluded-windows"
+    ],
+    "prefs": null,
+    "vsyncUncapped": true
+  },
+  "servers": {
+    "threejs": {
+      "url": "http://localhost:4173/",
+      "coop": "same-origin",
+      "coep": "require-corp"
+    },
+    "r3f": {
+      "url": "http://localhost:4174/",
+      "coop": "same-origin",
+      "coep": "require-corp"
+    }
+  },
+  "bundles": [
+    {
+      "impl": "threejs",
+      "files": [
+        {
+          "path": "assets/index-CWSjg4EL.js",
+          "bytes": 566834,
+          "gzipBytes": 142496,
+          "brotliBytes": 117260
+        },
+        {
+          "path": "index.html",
+          "bytes": 1941,
+          "gzipBytes": 1182,
+          "brotliBytes": 862
+        }
+      ],
+      "total_bytes": 568775,
+      "total_gzip_bytes": 143678,
+      "total_brotli_bytes": 118122
+    },
+    {
+      "impl": "r3f",
+      "files": [
+        {
+          "path": "assets/index-DFy9cP-C.js",
+          "bytes": 1124722,
+          "gzipBytes": 304907,
+          "brotliBytes": 236173
+        },
+        {
+          "path": "index.html",
+          "bytes": 1959,
+          "gzipBytes": 1187,
+          "brotliBytes": 871
+        }
+      ],
+      "total_bytes": 1126681,
+      "total_gzip_bytes": 306094,
+      "total_brotli_bytes": 237044
+    }
+  ],
+  "parity": [
+    {
+      "scenario": "s5",
+      "load": "-",
+      "reference": "threejs",
+      "ok": true,
+      "entries": [
+        {
+          "label": "threejs",
+          "ok": true,
+          "issues": [],
+          "image": {
+            "exact": true,
+            "meanAbs": 0,
+            "maxAbs": 0
+          },
+          "summary": {
+            "meshCount": 2000,
+            "meshDigest": "ae411f24",
+            "camera": "PerspectiveCamera|60.00000|1.77778|0.10000|603.17474|1.00000|1.0000,0.0000,0.0000,0.0000,0.0000,0.9614,-0.2750,0.0000,0.0000,0.2750,0.9614,0.0000,0.0000,40.3175,140.9524,1.0000|0.97428,0.00000,0.00000,0.00000,0.00000,1.73205,0.00000,0.00000,0.00000,0.00000,-1.00033,-1.00000,0.00000,0.00000,-0.20003,0.00000",
+            "calls": 2000,
+            "triangles": 24000,
+            "imageHash": "3d21c568"
+          }
+        },
+        {
+          "label": "r3f-ref",
+          "ok": true,
+          "issues": [],
+          "image": {
+            "exact": true,
+            "meanAbs": 0,
+            "maxAbs": 0
+          },
+          "summary": {
+            "meshCount": 2000,
+            "meshDigest": "ae411f24",
+            "camera": "PerspectiveCamera|60.00000|1.77778|0.10000|603.17474|1.00000|1.0000,0.0000,0.0000,0.0000,0.0000,0.9614,-0.2750,0.0000,0.0000,0.2750,0.9614,0.0000,0.0000,40.3175,140.9524,1.0000|0.97428,0.00000,0.00000,0.00000,0.00000,1.73205,0.00000,0.00000,0.00000,0.00000,-1.00033,-1.00000,0.00000,0.00000,-0.20003,0.00000",
+            "calls": 2000,
+            "triangles": 24000,
+            "imageHash": "3d21c568"
+          }
+        },
+        {
+          "label": "r3f-ref-central",
+          "ok": true,
+          "issues": [],
+          "image": {
+            "exact": true,
+            "meanAbs": 0,
+            "maxAbs": 0
+          },
+          "summary": {
+            "meshCount": 2000,
+            "meshDigest": "ae411f24",
+            "camera": "PerspectiveCamera|60.00000|1.77778|0.10000|603.17474|1.00000|1.0000,0.0000,0.0000,0.0000,0.0000,0.9614,-0.2750,0.0000,0.0000,0.2750,0.9614,0.0000,0.0000,40.3175,140.9524,1.0000|0.97428,0.00000,0.00000,0.00000,0.00000,1.73205,0.00000,0.00000,0.00000,0.00000,-1.00033,-1.00000,0.00000,0.00000,-0.20003,0.00000",
+            "calls": 2000,
+            "triangles": 24000,
+            "imageHash": "3d21c568"
+          }
+        },
+        {
+          "label": "r3f-state",
+          "ok": true,
+          "issues": [],
+          "image": {
+            "exact": true,
+            "meanAbs": 0,
+            "maxAbs": 0
+          },
+          "summary": {
+            "meshCount": 2000,
+            "meshDigest": "ae411f24",
+            "camera": "PerspectiveCamera|60.00000|1.77778|0.10000|603.17474|1.00000|1.0000,0.0000,0.0000,0.0000,0.0000,0.9614,-0.2750,0.0000,0.0000,0.2750,0.9614,0.0000,0.0000,40.3175,140.9524,1.0000|0.97428,0.00000,0.00000,0.00000,0.00000,1.73205,0.00000,0.00000,0.00000,0.00000,-1.00033,-1.00000,0.00000,0.00000,-0.20003,0.00000",
+            "calls": 2000,
+            "triangles": 24000,
+            "imageHash": "3d21c568"
+          }
+        }
+      ]
+    }
+  ],
+  "schedule": [
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": true,
+      "iteration": 1
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": true,
+      "iteration": 1
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": true,
+      "iteration": 1
+    },
+    {
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": true,
+      "iteration": 1
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 1
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 1
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 1
+    },
+    {
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 1
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 2
+    },
+    {
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 2
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 2
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 2
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 3
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 3
+    },
+    {
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 3
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 3
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 4
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 4
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 4
+    },
+    {
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 4
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 5
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 5
+    },
+    {
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 5
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 5
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 6
+    },
+    {
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 6
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 6
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 6
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 7
+    },
+    {
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 7
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 7
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 7
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 8
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 8
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 8
+    },
+    {
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 8
+    }
+  ],
+  "runs": [
+    {
+      "file": "runs/001_threejs_w1.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": true,
+      "iteration": 1,
+      "startedAt": "2026-09-19T21:42:27.260Z",
+      "durationMs": 95792,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 19,
+        "capacity_fps60": 9420,
+        "capacity_fps30": 19673,
+        "first_below_floor": 25600
+      }
+    },
+    {
+      "file": "runs/002_r3f-ref_w1.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": true,
+      "iteration": 1,
+      "startedAt": "2026-09-19T21:44:06.102Z",
+      "durationMs": 95491,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 18,
+        "capacity_fps60": 9126,
+        "capacity_fps30": 17105,
+        "first_below_floor": 18102
+      }
+    },
+    {
+      "file": "runs/003_r3f-state_w1.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": true,
+      "iteration": 1,
+      "startedAt": "2026-09-19T21:45:44.641Z",
+      "durationMs": 71710,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 15,
+        "capacity_fps60": 3614,
+        "capacity_fps30": 6103,
+        "first_below_floor": 6400
+      }
+    },
+    {
+      "file": "runs/004_r3f-ref-central_w1.json",
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": true,
+      "iteration": 1,
+      "startedAt": "2026-09-19T21:46:59.392Z",
+      "durationMs": 86079,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 18,
+        "capacity_fps60": 8656,
+        "capacity_fps30": 17048,
+        "first_below_floor": 18102
+      }
+    },
+    {
+      "file": "runs/005_threejs_i1.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 1,
+      "startedAt": "2026-09-19T21:48:28.519Z",
+      "durationMs": 96615,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 19,
+        "capacity_fps60": 9219,
+        "capacity_fps30": 18365,
+        "first_below_floor": 25600
+      }
+    },
+    {
+      "file": "runs/006_r3f-state_i1.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 1,
+      "startedAt": "2026-09-19T21:50:08.184Z",
+      "durationMs": 71801,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 15,
+        "capacity_fps60": 3539,
+        "capacity_fps30": 6105,
+        "first_below_floor": 6400
+      }
+    },
+    {
+      "file": "runs/007_r3f-ref_i1.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 1,
+      "startedAt": "2026-09-19T21:51:23.034Z",
+      "durationMs": 94958,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 18,
+        "capacity_fps60": 8639,
+        "capacity_fps30": 17949,
+        "first_below_floor": 18102
+      }
+    },
+    {
+      "file": "runs/008_r3f-ref-central_i1.json",
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 1,
+      "startedAt": "2026-09-19T21:53:01.038Z",
+      "durationMs": 85917,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 18,
+        "capacity_fps60": 8461,
+        "capacity_fps30": 17481,
+        "first_below_floor": 18102
+      }
+    },
+    {
+      "file": "runs/009_r3f-ref_i2.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 2,
+      "startedAt": "2026-09-19T21:54:29.993Z",
+      "durationMs": 95348,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 18,
+        "capacity_fps60": 9043,
+        "capacity_fps30": 17785,
+        "first_below_floor": 18102
+      }
+    },
+    {
+      "file": "runs/010_r3f-ref-central_i2.json",
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 2,
+      "startedAt": "2026-09-19T21:56:08.389Z",
+      "durationMs": 95676,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 19,
+        "capacity_fps60": 9422,
+        "capacity_fps30": 18595,
+        "first_below_floor": 25600
+      }
+    },
+    {
+      "file": "runs/011_r3f-state_i2.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 2,
+      "startedAt": "2026-09-19T21:57:47.113Z",
+      "durationMs": 71665,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 15,
+        "capacity_fps60": 3628,
+        "capacity_fps30": 6143,
+        "first_below_floor": 6400
+      }
+    },
+    {
+      "file": "runs/012_threejs_i2.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 2,
+      "startedAt": "2026-09-19T21:59:01.825Z",
+      "durationMs": 86390,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 18,
+        "capacity_fps60": 9119,
+        "capacity_fps30": 18081,
+        "first_below_floor": 18102
+      }
+    },
+    {
+      "file": "runs/013_r3f-state_i3.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 3,
+      "startedAt": "2026-09-19T22:00:31.265Z",
+      "durationMs": 71696,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 15,
+        "capacity_fps60": 3596,
+        "capacity_fps30": 6082,
+        "first_below_floor": 6400
+      }
+    },
+    {
+      "file": "runs/014_r3f-ref_i3.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 3,
+      "startedAt": "2026-09-19T22:01:46.009Z",
+      "durationMs": 114844,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 19,
+        "capacity_fps60": 9657,
+        "capacity_fps30": 18209,
+        "first_below_floor": 25600
+      }
+    },
+    {
+      "file": "runs/015_r3f-ref-central_i3.json",
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 3,
+      "startedAt": "2026-09-19T22:03:43.902Z",
+      "durationMs": 95397,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 19,
+        "capacity_fps60": 8285,
+        "capacity_fps30": 18646,
+        "first_below_floor": 25600
+      }
+    },
+    {
+      "file": "runs/016_threejs_i3.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 3,
+      "startedAt": "2026-09-19T22:05:22.348Z",
+      "durationMs": 86646,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 18,
+        "capacity_fps60": 9010,
+        "capacity_fps30": 17847,
+        "first_below_floor": 18102
+      }
+    },
+    {
+      "file": "runs/017_r3f-state_i4.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 4,
+      "startedAt": "2026-09-19T22:06:52.041Z",
+      "durationMs": 71735,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 15,
+        "capacity_fps60": 3601,
+        "capacity_fps30": 6068,
+        "first_below_floor": 6400
+      }
+    },
+    {
+      "file": "runs/018_r3f-ref_i4.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 4,
+      "startedAt": "2026-09-19T22:08:06.821Z",
+      "durationMs": 114575,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 19,
+        "capacity_fps60": 9361,
+        "capacity_fps30": 18368,
+        "first_below_floor": 25600
+      }
+    },
+    {
+      "file": "runs/019_threejs_i4.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 4,
+      "startedAt": "2026-09-19T22:10:04.443Z",
+      "durationMs": 86717,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 18,
+        "capacity_fps60": 9122,
+        "capacity_fps30": 18009,
+        "first_below_floor": 18102
+      }
+    },
+    {
+      "file": "runs/020_r3f-ref-central_i4.json",
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 4,
+      "startedAt": "2026-09-19T22:11:34.209Z",
+      "durationMs": 95925,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 19,
+        "capacity_fps60": 8864,
+        "capacity_fps30": 19330,
+        "first_below_floor": 25600
+      }
+    },
+    {
+      "file": "runs/021_threejs_i5.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 5,
+      "startedAt": "2026-09-19T22:13:13.181Z",
+      "durationMs": 86850,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 18,
+        "capacity_fps60": 8819,
+        "capacity_fps30": 17394,
+        "first_below_floor": 18102
+      }
+    },
+    {
+      "file": "runs/022_r3f-state_i5.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 5,
+      "startedAt": "2026-09-19T22:14:43.075Z",
+      "durationMs": 71771,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 15,
+        "capacity_fps60": 3580,
+        "capacity_fps30": 6189,
+        "first_below_floor": 6400
+      }
+    },
+    {
+      "file": "runs/023_r3f-ref-central_i5.json",
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 5,
+      "startedAt": "2026-09-19T22:15:57.894Z",
+      "durationMs": 95736,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 19,
+        "capacity_fps60": 8293,
+        "capacity_fps30": 18580,
+        "first_below_floor": 25600
+      }
+    },
+    {
+      "file": "runs/024_r3f-ref_i5.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 5,
+      "startedAt": "2026-09-19T22:17:36.669Z",
+      "durationMs": 114923,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 19,
+        "capacity_fps60": 9010,
+        "capacity_fps30": 18280,
+        "first_below_floor": 25600
+      }
+    },
+    {
+      "file": "runs/025_r3f-state_i6.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 6,
+      "startedAt": "2026-09-19T22:19:34.640Z",
+      "durationMs": 71692,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 15,
+        "capacity_fps60": 3583,
+        "capacity_fps30": 6222,
+        "first_below_floor": 6400
+      }
+    },
+    {
+      "file": "runs/026_r3f-ref-central_i6.json",
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 6,
+      "startedAt": "2026-09-19T22:20:49.383Z",
+      "durationMs": 95812,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 19,
+        "capacity_fps60": 9019,
+        "capacity_fps30": 18516,
+        "first_below_floor": 25600
+      }
+    },
+    {
+      "file": "runs/027_r3f-ref_i6.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 6,
+      "startedAt": "2026-09-19T22:22:28.246Z",
+      "durationMs": 95372,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 18,
+        "capacity_fps60": 8768,
+        "capacity_fps30": 16914,
+        "first_below_floor": 18102
+      }
+    },
+    {
+      "file": "runs/028_threejs_i6.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 6,
+      "startedAt": "2026-09-19T22:24:06.666Z",
+      "durationMs": 86891,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 18,
+        "capacity_fps60": 8889,
+        "capacity_fps30": 17156,
+        "first_below_floor": 18102
+      }
+    },
+    {
+      "file": "runs/029_r3f-state_i7.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 7,
+      "startedAt": "2026-09-19T22:25:36.607Z",
+      "durationMs": 81119,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 16,
+        "capacity_fps60": 3653,
+        "capacity_fps30": 6489,
+        "first_below_floor": 9051
+      }
+    },
+    {
+      "file": "runs/030_r3f-ref-central_i7.json",
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 7,
+      "startedAt": "2026-09-19T22:27:00.774Z",
+      "durationMs": 85484,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 18,
+        "capacity_fps60": 8430,
+        "capacity_fps30": 17872,
+        "first_below_floor": 18102
+      }
+    },
+    {
+      "file": "runs/031_r3f-ref_i7.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 7,
+      "startedAt": "2026-09-19T22:28:29.300Z",
+      "durationMs": 94983,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 18,
+        "capacity_fps60": 8675,
+        "capacity_fps30": 16876,
+        "first_below_floor": 18102
+      }
+    },
+    {
+      "file": "runs/032_threejs_i7.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 7,
+      "startedAt": "2026-09-19T22:30:07.334Z",
+      "durationMs": 86587,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 18,
+        "capacity_fps60": 9231,
+        "capacity_fps30": 18001,
+        "first_below_floor": 18102
+      }
+    },
+    {
+      "file": "runs/033_r3f-state_i8.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 8,
+      "startedAt": "2026-09-19T22:31:36.968Z",
+      "durationMs": 81046,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 16,
+        "capacity_fps60": 3405,
+        "capacity_fps30": 6522,
+        "first_below_floor": 9051
+      }
+    },
+    {
+      "file": "runs/034_r3f-ref_i8.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 8,
+      "startedAt": "2026-09-19T22:33:01.063Z",
+      "durationMs": 114505,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 19,
+        "capacity_fps60": 9295,
+        "capacity_fps30": 18471,
+        "first_below_floor": 25600
+      }
+    },
+    {
+      "file": "runs/035_threejs_i8.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 8,
+      "startedAt": "2026-09-19T22:34:58.615Z",
+      "durationMs": 87211,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 18,
+        "capacity_fps60": 8517,
+        "capacity_fps30": 16777,
+        "first_below_floor": 18102
+      }
+    },
+    {
+      "file": "runs/036_r3f-ref-central_i8.json",
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 8,
+      "startedAt": "2026-09-19T22:36:28.874Z",
+      "durationMs": 86043,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 18,
+        "capacity_fps60": 8849,
+        "capacity_fps30": 17155,
+        "first_below_floor": 18102
+      }
+    }
+  ]
+}

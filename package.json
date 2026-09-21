@@ -9,6 +9,8 @@
   "scripts": {
     "dev:threejs": "npm run dev -w @bench/impl-threejs",
     "dev:r3f": "npm run dev -w @bench/impl-r3f",
+    "preview:threejs": "npm run preview -w @bench/impl-threejs",
+    "preview:r3f": "npm run preview -w @bench/impl-r3f",
     "build": "npm run build -w @bench/impl-threejs && npm run build -w @bench/impl-r3f",
     "typecheck": "tsc --noEmit -p packages/scene-spec && tsc --noEmit -p packages/metrics && tsc --noEmit -p packages/impl-threejs && tsc --noEmit -p packages/impl-r3f && tsc --noEmit -p packages/harness",
     "bench": "npm run bench -w @bench/harness --",

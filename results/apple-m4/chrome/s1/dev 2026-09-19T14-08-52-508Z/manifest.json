@@ -1,0 +1,3185 @@
+{
+  "schema": 2,
+  "createdAt": "2026-09-19T14:08:55.252Z",
+  "config": {
+    "scenario": "s1",
+    "targets": [
+      {
+        "label": "threejs",
+        "impl": "threejs",
+        "mode": null
+      },
+      {
+        "label": "r3f-ref",
+        "impl": "r3f",
+        "mode": "ref"
+      }
+    ],
+    "loads": [
+      {
+        "id": "A",
+        "note": "заливка: мало объектов, 2× разрешение, тени 4096",
+        "objects": 300,
+        "shadowMapSize": 4096,
+        "renderScale": 2
+      },
+      {
+        "id": "B",
+        "note": "вершины: 3000 объектов, половинное разрешение",
+        "objects": 3000,
+        "renderScale": 0.5
+      },
+      {
+        "id": "C",
+        "note": "draw calls: 3000 объектов, лёгкая геометрия и разрешение",
+        "objects": 3000,
+        "renderScale": 0.5,
+        "detailScale": 0.25
+      },
+      {
+        "id": "D",
+        "note": "исходная сцена НИР2 (смешанная нагрузка)"
+      }
+    ],
+    "browser": "chrome",
+    "serve": "preview",
+    "build": true,
+    "iterations": 10,
+    "warmupRuns": 1,
+    "cooldownMs": 3000,
+    "order": "random",
+    "orderSeed": 973053724,
+    "warmupMs": 5000,
+    "recordMs": 30000,
+    "settleMs": 3000,
+    "clickIntervalMs": 250,
+    "clickSeed": 4242,
+    "levels": [
+      100,
+      141,
+      200,
+      283,
+      400,
+      566,
+      800,
+      1131,
+      1600,
+      2263,
+      3200,
+      4525,
+      6400,
+      9051,
+      12800,
+      18102,
+      25600,
+      36204,
+      51200
+    ],
+    "fpsFloor": 30,
+    "levelsBeyondFloor": 2,
+    "minLevelFrames": 60,
+    "renderScale": 1,
+    "detailScale": 1,
+    "parityOnly": false,
+    "skipParity": false,
+    "trace": false,
+    "gpuTimer": true,
+    "device": null,
+    "resultsDir": "/Users/levalekseev/Documents/vscode/NIR/benchmark/results"
+  },
+  "host": {
+    "node": "v22.20.0",
+    "platform": "darwin",
+    "arch": "arm64",
+    "osRelease": "27.0.0",
+    "osVersion": "27.0",
+    "cpuModel": "Apple M4",
+    "cpuCount": 10,
+    "totalMemGb": 16,
+    "lowPowerMode": "lowpowermode         0",
+    "git": {
+      "commit": "954a694534cafd030eb7b7bd7ffa566d3037f93f",
+      "dirty": false
+    },
+    "libs": {
+      "three": "0.186.0",
+      "react": "19.2.8",
+      "react-dom": "19.2.8",
+      "@react-three/fiber": "9.7.0",
+      "vite": "8.3.0",
+      "playwright": "1.63.0",
+      "typescript": "5.9.3"
+    },
+    "therm": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+    "power": "Now drawing from 'AC Power'"
+  },
+  "browser": {
+    "name": "chrome",
+    "version": "152.0.7977.83",
+    "launchArgs": [
+      "--use-gl=angle",
+      "--enable-gpu",
+      "--ignore-gpu-blocklist",
+      "--disable-frame-rate-limit",
+      "--disable-gpu-vsync",
+      "--enable-precise-memory-info",
+      "--disable-renderer-backgrounding",
+      "--disable-background-timer-throttling",
+      "--disable-backgrounding-occluded-windows"
+    ],
+    "prefs": null,
+    "vsyncUncapped": true
+  },
+  "servers": {
+    "threejs": {
+      "url": "http://localhost:4173/",
+      "coop": "same-origin",
+      "coep": "require-corp"
+    },
+    "r3f": {
+      "url": "http://localhost:4174/",
+      "coop": "same-origin",
+      "coep": "require-corp"
+    }
+  },
+  "bundles": [
+    {
+      "impl": "threejs",
+      "files": [
+        {
+          "path": "assets/index-CWSjg4EL.js",
+          "bytes": 566834,
+          "gzipBytes": 142496,
+          "brotliBytes": 117260
+        },
+        {
+          "path": "index.html",
+          "bytes": 1941,
+          "gzipBytes": 1182,
+          "brotliBytes": 862
+        }
+      ],
+      "total_bytes": 568775,
+      "total_gzip_bytes": 143678,
+      "total_brotli_bytes": 118122
+    },
+    {
+      "impl": "r3f",
+      "files": [
+        {
+          "path": "assets/index-DFy9cP-C.js",
+          "bytes": 1124722,
+          "gzipBytes": 304907,
+          "brotliBytes": 236173
+        },
+        {
+          "path": "index.html",
+          "bytes": 1959,
+          "gzipBytes": 1187,
+          "brotliBytes": 871
+        }
+      ],
+      "total_bytes": 1126681,
+      "total_gzip_bytes": 306094,
+      "total_brotli_bytes": 237044
+    }
+  ],
+  "parity": [
+    {
+      "scenario": "s1",
+      "load": "A",
+      "reference": "threejs",
+      "ok": true,
+      "entries": [
+        {
+          "label": "threejs",
+          "ok": true,
+          "issues": [],
+          "image": {
+            "exact": true,
+            "meanAbs": 0,
+            "maxAbs": 0
+          },
+          "summary": {
+            "meshCount": 301,
+            "meshDigest": "f24ef7d8",
+            "camera": "PerspectiveCamera|50.00000|1.77778|0.10000|500.00000|1.00000|0.9748,0.0000,0.2231,0.0000,0.0476,0.9770,-0.2078,0.0000,-0.2180,0.2132,0.9524,0.0000,-12.2708,18.0000,53.6137,1.0000|1.20629,0.00000,0.00000,0.00000,0.00000,2.14451,0.00000,0.00000,0.00000,0.00000,-1.00040,-1.00000,0.00000,0.00000,-0.20004,0.00000",
+            "calls": 561,
+            "triangles": 4587522,
+            "imageHash": "3053b315"
+          }
+        },
+        {
+          "label": "r3f-ref",
+          "ok": true,
+          "issues": [],
+          "image": {
+            "exact": true,
+            "meanAbs": 0,
+            "maxAbs": 0
+          },
+          "summary": {
+            "meshCount": 301,
+            "meshDigest": "f24ef7d8",
+            "camera": "PerspectiveCamera|50.00000|1.77778|0.10000|500.00000|1.00000|0.9748,0.0000,0.2231,0.0000,0.0476,0.9770,-0.2078,0.0000,-0.2180,0.2132,0.9524,0.0000,-12.2708,18.0000,53.6137,1.0000|1.20629,0.00000,0.00000,0.00000,0.00000,2.14451,0.00000,0.00000,0.00000,0.00000,-1.00040,-1.00000,0.00000,0.00000,-0.20004,0.00000",
+            "calls": 561,
+            "triangles": 4587522,
+            "imageHash": "3053b315"
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "s1",
+      "load": "B",
+      "reference": "threejs",
+      "ok": true,
+      "entries": [
+        {
+          "label": "threejs",
+          "ok": true,
+          "issues": [],
+          "image": {
+            "exact": true,
+            "meanAbs": 0,
+            "maxAbs": 0
+          },
+          "summary": {
+            "meshCount": 3001,
+            "meshDigest": "13ecfcb6",
+            "camera": "PerspectiveCamera|50.00000|1.77778|0.10000|500.00000|1.00000|0.9748,0.0000,0.2231,0.0000,0.0476,0.9770,-0.2078,0.0000,-0.2180,0.2132,0.9524,0.0000,-12.2708,18.0000,53.6137,1.0000|1.20629,0.00000,0.00000,0.00000,0.00000,2.14451,0.00000,0.00000,0.00000,0.00000,-1.00040,-1.00000,0.00000,0.00000,-0.20004,0.00000",
+            "calls": 5631,
+            "triangles": 46120962,
+            "imageHash": "b1685da8"
+          }
+        },
+        {
+          "label": "r3f-ref",
+          "ok": true,
+          "issues": [],
+          "image": {
+            "exact": true,
+            "meanAbs": 0,
+            "maxAbs": 0
+          },
+          "summary": {
+            "meshCount": 3001,
+            "meshDigest": "13ecfcb6",
+            "camera": "PerspectiveCamera|50.00000|1.77778|0.10000|500.00000|1.00000|0.9748,0.0000,0.2231,0.0000,0.0476,0.9770,-0.2078,0.0000,-0.2180,0.2132,0.9524,0.0000,-12.2708,18.0000,53.6137,1.0000|1.20629,0.00000,0.00000,0.00000,0.00000,2.14451,0.00000,0.00000,0.00000,0.00000,-1.00040,-1.00000,0.00000,0.00000,-0.20004,0.00000",
+            "calls": 5631,
+            "triangles": 46120962,
+            "imageHash": "b1685da8"
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "s1",
+      "load": "C",
+      "reference": "threejs",
+      "ok": true,
+      "entries": [
+        {
+          "label": "threejs",
+          "ok": true,
+          "issues": [],
+          "image": {
+            "exact": true,
+            "meanAbs": 0,
+            "maxAbs": 0
+          },
+          "summary": {
+            "meshCount": 3001,
+            "meshDigest": "cc2f4806",
+            "camera": "PerspectiveCamera|50.00000|1.77778|0.10000|500.00000|1.00000|0.9748,0.0000,0.2231,0.0000,0.0476,0.9770,-0.2078,0.0000,-0.2180,0.2132,0.9524,0.0000,-12.2708,18.0000,53.6137,1.0000|1.20629,0.00000,0.00000,0.00000,0.00000,2.14451,0.00000,0.00000,0.00000,0.00000,-1.00040,-1.00000,0.00000,0.00000,-0.20004,0.00000",
+            "calls": 5631,
+            "triangles": 2882562,
+            "imageHash": "143a9b9a"
+          }
+        },
+        {
+          "label": "r3f-ref",
+          "ok": true,
+          "issues": [],
+          "image": {
+            "exact": true,
+            "meanAbs": 0,
+            "maxAbs": 0
+          },
+          "summary": {
+            "meshCount": 3001,
+            "meshDigest": "cc2f4806",
+            "camera": "PerspectiveCamera|50.00000|1.77778|0.10000|500.00000|1.00000|0.9748,0.0000,0.2231,0.0000,0.0476,0.9770,-0.2078,0.0000,-0.2180,0.2132,0.9524,0.0000,-12.2708,18.0000,53.6137,1.0000|1.20629,0.00000,0.00000,0.00000,0.00000,2.14451,0.00000,0.00000,0.00000,0.00000,-1.00040,-1.00000,0.00000,0.00000,-0.20004,0.00000",
+            "calls": 5631,
+            "triangles": 2882562,
+            "imageHash": "143a9b9a"
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "s1",
+      "load": "D",
+      "reference": "threejs",
+      "ok": true,
+      "entries": [
+        {
+          "label": "threejs",
+          "ok": true,
+          "issues": [],
+          "image": {
+            "exact": true,
+            "meanAbs": 0,
+            "maxAbs": 0
+          },
+          "summary": {
+            "meshCount": 3001,
+            "meshDigest": "13ecfcb6",
+            "camera": "PerspectiveCamera|50.00000|1.77778|0.10000|500.00000|1.00000|0.9748,0.0000,0.2231,0.0000,0.0476,0.9770,-0.2078,0.0000,-0.2180,0.2132,0.9524,0.0000,-12.2708,18.0000,53.6137,1.0000|1.20629,0.00000,0.00000,0.00000,0.00000,2.14451,0.00000,0.00000,0.00000,0.00000,-1.00040,-1.00000,0.00000,0.00000,-0.20004,0.00000",
+            "calls": 5631,
+            "triangles": 46120962,
+            "imageHash": "dd1e2ea8"
+          }
+        },
+        {
+          "label": "r3f-ref",
+          "ok": true,
+          "issues": [],
+          "image": {
+            "exact": true,
+            "meanAbs": 0,
+            "maxAbs": 0
+          },
+          "summary": {
+            "meshCount": 3001,
+            "meshDigest": "13ecfcb6",
+            "camera": "PerspectiveCamera|50.00000|1.77778|0.10000|500.00000|1.00000|0.9748,0.0000,0.2231,0.0000,0.0476,0.9770,-0.2078,0.0000,-0.2180,0.2132,0.9524,0.0000,-12.2708,18.0000,53.6137,1.0000|1.20629,0.00000,0.00000,0.00000,0.00000,2.14451,0.00000,0.00000,0.00000,0.00000,-1.00040,-1.00000,0.00000,0.00000,-0.20004,0.00000",
+            "calls": 5631,
+            "triangles": 46120962,
+            "imageHash": "dd1e2ea8"
+          }
+        }
+      ]
+    }
+  ],
+  "schedule": [
+    {
+      "label": "r3f-ref",
+      "load": "B",
+      "warmup": true,
+      "iteration": 1
+    },
+    {
+      "label": "threejs",
+      "load": "A",
+      "warmup": true,
+      "iteration": 1
+    },
+    {
+      "label": "threejs",
+      "load": "C",
+      "warmup": true,
+      "iteration": 1
+    },
+    {
+      "label": "threejs",
+      "load": "D",
+      "warmup": true,
+      "iteration": 1
+    },
+    {
+      "label": "r3f-ref",
+      "load": "D",
+      "warmup": true,
+      "iteration": 1
+    },
+    {
+      "label": "threejs",
+      "load": "B",
+      "warmup": true,
+      "iteration": 1
+    },
+    {
+      "label": "r3f-ref",
+      "load": "A",
+      "warmup": true,
+      "iteration": 1
+    },
+    {
+      "label": "r3f-ref",
+      "load": "C",
+      "warmup": true,
+      "iteration": 1
+    },
+    {
+      "label": "threejs",
+      "load": "C",
+      "warmup": false,
+      "iteration": 1
+    },
+    {
+      "label": "r3f-ref",
+      "load": "A",
+      "warmup": false,
+      "iteration": 1
+    },
+    {
+      "label": "threejs",
+      "load": "D",
+      "warmup": false,
+      "iteration": 1
+    },
+    {
+      "label": "r3f-ref",
+      "load": "C",
+      "warmup": false,
+      "iteration": 1
+    },
+    {
+      "label": "threejs",
+      "load": "B",
+      "warmup": false,
+      "iteration": 1
+    },
+    {
+      "label": "r3f-ref",
+      "load": "D",
+      "warmup": false,
+      "iteration": 1
+    },
+    {
+      "label": "threejs",
+      "load": "A",
+      "warmup": false,
+      "iteration": 1
+    },
+    {
+      "label": "r3f-ref",
+      "load": "B",
+      "warmup": false,
+      "iteration": 1
+    },
+    {
+      "label": "threejs",
+      "load": "C",
+      "warmup": false,
+      "iteration": 2
+    },
+    {
+      "label": "r3f-ref",
+      "load": "A",
+      "warmup": false,
+      "iteration": 2
+    },
+    {
+      "label": "threejs",
+      "load": "B",
+      "warmup": false,
+      "iteration": 2
+    },
+    {
+      "label": "r3f-ref",
+      "load": "B",
+      "warmup": false,
+      "iteration": 2
+    },
+    {
+      "label": "threejs",
+      "load": "A",
+      "warmup": false,
+      "iteration": 2
+    },
+    {
+      "label": "r3f-ref",
+      "load": "C",
+      "warmup": false,
+      "iteration": 2
+    },
+    {
+      "label": "r3f-ref",
+      "load": "D",
+      "warmup": false,
+      "iteration": 2
+    },
+    {
+      "label": "threejs",
+      "load": "D",
+      "warmup": false,
+      "iteration": 2
+    },
+    {
+      "label": "r3f-ref",
+      "load": "D",
+      "warmup": false,
+      "iteration": 3
+    },
+    {
+      "label": "r3f-ref",
+      "load": "A",
+      "warmup": false,
+      "iteration": 3
+    },
+    {
+      "label": "threejs",
+      "load": "A",
+      "warmup": false,
+      "iteration": 3
+    },
+    {
+      "label": "r3f-ref",
+      "load": "B",
+      "warmup": false,
+      "iteration": 3
+    },
+    {
+      "label": "threejs",
+      "load": "B",
+      "warmup": false,
+      "iteration": 3
+    },
+    {
+      "label": "threejs",
+      "load": "D",
+      "warmup": false,
+      "iteration": 3
+    },
+    {
+      "label": "threejs",
+      "load": "C",
+      "warmup": false,
+      "iteration": 3
+    },
+    {
+      "label": "r3f-ref",
+      "load": "C",
+      "warmup": false,
+      "iteration": 3
+    },
+    {
+      "label": "r3f-ref",
+      "load": "B",
+      "warmup": false,
+      "iteration": 4
+    },
+    {
+      "label": "threejs",
+      "load": "C",
+      "warmup": false,
+      "iteration": 4
+    },
+    {
+      "label": "threejs",
+      "load": "B",
+      "warmup": false,
+      "iteration": 4
+    },
+    {
+      "label": "threejs",
+      "load": "A",
+      "warmup": false,
+      "iteration": 4
+    },
+    {
+      "label": "r3f-ref",
+      "load": "A",
+      "warmup": false,
+      "iteration": 4
+    },
+    {
+      "label": "r3f-ref",
+      "load": "C",
+      "warmup": false,
+      "iteration": 4
+    },
+    {
+      "label": "r3f-ref",
+      "load": "D",
+      "warmup": false,
+      "iteration": 4
+    },
+    {
+      "label": "threejs",
+      "load": "D",
+      "warmup": false,
+      "iteration": 4
+    },
+    {
+      "label": "threejs",
+      "load": "B",
+      "warmup": false,
+      "iteration": 5
+    },
+    {
+      "label": "threejs",
+      "load": "A",
+      "warmup": false,
+      "iteration": 5
+    },
+    {
+      "label": "r3f-ref",
+      "load": "A",
+      "warmup": false,
+      "iteration": 5
+    },
+    {
+      "label": "r3f-ref",
+      "load": "C",
+      "warmup": false,
+      "iteration": 5
+    },
+    {
+      "label": "r3f-ref",
+      "load": "B",
+      "warmup": false,
+      "iteration": 5
+    },
+    {
+      "label": "threejs",
+      "load": "D",
+      "warmup": false,
+      "iteration": 5
+    },
+    {
+      "label": "threejs",
+      "load": "C",
+      "warmup": false,
+      "iteration": 5
+    },
+    {
+      "label": "r3f-ref",
+      "load": "D",
+      "warmup": false,
+      "iteration": 5
+    },
+    {
+      "label": "threejs",
+      "load": "A",
+      "warmup": false,
+      "iteration": 6
+    },
+    {
+      "label": "threejs",
+      "load": "D",
+      "warmup": false,
+      "iteration": 6
+    },
+    {
+      "label": "threejs",
+      "load": "B",
+      "warmup": false,
+      "iteration": 6
+    },
+    {
+      "label": "r3f-ref",
+      "load": "B",
+      "warmup": false,
+      "iteration": 6
+    },
+    {
+      "label": "r3f-ref",
+      "load": "D",
+      "warmup": false,
+      "iteration": 6
+    },
+    {
+      "label": "r3f-ref",
+      "load": "A",
+      "warmup": false,
+      "iteration": 6
+    },
+    {
+      "label": "threejs",
+      "load": "C",
+      "warmup": false,
+      "iteration": 6
+    },
+    {
+      "label": "r3f-ref",
+      "load": "C",
+      "warmup": false,
+      "iteration": 6
+    },
+    {
+      "label": "r3f-ref",
+      "load": "D",
+      "warmup": false,
+      "iteration": 7
+    },
+    {
+      "label": "threejs",
+      "load": "D",
+      "warmup": false,
+      "iteration": 7
+    },
+    {
+      "label": "r3f-ref",
+      "load": "A",
+      "warmup": false,
+      "iteration": 7
+    },
+    {
+      "label": "threejs",
+      "load": "C",
+      "warmup": false,
+      "iteration": 7
+    },
+    {
+      "label": "r3f-ref",
+      "load": "B",
+      "warmup": false,
+      "iteration": 7
+    },
+    {
+      "label": "threejs",
+      "load": "A",
+      "warmup": false,
+      "iteration": 7
+    },
+    {
+      "label": "r3f-ref",
+      "load": "C",
+      "warmup": false,
+      "iteration": 7
+    },
+    {
+      "label": "threejs",
+      "load": "B",
+      "warmup": false,
+      "iteration": 7
+    },
+    {
+      "label": "threejs",
+      "load": "C",
+      "warmup": false,
+      "iteration": 8
+    },
+    {
+      "label": "threejs",
+      "load": "D",
+      "warmup": false,
+      "iteration": 8
+    },
+    {
+      "label": "threejs",
+      "load": "B",
+      "warmup": false,
+      "iteration": 8
+    },
+    {
+      "label": "r3f-ref",
+      "load": "A",
+      "warmup": false,
+      "iteration": 8
+    },
+    {
+      "label": "r3f-ref",
+      "load": "D",
+      "warmup": false,
+      "iteration": 8
+    },
+    {
+      "label": "threejs",
+      "load": "A",
+      "warmup": false,
+      "iteration": 8
+    },
+    {
+      "label": "r3f-ref",
+      "load": "C",
+      "warmup": false,
+      "iteration": 8
+    },
+    {
+      "label": "r3f-ref",
+      "load": "B",
+      "warmup": false,
+      "iteration": 8
+    },
+    {
+      "label": "threejs",
+      "load": "D",
+      "warmup": false,
+      "iteration": 9
+    },
+    {
+      "label": "threejs",
+      "load": "A",
+      "warmup": false,
+      "iteration": 9
+    },
+    {
+      "label": "r3f-ref",
+      "load": "D",
+      "warmup": false,
+      "iteration": 9
+    },
+    {
+      "label": "r3f-ref",
+      "load": "A",
+      "warmup": false,
+      "iteration": 9
+    },
+    {
+      "label": "threejs",
+      "load": "B",
+      "warmup": false,
+      "iteration": 9
+    },
+    {
+      "label": "r3f-ref",
+      "load": "B",
+      "warmup": false,
+      "iteration": 9
+    },
+    {
+      "label": "threejs",
+      "load": "C",
+      "warmup": false,
+      "iteration": 9
+    },
+    {
+      "label": "r3f-ref",
+      "load": "C",
+      "warmup": false,
+      "iteration": 9
+    },
+    {
+      "label": "r3f-ref",
+      "load": "D",
+      "warmup": false,
+      "iteration": 10
+    },
+    {
+      "label": "threejs",
+      "load": "B",
+      "warmup": false,
+      "iteration": 10
+    },
+    {
+      "label": "threejs",
+      "load": "C",
+      "warmup": false,
+      "iteration": 10
+    },
+    {
+      "label": "threejs",
+      "load": "D",
+      "warmup": false,
+      "iteration": 10
+    },
+    {
+      "label": "threejs",
+      "load": "A",
+      "warmup": false,
+      "iteration": 10
+    },
+    {
+      "label": "r3f-ref",
+      "load": "C",
+      "warmup": false,
+      "iteration": 10
+    },
+    {
+      "label": "r3f-ref",
+      "load": "B",
+      "warmup": false,
+      "iteration": 10
+    },
+    {
+      "label": "r3f-ref",
+      "load": "A",
+      "warmup": false,
+      "iteration": 10
+    }
+  ],
+  "runs": [
+    {
+      "file": "runs/001_r3f-ref_B_w1.json",
+      "label": "r3f-ref",
+      "load": "B",
+      "warmup": true,
+      "iteration": 1,
+      "startedAt": "2026-09-19T14:09:11.608Z",
+      "durationMs": 36279,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 54.93,
+        "frame_ms_median": 18.205,
+        "frame_ms_p99": 20.398,
+        "fps_p1_low": 47.831,
+        "jank_60_share": 0.963,
+        "update_ms_median": 0.01,
+        "render_ms_median": 18.035,
+        "gpu_ms_median": 21.086,
+        "other_ms_median": 0.135,
+        "heap_mb_peak": 641.962
+      }
+    },
+    {
+      "file": "runs/002_threejs_A_w1.json",
+      "label": "threejs",
+      "load": "A",
+      "warmup": true,
+      "iteration": 1,
+      "startedAt": "2026-09-19T14:09:50.931Z",
+      "durationMs": 35461,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 187.617,
+        "frame_ms_median": 5.33,
+        "frame_ms_p99": 6.755,
+        "fps_p1_low": 136.068,
+        "jank_60_share": 0,
+        "update_ms_median": 0.005,
+        "render_ms_median": 5.255,
+        "gpu_ms_median": 7.86,
+        "other_ms_median": 0.06,
+        "heap_mb_peak": 84.599
+      }
+    },
+    {
+      "file": "runs/003_threejs_C_w1.json",
+      "label": "threejs",
+      "load": "C",
+      "warmup": true,
+      "iteration": 1,
+      "startedAt": "2026-09-19T14:10:29.434Z",
+      "durationMs": 35364,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 105.374,
+        "frame_ms_median": 9.49,
+        "frame_ms_p99": 10.512,
+        "fps_p1_low": 93.922,
+        "jank_60_share": 0,
+        "update_ms_median": 0.005,
+        "render_ms_median": 9.37,
+        "gpu_ms_median": 5.919,
+        "other_ms_median": 0.11,
+        "heap_mb_peak": 257.708
+      }
+    },
+    {
+      "file": "runs/004_threejs_D_w1.json",
+      "label": "threejs",
+      "load": "D",
+      "warmup": true,
+      "iteration": 1,
+      "startedAt": "2026-09-19T14:11:07.842Z",
+      "durationMs": 36075,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 52.329,
+        "frame_ms_median": 19.11,
+        "frame_ms_p99": 20.895,
+        "fps_p1_low": 46.938,
+        "jank_60_share": 0.999,
+        "update_ms_median": 0.015,
+        "render_ms_median": 18.87,
+        "gpu_ms_median": 25.301,
+        "other_ms_median": 0.205,
+        "heap_mb_peak": 643.115
+      }
+    },
+    {
+      "file": "runs/005_r3f-ref_D_w1.json",
+      "label": "r3f-ref",
+      "load": "D",
+      "warmup": true,
+      "iteration": 1,
+      "startedAt": "2026-09-19T14:11:46.959Z",
+      "durationMs": 36234,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 51.387,
+        "frame_ms_median": 19.46,
+        "frame_ms_p99": 20.914,
+        "fps_p1_low": 46.868,
+        "jank_60_share": 0.999,
+        "update_ms_median": 0.015,
+        "render_ms_median": 19.22,
+        "gpu_ms_median": 25.349,
+        "other_ms_median": 0.215,
+        "heap_mb_peak": 657.412
+      }
+    },
+    {
+      "file": "runs/006_threejs_B_w1.json",
+      "label": "threejs",
+      "load": "B",
+      "warmup": true,
+      "iteration": 1,
+      "startedAt": "2026-09-19T14:12:26.236Z",
+      "durationMs": 36085,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 55.463,
+        "frame_ms_median": 18.03,
+        "frame_ms_p99": 20.353,
+        "fps_p1_low": 47.516,
+        "jank_60_share": 0.955,
+        "update_ms_median": 0.01,
+        "render_ms_median": 17.87,
+        "gpu_ms_median": 21.087,
+        "other_ms_median": 0.135,
+        "heap_mb_peak": 626.54
+      }
+    },
+    {
+      "file": "runs/007_r3f-ref_A_w1.json",
+      "label": "r3f-ref",
+      "load": "A",
+      "warmup": true,
+      "iteration": 1,
+      "startedAt": "2026-09-19T14:13:05.358Z",
+      "durationMs": 35533,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 187.266,
+        "frame_ms_median": 5.34,
+        "frame_ms_p99": 6.684,
+        "fps_p1_low": 135.449,
+        "jank_60_share": 0,
+        "update_ms_median": 0.005,
+        "render_ms_median": 5.27,
+        "gpu_ms_median": 7.856,
+        "other_ms_median": 0.06,
+        "heap_mb_peak": 89.863
+      }
+    },
+    {
+      "file": "runs/008_r3f-ref_C_w1.json",
+      "label": "r3f-ref",
+      "load": "C",
+      "warmup": true,
+      "iteration": 1,
+      "startedAt": "2026-09-19T14:13:43.937Z",
+      "durationMs": 35531,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 105.43,
+        "frame_ms_median": 9.485,
+        "frame_ms_p99": 10.675,
+        "fps_p1_low": 92.492,
+        "jank_60_share": 0,
+        "update_ms_median": 0.005,
+        "render_ms_median": 9.355,
+        "gpu_ms_median": 5.92,
+        "other_ms_median": 0.115,
+        "heap_mb_peak": 272.697
+      }
+    },
+    {
+      "file": "runs/009_threejs_C_i1.json",
+      "label": "threejs",
+      "load": "C",
+      "warmup": false,
+      "iteration": 1,
+      "startedAt": "2026-09-19T14:14:22.513Z",
+      "durationMs": 35429,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 104.603,
+        "frame_ms_median": 9.56,
+        "frame_ms_p99": 10.455,
+        "fps_p1_low": 94.373,
+        "jank_60_share": 0,
+        "update_ms_median": 0.005,
+        "render_ms_median": 9.44,
+        "gpu_ms_median": 5.913,
+        "other_ms_median": 0.11,
+        "heap_mb_peak": 257.89
+      }
+    },
+    {
+      "file": "runs/010_r3f-ref_A_i1.json",
+      "label": "r3f-ref",
+      "load": "A",
+      "warmup": false,
+      "iteration": 1,
+      "startedAt": "2026-09-19T14:15:00.990Z",
+      "durationMs": 35579,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 187.441,
+        "frame_ms_median": 5.335,
+        "frame_ms_p99": 7.01,
+        "fps_p1_low": 129.389,
+        "jank_60_share": 0,
+        "update_ms_median": 0.005,
+        "render_ms_median": 5.23,
+        "gpu_ms_median": 7.965,
+        "other_ms_median": 0.075,
+        "heap_mb_peak": 89.608
+      }
+    },
+    {
+      "file": "runs/011_threejs_D_i1.json",
+      "label": "threejs",
+      "load": "D",
+      "warmup": false,
+      "iteration": 1,
+      "startedAt": "2026-09-19T14:15:39.613Z",
+      "durationMs": 36157,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 51.746,
+        "frame_ms_median": 19.325,
+        "frame_ms_p99": 21.049,
+        "fps_p1_low": 46.656,
+        "jank_60_share": 0.998,
+        "update_ms_median": 0.015,
+        "render_ms_median": 19.095,
+        "gpu_ms_median": 25.29,
+        "other_ms_median": 0.205,
+        "heap_mb_peak": 638.192
+      }
+    },
+    {
+      "file": "runs/012_r3f-ref_C_i1.json",
+      "label": "r3f-ref",
+      "load": "C",
+      "warmup": false,
+      "iteration": 1,
+      "startedAt": "2026-09-19T14:16:18.814Z",
+      "durationMs": 35529,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 102.881,
+        "frame_ms_median": 9.72,
+        "frame_ms_p99": 10.82,
+        "fps_p1_low": 90.44,
+        "jank_60_share": 0,
+        "update_ms_median": 0.005,
+        "render_ms_median": 9.6,
+        "gpu_ms_median": 5.958,
+        "other_ms_median": 0.115,
+        "heap_mb_peak": 267.641
+      }
+    },
+    {
+      "file": "runs/013_threejs_B_i1.json",
+      "label": "threejs",
+      "load": "B",
+      "warmup": false,
+      "iteration": 1,
+      "startedAt": "2026-09-19T14:16:57.389Z",
+      "durationMs": 36080,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 55.006,
+        "frame_ms_median": 18.18,
+        "frame_ms_p99": 20.828,
+        "fps_p1_low": 46.838,
+        "jank_60_share": 0.959,
+        "update_ms_median": 0.01,
+        "render_ms_median": 18.03,
+        "gpu_ms_median": 21.131,
+        "other_ms_median": 0.135,
+        "heap_mb_peak": 635.707
+      }
+    },
+    {
+      "file": "runs/014_r3f-ref_D_i1.json",
+      "label": "r3f-ref",
+      "load": "D",
+      "warmup": false,
+      "iteration": 1,
+      "startedAt": "2026-09-19T14:17:36.505Z",
+      "durationMs": 36203,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 51.894,
+        "frame_ms_median": 19.27,
+        "frame_ms_p99": 21.021,
+        "fps_p1_low": 46.648,
+        "jank_60_share": 0.998,
+        "update_ms_median": 0.015,
+        "render_ms_median": 19.035,
+        "gpu_ms_median": 25.295,
+        "other_ms_median": 0.21,
+        "heap_mb_peak": 640.213
+      }
+    },
+    {
+      "file": "runs/015_threejs_A_i1.json",
+      "label": "threejs",
+      "load": "A",
+      "warmup": false,
+      "iteration": 1,
+      "startedAt": "2026-09-19T14:18:15.749Z",
+      "durationMs": 35422,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 184.502,
+        "frame_ms_median": 5.42,
+        "frame_ms_p99": 7.05,
+        "fps_p1_low": 129.843,
+        "jank_60_share": 0,
+        "update_ms_median": 0.005,
+        "render_ms_median": 5.33,
+        "gpu_ms_median": 8.087,
+        "other_ms_median": 0.065,
+        "heap_mb_peak": 85.731
+      }
+    },
+    {
+      "file": "runs/016_r3f-ref_B_i1.json",
+      "label": "r3f-ref",
+      "load": "B",
+      "warmup": false,
+      "iteration": 1,
+      "startedAt": "2026-09-19T14:18:54.208Z",
+      "durationMs": 36346,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 55.188,
+        "frame_ms_median": 18.12,
+        "frame_ms_p99": 20.688,
+        "fps_p1_low": 47.69,
+        "jank_60_share": 0.956,
+        "update_ms_median": 0.01,
+        "render_ms_median": 17.965,
+        "gpu_ms_median": 21.121,
+        "other_ms_median": 0.14,
+        "heap_mb_peak": 655.455
+      }
+    },
+    {
+      "file": "runs/017_threejs_C_i2.json",
+      "label": "threejs",
+      "load": "C",
+      "warmup": false,
+      "iteration": 2,
+      "startedAt": "2026-09-19T14:19:33.600Z",
+      "durationMs": 35366,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 104.767,
+        "frame_ms_median": 9.545,
+        "frame_ms_p99": 10.338,
+        "fps_p1_low": 93.83,
+        "jank_60_share": 0,
+        "update_ms_median": 0.005,
+        "render_ms_median": 9.425,
+        "gpu_ms_median": 5.912,
+        "other_ms_median": 0.11,
+        "heap_mb_peak": 255.5
+      }
+    },
+    {
+      "file": "runs/018_r3f-ref_A_i2.json",
+      "label": "r3f-ref",
+      "load": "A",
+      "warmup": false,
+      "iteration": 2,
+      "startedAt": "2026-09-19T14:20:12.010Z",
+      "durationMs": 35542,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 186.393,
+        "frame_ms_median": 5.365,
+        "frame_ms_p99": 7.065,
+        "fps_p1_low": 129.36,
+        "jank_60_share": 0,
+        "update_ms_median": 0.005,
+        "render_ms_median": 5.275,
+        "gpu_ms_median": 8.031,
+        "other_ms_median": 0.07,
+        "heap_mb_peak": 97.008
+      }
+    },
+    {
+      "file": "runs/019_threejs_B_i2.json",
+      "label": "threejs",
+      "load": "B",
+      "warmup": false,
+      "iteration": 2,
+      "startedAt": "2026-09-19T14:20:50.593Z",
+      "durationMs": 36154,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 54.855,
+        "frame_ms_median": 18.23,
+        "frame_ms_p99": 20.788,
+        "fps_p1_low": 47.444,
+        "jank_60_share": 0.951,
+        "update_ms_median": 0.01,
+        "render_ms_median": 18.08,
+        "gpu_ms_median": 21.135,
+        "other_ms_median": 0.135,
+        "heap_mb_peak": 638.65
+      }
+    },
+    {
+      "file": "runs/020_r3f-ref_B_i2.json",
+      "label": "r3f-ref",
+      "load": "B",
+      "warmup": false,
+      "iteration": 2,
+      "startedAt": "2026-09-19T14:21:29.790Z",
+      "durationMs": 36289,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 55.006,
+        "frame_ms_median": 18.18,
+        "frame_ms_p99": 22.729,
+        "fps_p1_low": 42.808,
+        "jank_60_share": 0.97,
+        "update_ms_median": 0.01,
+        "render_ms_median": 18.01,
+        "gpu_ms_median": 21.16,
+        "other_ms_median": 0.14,
+        "heap_mb_peak": 635.743
+      }
+    },
+    {
+      "file": "runs/021_threejs_A_i2.json",
+      "label": "threejs",
+      "load": "A",
+      "warmup": false,
+      "iteration": 2,
+      "startedAt": "2026-09-19T14:22:09.117Z",
+      "durationMs": 35416,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 182.648,
+        "frame_ms_median": 5.475,
+        "frame_ms_p99": 7.065,
+        "fps_p1_low": 129.608,
+        "jank_60_share": 0,
+        "update_ms_median": 0.005,
+        "render_ms_median": 5.395,
+        "gpu_ms_median": 8.127,
+        "other_ms_median": 0.065,
+        "heap_mb_peak": 86.526
+      }
+    },
+    {
+      "file": "runs/022_r3f-ref_C_i2.json",
+      "label": "r3f-ref",
+      "load": "C",
+      "warmup": false,
+      "iteration": 2,
+      "startedAt": "2026-09-19T14:22:47.568Z",
+      "durationMs": 35565,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 105.097,
+        "frame_ms_median": 9.515,
+        "frame_ms_p99": 10.575,
+        "fps_p1_low": 88.977,
+        "jank_60_share": 0,
+        "update_ms_median": 0.005,
+        "render_ms_median": 9.395,
+        "gpu_ms_median": 5.928,
+        "other_ms_median": 0.115,
+        "heap_mb_peak": 273.319
+      }
+    },
+    {
+      "file": "runs/023_r3f-ref_D_i2.json",
+      "label": "r3f-ref",
+      "load": "D",
+      "warmup": false,
+      "iteration": 2,
+      "startedAt": "2026-09-19T14:23:26.178Z",
+      "durationMs": 36243,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 52.083,
+        "frame_ms_median": 19.2,
+        "frame_ms_p99": 21.242,
+        "fps_p1_low": 44.516,
+        "jank_60_share": 0.994,
+        "update_ms_median": 0.015,
+        "render_ms_median": 18.96,
+        "gpu_ms_median": 25.352,
+        "other_ms_median": 0.21,
+        "heap_mb_peak": 649.116
+      }
+    },
+    {
+      "file": "runs/024_threejs_D_i2.json",
+      "label": "threejs",
+      "load": "D",
+      "warmup": false,
+      "iteration": 2,
+      "startedAt": "2026-09-19T14:24:05.470Z",
+      "durationMs": 36144,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 51.827,
+        "frame_ms_median": 19.295,
+        "frame_ms_p99": 21.108,
+        "fps_p1_low": 43.867,
+        "jank_60_share": 0.995,
+        "update_ms_median": 0.015,
+        "render_ms_median": 19.06,
+        "gpu_ms_median": 25.49,
+        "other_ms_median": 0.205,
+        "heap_mb_peak": 623.012
+      }
+    },
+    {
+      "file": "runs/025_r3f-ref_D_i3.json",
+      "label": "r3f-ref",
+      "load": "D",
+      "warmup": false,
+      "iteration": 3,
+      "startedAt": "2026-09-19T14:24:44.657Z",
+      "durationMs": 36326,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 51.275,
+        "frame_ms_median": 19.502,
+        "frame_ms_p99": 24.183,
+        "fps_p1_low": 40.469,
+        "jank_60_share": 0.995,
+        "update_ms_median": 0.015,
+        "render_ms_median": 19.26,
+        "gpu_ms_median": 25.641,
+        "other_ms_median": 0.21,
+        "heap_mb_peak": 646.353
+      }
+    },
+    {
+      "file": "runs/026_r3f-ref_A_i3.json",
+      "label": "r3f-ref",
+      "load": "A",
+      "warmup": false,
+      "iteration": 3,
+      "startedAt": "2026-09-19T14:25:24.029Z",
+      "durationMs": 35553,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 178.253,
+        "frame_ms_median": 5.61,
+        "frame_ms_p99": 7.577,
+        "fps_p1_low": 119.009,
+        "jank_60_share": 0,
+        "update_ms_median": 0.005,
+        "render_ms_median": 5.525,
+        "gpu_ms_median": 8.248,
+        "other_ms_median": 0.07,
+        "heap_mb_peak": 89.907
+      }
+    },
+    {
+      "file": "runs/027_threejs_A_i3.json",
+      "label": "threejs",
+      "load": "A",
+      "warmup": false,
+      "iteration": 3,
+      "startedAt": "2026-09-19T14:26:02.628Z",
+      "durationMs": 35435,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 182.648,
+        "frame_ms_median": 5.475,
+        "frame_ms_p99": 7.12,
+        "fps_p1_low": 129.366,
+        "jank_60_share": 0,
+        "update_ms_median": 0.005,
+        "render_ms_median": 5.39,
+        "gpu_ms_median": 8.146,
+        "other_ms_median": 0.07,
+        "heap_mb_peak": 87.365
+      }
+    },
+    {
+      "file": "runs/028_r3f-ref_B_i3.json",
+      "label": "r3f-ref",
+      "load": "B",
+      "warmup": false,
+      "iteration": 3,
+      "startedAt": "2026-09-19T14:26:41.109Z",
+      "durationMs": 36324,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 54.945,
+        "frame_ms_median": 18.2,
+        "frame_ms_p99": 22.626,
+        "fps_p1_low": 43.166,
+        "jank_60_share": 0.972,
+        "update_ms_median": 0.01,
+        "render_ms_median": 18.035,
+        "gpu_ms_median": 21.187,
+        "other_ms_median": 0.14,
+        "heap_mb_peak": 640.21
+      }
+    },
+    {
+      "file": "runs/029_threejs_B_i3.json",
+      "label": "threejs",
+      "load": "B",
+      "warmup": false,
+      "iteration": 3,
+      "startedAt": "2026-09-19T14:27:20.479Z",
+      "durationMs": 36150,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 54.742,
+        "frame_ms_median": 18.267,
+        "frame_ms_p99": 20.783,
+        "fps_p1_low": 46.985,
+        "jank_60_share": 0.959,
+        "update_ms_median": 0.01,
+        "render_ms_median": 18.11,
+        "gpu_ms_median": 21.103,
+        "other_ms_median": 0.135,
+        "heap_mb_peak": 634.449
+      }
+    },
+    {
+      "file": "runs/030_threejs_D_i3.json",
+      "label": "threejs",
+      "load": "D",
+      "warmup": false,
+      "iteration": 3,
+      "startedAt": "2026-09-19T14:27:59.667Z",
+      "durationMs": 36111,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 51.76,
+        "frame_ms_median": 19.32,
+        "frame_ms_p99": 21.112,
+        "fps_p1_low": 45.924,
+        "jank_60_share": 0.997,
+        "update_ms_median": 0.015,
+        "render_ms_median": 19.095,
+        "gpu_ms_median": 25.335,
+        "other_ms_median": 0.21,
+        "heap_mb_peak": 624.745
+      }
+    },
+    {
+      "file": "runs/031_threejs_C_i3.json",
+      "label": "threejs",
+      "load": "C",
+      "warmup": false,
+      "iteration": 3,
+      "startedAt": "2026-09-19T14:28:38.818Z",
+      "durationMs": 35378,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 103.466,
+        "frame_ms_median": 9.665,
+        "frame_ms_p99": 10.64,
+        "fps_p1_low": 88.703,
+        "jank_60_share": 0,
+        "update_ms_median": 0.005,
+        "render_ms_median": 9.54,
+        "gpu_ms_median": 5.936,
+        "other_ms_median": 0.11,
+        "heap_mb_peak": 257.15
+      }
+    },
+    {
+      "file": "runs/032_r3f-ref_C_i3.json",
+      "label": "r3f-ref",
+      "load": "C",
+      "warmup": false,
+      "iteration": 3,
+      "startedAt": "2026-09-19T14:29:17.243Z",
+      "durationMs": 35516,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 103.842,
+        "frame_ms_median": 9.63,
+        "frame_ms_p99": 10.47,
+        "fps_p1_low": 93.004,
+        "jank_60_share": 0,
+        "update_ms_median": 0.005,
+        "render_ms_median": 9.51,
+        "gpu_ms_median": 5.927,
+        "other_ms_median": 0.11,
+        "heap_mb_peak": 268.132
+      }
+    },
+    {
+      "file": "runs/033_r3f-ref_B_i4.json",
+      "label": "r3f-ref",
+      "load": "B",
+      "warmup": false,
+      "iteration": 4,
+      "startedAt": "2026-09-19T14:29:55.805Z",
+      "durationMs": 36226,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 55.157,
+        "frame_ms_median": 18.13,
+        "frame_ms_p99": 20.667,
+        "fps_p1_low": 47.653,
+        "jank_60_share": 0.965,
+        "update_ms_median": 0.01,
+        "render_ms_median": 17.97,
+        "gpu_ms_median": 21.153,
+        "other_ms_median": 0.14,
+        "heap_mb_peak": 642.262
+      }
+    },
+    {
+      "file": "runs/034_threejs_C_i4.json",
+      "label": "threejs",
+      "load": "C",
+      "warmup": false,
+      "iteration": 4,
+      "startedAt": "2026-09-19T14:30:35.070Z",
+      "durationMs": 35359,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 103.896,
+        "frame_ms_median": 9.625,
+        "frame_ms_p99": 10.211,
+        "fps_p1_low": 93.114,
+        "jank_60_share": 0,
+        "update_ms_median": 0.005,
+        "render_ms_median": 9.505,
+        "gpu_ms_median": 5.931,
+        "other_ms_median": 0.11,
+        "heap_mb_peak": 257.06
+      }
+    },
+    {
+      "file": "runs/035_threejs_B_i4.json",
+      "label": "threejs",
+      "load": "B",
+      "warmup": false,
+      "iteration": 4,
+      "startedAt": "2026-09-19T14:31:13.465Z",
+      "durationMs": 36064,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 54.615,
+        "frame_ms_median": 18.31,
+        "frame_ms_p99": 20.785,
+        "fps_p1_low": 46.901,
+        "jank_60_share": 0.953,
+        "update_ms_median": 0.01,
+        "render_ms_median": 18.155,
+        "gpu_ms_median": 21.109,
+        "other_ms_median": 0.135,
+        "heap_mb_peak": 629.74
+      }
+    },
+    {
+      "file": "runs/036_threejs_A_i4.json",
+      "label": "threejs",
+      "load": "A",
+      "warmup": false,
+      "iteration": 4,
+      "startedAt": "2026-09-19T14:31:52.563Z",
+      "durationMs": 35376,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 180.505,
+        "frame_ms_median": 5.54,
+        "frame_ms_p99": 7.914,
+        "fps_p1_low": 115.489,
+        "jank_60_share": 0,
+        "update_ms_median": 0.005,
+        "render_ms_median": 5.445,
+        "gpu_ms_median": 8.194,
+        "other_ms_median": 0.07,
+        "heap_mb_peak": 85.976
+      }
+    },
+    {
+      "file": "runs/037_r3f-ref_A_i4.json",
+      "label": "r3f-ref",
+      "load": "A",
+      "warmup": false,
+      "iteration": 4,
+      "startedAt": "2026-09-19T14:32:30.984Z",
+      "durationMs": 35537,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 181.818,
+        "frame_ms_median": 5.5,
+        "frame_ms_p99": 7.135,
+        "fps_p1_low": 128.805,
+        "jank_60_share": 0,
+        "update_ms_median": 0.005,
+        "render_ms_median": 5.405,
+        "gpu_ms_median": 8.164,
+        "other_ms_median": 0.07,
+        "heap_mb_peak": 95.173
+      }
+    },
+    {
+      "file": "runs/038_r3f-ref_C_i4.json",
+      "label": "r3f-ref",
+      "load": "C",
+      "warmup": false,
+      "iteration": 4,
+      "startedAt": "2026-09-19T14:33:09.568Z",
+      "durationMs": 35547,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 104.822,
+        "frame_ms_median": 9.54,
+        "frame_ms_p99": 10.416,
+        "fps_p1_low": 93.753,
+        "jank_60_share": 0,
+        "update_ms_median": 0.005,
+        "render_ms_median": 9.415,
+        "gpu_ms_median": 5.915,
+        "other_ms_median": 0.11,
+        "heap_mb_peak": 271.235
+      }
+    },
+    {
+      "file": "runs/039_r3f-ref_D_i4.json",
+      "label": "r3f-ref",
+      "load": "D",
+      "warmup": false,
+      "iteration": 4,
+      "startedAt": "2026-09-19T14:33:48.156Z",
+      "durationMs": 36212,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 51.908,
+        "frame_ms_median": 19.265,
+        "frame_ms_p99": 23.16,
+        "fps_p1_low": 42.21,
+        "jank_60_share": 0.997,
+        "update_ms_median": 0.015,
+        "render_ms_median": 19.03,
+        "gpu_ms_median": 25.398,
+        "other_ms_median": 0.21,
+        "heap_mb_peak": 646.618
+      }
+    },
+    {
+      "file": "runs/040_threejs_D_i4.json",
+      "label": "threejs",
+      "load": "D",
+      "warmup": false,
+      "iteration": 4,
+      "startedAt": "2026-09-19T14:34:27.410Z",
+      "durationMs": 36145,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 51.626,
+        "frame_ms_median": 19.37,
+        "frame_ms_p99": 23.122,
+        "fps_p1_low": 41.196,
+        "jank_60_share": 0.994,
+        "update_ms_median": 0.015,
+        "render_ms_median": 19.14,
+        "gpu_ms_median": 25.418,
+        "other_ms_median": 0.205,
+        "heap_mb_peak": 634.777
+      }
+    },
+    {
+      "file": "runs/041_threejs_B_i5.json",
+      "label": "threejs",
+      "load": "B",
+      "warmup": false,
+      "iteration": 5,
+      "startedAt": "2026-09-19T14:35:06.594Z",
+      "durationMs": 36158,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 54.93,
+        "frame_ms_median": 18.205,
+        "frame_ms_p99": 22.672,
+        "fps_p1_low": 42.78,
+        "jank_60_share": 0.966,
+        "update_ms_median": 0.01,
+        "render_ms_median": 18.05,
+        "gpu_ms_median": 21.156,
+        "other_ms_median": 0.135,
+        "heap_mb_peak": 635.093
+      }
+    },
+    {
+      "file": "runs/042_threejs_A_i5.json",
+      "label": "threejs",
+      "load": "A",
+      "warmup": false,
+      "iteration": 5,
+      "startedAt": "2026-09-19T14:35:45.796Z",
+      "durationMs": 35461,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 184.502,
+        "frame_ms_median": 5.42,
+        "frame_ms_p99": 6.99,
+        "fps_p1_low": 129.308,
+        "jank_60_share": 0,
+        "update_ms_median": 0.005,
+        "render_ms_median": 5.32,
+        "gpu_ms_median": 8.06,
+        "other_ms_median": 0.07,
+        "heap_mb_peak": 85.788
+      }
+    },
+    {
+      "file": "runs/043_r3f-ref_A_i5.json",
+      "label": "r3f-ref",
+      "load": "A",
+      "warmup": false,
+      "iteration": 5,
+      "startedAt": "2026-09-19T14:36:24.301Z",
+      "durationMs": 35543,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 183.486,
+        "frame_ms_median": 5.45,
+        "frame_ms_p99": 7.09,
+        "fps_p1_low": 128.02,
+        "jank_60_share": 0,
+        "update_ms_median": 0.005,
+        "render_ms_median": 5.355,
+        "gpu_ms_median": 8.114,
+        "other_ms_median": 0.07,
+        "heap_mb_peak": 89.923
+      }
+    },
+    {
+      "file": "runs/044_r3f-ref_C_i5.json",
+      "label": "r3f-ref",
+      "load": "C",
+      "warmup": false,
+      "iteration": 5,
+      "startedAt": "2026-09-19T14:37:02.889Z",
+      "durationMs": 35514,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 104.932,
+        "frame_ms_median": 9.53,
+        "frame_ms_p99": 10.456,
+        "fps_p1_low": 93.838,
+        "jank_60_share": 0,
+        "update_ms_median": 0.005,
+        "render_ms_median": 9.405,
+        "gpu_ms_median": 5.923,
+        "other_ms_median": 0.115,
+        "heap_mb_peak": 271.019
+      }
+    },
+    {
+      "file": "runs/045_r3f-ref_B_i5.json",
+      "label": "r3f-ref",
+      "load": "B",
+      "warmup": false,
+      "iteration": 5,
+      "startedAt": "2026-09-19T14:37:41.439Z",
+      "durationMs": 36214,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 55.188,
+        "frame_ms_median": 18.12,
+        "frame_ms_p99": 20.93,
+        "fps_p1_low": 41.009,
+        "jank_60_share": 0.934,
+        "update_ms_median": 0.01,
+        "render_ms_median": 17.965,
+        "gpu_ms_median": 21.129,
+        "other_ms_median": 0.14,
+        "heap_mb_peak": 653.328
+      }
+    },
+    {
+      "file": "runs/046_threejs_D_i5.json",
+      "label": "threejs",
+      "load": "D",
+      "warmup": false,
+      "iteration": 5,
+      "startedAt": "2026-09-19T14:38:20.702Z",
+      "durationMs": 36070,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 50.633,
+        "frame_ms_median": 19.75,
+        "frame_ms_p99": 23.562,
+        "fps_p1_low": 41.29,
+        "jank_60_share": 0.995,
+        "update_ms_median": 0.02,
+        "render_ms_median": 19.515,
+        "gpu_ms_median": 25.928,
+        "other_ms_median": 0.205,
+        "heap_mb_peak": 648.235
+      }
+    },
+    {
+      "file": "runs/047_threejs_C_i5.json",
+      "label": "threejs",
+      "load": "C",
+      "warmup": false,
+      "iteration": 5,
+      "startedAt": "2026-09-19T14:38:59.810Z",
+      "durationMs": 35383,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 105.764,
+        "frame_ms_median": 9.455,
+        "frame_ms_p99": 10.406,
+        "fps_p1_low": 95.064,
+        "jank_60_share": 0,
+        "update_ms_median": 0.005,
+        "render_ms_median": 9.335,
+        "gpu_ms_median": 5.936,
+        "other_ms_median": 0.11,
+        "heap_mb_peak": 261.099
+      }
+    },
+    {
+      "file": "runs/048_r3f-ref_D_i5.json",
+      "label": "r3f-ref",
+      "load": "D",
+      "warmup": false,
+      "iteration": 5,
+      "startedAt": "2026-09-19T14:39:38.237Z",
+      "durationMs": 36191,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 50.955,
+        "frame_ms_median": 19.625,
+        "frame_ms_p99": 21.607,
+        "fps_p1_low": 44.858,
+        "jank_60_share": 0.992,
+        "update_ms_median": 0.02,
+        "render_ms_median": 19.375,
+        "gpu_ms_median": 25.945,
+        "other_ms_median": 0.22,
+        "heap_mb_peak": 649.089
+      }
+    },
+    {
+      "file": "runs/049_threejs_A_i6.json",
+      "label": "threejs",
+      "load": "A",
+      "warmup": false,
+      "iteration": 6,
+      "startedAt": "2026-09-19T14:40:17.474Z",
+      "durationMs": 35407,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 185.874,
+        "frame_ms_median": 5.38,
+        "frame_ms_p99": 6.83,
+        "fps_p1_low": 132.743,
+        "jank_60_share": 0,
+        "update_ms_median": 0.005,
+        "render_ms_median": 5.295,
+        "gpu_ms_median": 7.872,
+        "other_ms_median": 0.075,
+        "heap_mb_peak": 86.979
+      }
+    },
+    {
+      "file": "runs/050_threejs_D_i6.json",
+      "label": "threejs",
+      "load": "D",
+      "warmup": false,
+      "iteration": 6,
+      "startedAt": "2026-09-19T14:40:55.920Z",
+      "durationMs": 36127,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 50.594,
+        "frame_ms_median": 19.765,
+        "frame_ms_p99": 21.31,
+        "fps_p1_low": 45.376,
+        "jank_60_share": 0.998,
+        "update_ms_median": 0.015,
+        "render_ms_median": 19.525,
+        "gpu_ms_median": 25.946,
+        "other_ms_median": 0.21,
+        "heap_mb_peak": 648.153
+      }
+    },
+    {
+      "file": "runs/051_threejs_B_i6.json",
+      "label": "threejs",
+      "load": "B",
+      "warmup": false,
+      "iteration": 6,
+      "startedAt": "2026-09-19T14:41:35.082Z",
+      "durationMs": 36137,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 54.047,
+        "frame_ms_median": 18.502,
+        "frame_ms_p99": 20.67,
+        "fps_p1_low": 47.097,
+        "jank_60_share": 0.968,
+        "update_ms_median": 0.01,
+        "render_ms_median": 18.355,
+        "gpu_ms_median": 21.631,
+        "other_ms_median": 0.135,
+        "heap_mb_peak": 633.799
+      }
+    },
+    {
+      "file": "runs/052_r3f-ref_B_i6.json",
+      "label": "r3f-ref",
+      "load": "B",
+      "warmup": false,
+      "iteration": 6,
+      "startedAt": "2026-09-19T14:42:14.266Z",
+      "durationMs": 36232,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 53.952,
+        "frame_ms_median": 18.535,
+        "frame_ms_p99": 21.979,
+        "fps_p1_low": 43.675,
+        "jank_60_share": 0.96,
+        "update_ms_median": 0.01,
+        "render_ms_median": 18.38,
+        "gpu_ms_median": 21.692,
+        "other_ms_median": 0.14,
+        "heap_mb_peak": 648.044
+      }
+    },
+    {
+      "file": "runs/053_r3f-ref_D_i6.json",
+      "label": "r3f-ref",
+      "load": "D",
+      "warmup": false,
+      "iteration": 6,
+      "startedAt": "2026-09-19T14:42:53.534Z",
+      "durationMs": 36198,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 51.48,
+        "frame_ms_median": 19.425,
+        "frame_ms_p99": 22.106,
+        "fps_p1_low": 44.012,
+        "jank_60_share": 0.99,
+        "update_ms_median": 0.015,
+        "render_ms_median": 19.178,
+        "gpu_ms_median": 25.944,
+        "other_ms_median": 0.215,
+        "heap_mb_peak": 649.346
+      }
+    },
+    {
+      "file": "runs/054_r3f-ref_A_i6.json",
+      "label": "r3f-ref",
+      "load": "A",
+      "warmup": false,
+      "iteration": 6,
+      "startedAt": "2026-09-19T14:43:32.770Z",
+      "durationMs": 35548,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 184.672,
+        "frame_ms_median": 5.415,
+        "frame_ms_p99": 7.022,
+        "fps_p1_low": 130.159,
+        "jank_60_share": 0,
+        "update_ms_median": 0.005,
+        "render_ms_median": 5.3,
+        "gpu_ms_median": 7.976,
+        "other_ms_median": 0.085,
+        "heap_mb_peak": 88.192
+      }
+    },
+    {
+      "file": "runs/055_threejs_C_i6.json",
+      "label": "threejs",
+      "load": "C",
+      "warmup": false,
+      "iteration": 6,
+      "startedAt": "2026-09-19T14:44:11.361Z",
+      "durationMs": 35369,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 104.657,
+        "frame_ms_median": 9.555,
+        "frame_ms_p99": 10.59,
+        "fps_p1_low": 89.73,
+        "jank_60_share": 0,
+        "update_ms_median": 0.01,
+        "render_ms_median": 9.435,
+        "gpu_ms_median": 5.926,
+        "other_ms_median": 0.11,
+        "heap_mb_peak": 258.244
+      }
+    },
+    {
+      "file": "runs/056_r3f-ref_C_i6.json",
+      "label": "r3f-ref",
+      "load": "C",
+      "warmup": false,
+      "iteration": 6,
+      "startedAt": "2026-09-19T14:44:49.773Z",
+      "durationMs": 35516,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 105.708,
+        "frame_ms_median": 9.46,
+        "frame_ms_p99": 10.527,
+        "fps_p1_low": 92.388,
+        "jank_60_share": 0,
+        "update_ms_median": 0.005,
+        "render_ms_median": 9.335,
+        "gpu_ms_median": 5.921,
+        "other_ms_median": 0.11,
+        "heap_mb_peak": 269.647
+      }
+    },
+    {
+      "file": "runs/057_r3f-ref_D_i7.json",
+      "label": "r3f-ref",
+      "load": "D",
+      "warmup": false,
+      "iteration": 7,
+      "startedAt": "2026-09-19T14:45:28.328Z",
+      "durationMs": 36200,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 51.72,
+        "frame_ms_median": 19.335,
+        "frame_ms_p99": 21.897,
+        "fps_p1_low": 43.789,
+        "jank_60_share": 0.99,
+        "update_ms_median": 0.015,
+        "render_ms_median": 19.085,
+        "gpu_ms_median": 25.929,
+        "other_ms_median": 0.215,
+        "heap_mb_peak": 635.403
+      }
+    },
+    {
+      "file": "runs/058_threejs_D_i7.json",
+      "label": "threejs",
+      "load": "D",
+      "warmup": false,
+      "iteration": 7,
+      "startedAt": "2026-09-19T14:46:07.571Z",
+      "durationMs": 36091,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 51.256,
+        "frame_ms_median": 19.51,
+        "frame_ms_p99": 21.705,
+        "fps_p1_low": 44.096,
+        "jank_60_share": 0.995,
+        "update_ms_median": 0.015,
+        "render_ms_median": 19.28,
+        "gpu_ms_median": 25.881,
+        "other_ms_median": 0.205,
+        "heap_mb_peak": 637.985
+      }
+    },
+    {
+      "file": "runs/059_r3f-ref_A_i7.json",
+      "label": "r3f-ref",
+      "load": "A",
+      "warmup": false,
+      "iteration": 7,
+      "startedAt": "2026-09-19T14:46:46.698Z",
+      "durationMs": 35587,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 181.159,
+        "frame_ms_median": 5.52,
+        "frame_ms_p99": 7.832,
+        "fps_p1_low": 116.713,
+        "jank_60_share": 0,
+        "update_ms_median": 0.005,
+        "render_ms_median": 5.42,
+        "gpu_ms_median": 8.1,
+        "other_ms_median": 0.075,
+        "heap_mb_peak": 89.26
+      }
+    },
+    {
+      "file": "runs/060_threejs_C_i7.json",
+      "label": "threejs",
+      "load": "C",
+      "warmup": false,
+      "iteration": 7,
+      "startedAt": "2026-09-19T14:47:25.325Z",
+      "durationMs": 35387,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 104.439,
+        "frame_ms_median": 9.575,
+        "frame_ms_p99": 10.622,
+        "fps_p1_low": 92.709,
+        "jank_60_share": 0,
+        "update_ms_median": 0.005,
+        "render_ms_median": 9.455,
+        "gpu_ms_median": 5.926,
+        "other_ms_median": 0.11,
+        "heap_mb_peak": 257.415
+      }
+    },
+    {
+      "file": "runs/061_r3f-ref_B_i7.json",
+      "label": "r3f-ref",
+      "load": "B",
+      "warmup": false,
+      "iteration": 7,
+      "startedAt": "2026-09-19T14:48:03.748Z",
+      "durationMs": 36227,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 53.85,
+        "frame_ms_median": 18.57,
+        "frame_ms_p99": 23.926,
+        "fps_p1_low": 39.227,
+        "jank_60_share": 0.966,
+        "update_ms_median": 0.015,
+        "render_ms_median": 18.4,
+        "gpu_ms_median": 21.905,
+        "other_ms_median": 0.145,
+        "heap_mb_peak": 642.133
+      }
+    },
+    {
+      "file": "runs/062_threejs_A_i7.json",
+      "label": "threejs",
+      "load": "A",
+      "warmup": false,
+      "iteration": 7,
+      "startedAt": "2026-09-19T14:48:43.018Z",
+      "durationMs": 35461,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 185.874,
+        "frame_ms_median": 5.38,
+        "frame_ms_p99": 8.016,
+        "fps_p1_low": 110.391,
+        "jank_60_share": 0,
+        "update_ms_median": 0.005,
+        "render_ms_median": 5.3,
+        "gpu_ms_median": 7.705,
+        "other_ms_median": 0.075,
+        "heap_mb_peak": 94.846
+      }
+    },
+    {
+      "file": "runs/063_r3f-ref_C_i7.json",
+      "label": "r3f-ref",
+      "load": "C",
+      "warmup": false,
+      "iteration": 7,
+      "startedAt": "2026-09-19T14:49:21.515Z",
+      "durationMs": 35525,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 107.124,
+        "frame_ms_median": 9.335,
+        "frame_ms_p99": 10.465,
+        "fps_p1_low": 94.136,
+        "jank_60_share": 0,
+        "update_ms_median": 0.005,
+        "render_ms_median": 9.215,
+        "gpu_ms_median": 6.761,
+        "other_ms_median": 0.11,
+        "heap_mb_peak": 272.711
+      }
+    },
+    {
+      "file": "runs/064_threejs_B_i7.json",
+      "label": "threejs",
+      "load": "B",
+      "warmup": false,
+      "iteration": 7,
+      "startedAt": "2026-09-19T14:50:00.081Z",
+      "durationMs": 36091,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 55.788,
+        "frame_ms_median": 17.925,
+        "frame_ms_p99": 22.241,
+        "fps_p1_low": 40.877,
+        "jank_60_share": 0.894,
+        "update_ms_median": 0.01,
+        "render_ms_median": 17.755,
+        "gpu_ms_median": 20.945,
+        "other_ms_median": 0.135,
+        "heap_mb_peak": 646.843
+      }
+    },
+    {
+      "file": "runs/065_threejs_C_i8.json",
+      "label": "threejs",
+      "load": "C",
+      "warmup": false,
+      "iteration": 8,
+      "startedAt": "2026-09-19T14:50:39.216Z",
+      "durationMs": 35379,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 103.306,
+        "frame_ms_median": 9.68,
+        "frame_ms_p99": 10.59,
+        "fps_p1_low": 91.328,
+        "jank_60_share": 0,
+        "update_ms_median": 0.005,
+        "render_ms_median": 9.56,
+        "gpu_ms_median": 5.934,
+        "other_ms_median": 0.11,
+        "heap_mb_peak": 257.032
+      }
+    },
+    {
+      "file": "runs/066_threejs_D_i8.json",
+      "label": "threejs",
+      "load": "D",
+      "warmup": false,
+      "iteration": 8,
+      "startedAt": "2026-09-19T14:51:17.637Z",
+      "durationMs": 36052,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 51.44,
+        "frame_ms_median": 19.44,
+        "frame_ms_p99": 20.996,
+        "fps_p1_low": 47.185,
+        "jank_60_share": 0.998,
+        "update_ms_median": 0.015,
+        "render_ms_median": 19.205,
+        "gpu_ms_median": 25.322,
+        "other_ms_median": 0.21,
+        "heap_mb_peak": 647.971
+      }
+    },
+    {
+      "file": "runs/067_threejs_B_i8.json",
+      "label": "threejs",
+      "load": "B",
+      "warmup": false,
+      "iteration": 8,
+      "startedAt": "2026-09-19T14:51:56.726Z",
+      "durationMs": 36051,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 54.422,
+        "frame_ms_median": 18.375,
+        "frame_ms_p99": 20.568,
+        "fps_p1_low": 47.43,
+        "jank_60_share": 0.951,
+        "update_ms_median": 0.01,
+        "render_ms_median": 18.23,
+        "gpu_ms_median": 21.127,
+        "other_ms_median": 0.13,
+        "heap_mb_peak": 630.703
+      }
+    },
+    {
+      "file": "runs/068_r3f-ref_A_i8.json",
+      "label": "r3f-ref",
+      "load": "A",
+      "warmup": false,
+      "iteration": 8,
+      "startedAt": "2026-09-19T14:52:35.814Z",
+      "durationMs": 35524,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 183.824,
+        "frame_ms_median": 5.44,
+        "frame_ms_p99": 7.322,
+        "fps_p1_low": 123.764,
+        "jank_60_share": 0,
+        "update_ms_median": 0.005,
+        "render_ms_median": 5.36,
+        "gpu_ms_median": 8.022,
+        "other_ms_median": 0.075,
+        "heap_mb_peak": 96.007
+      }
+    },
+    {
+      "file": "runs/069_r3f-ref_D_i8.json",
+      "label": "r3f-ref",
+      "load": "D",
+      "warmup": false,
+      "iteration": 8,
+      "startedAt": "2026-09-19T14:53:14.380Z",
+      "durationMs": 36291,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 51.374,
+        "frame_ms_median": 19.465,
+        "frame_ms_p99": 21.016,
+        "fps_p1_low": 46.179,
+        "jank_60_share": 0.998,
+        "update_ms_median": 0.015,
+        "render_ms_median": 19.235,
+        "gpu_ms_median": 25.358,
+        "other_ms_median": 0.21,
+        "heap_mb_peak": 656.184
+      }
+    },
+    {
+      "file": "runs/070_threejs_A_i8.json",
+      "label": "threejs",
+      "load": "A",
+      "warmup": false,
+      "iteration": 8,
+      "startedAt": "2026-09-19T14:53:53.715Z",
+      "durationMs": 35421,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 184.843,
+        "frame_ms_median": 5.41,
+        "frame_ms_p99": 6.68,
+        "fps_p1_low": 135.476,
+        "jank_60_share": 0,
+        "update_ms_median": 0.005,
+        "render_ms_median": 5.335,
+        "gpu_ms_median": 7.992,
+        "other_ms_median": 0.065,
+        "heap_mb_peak": 97.282
+      }
+    },
+    {
+      "file": "runs/071_r3f-ref_C_i8.json",
+      "label": "r3f-ref",
+      "load": "C",
+      "warmup": false,
+      "iteration": 8,
+      "startedAt": "2026-09-19T14:54:32.180Z",
+      "durationMs": 35514,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 104.384,
+        "frame_ms_median": 9.58,
+        "frame_ms_p99": 10.605,
+        "fps_p1_low": 92.313,
+        "jank_60_share": 0,
+        "update_ms_median": 0.005,
+        "render_ms_median": 9.45,
+        "gpu_ms_median": 5.928,
+        "other_ms_median": 0.115,
+        "heap_mb_peak": 270.806
+      }
+    },
+    {
+      "file": "runs/072_r3f-ref_B_i8.json",
+      "label": "r3f-ref",
+      "load": "B",
+      "warmup": false,
+      "iteration": 8,
+      "startedAt": "2026-09-19T14:55:10.732Z",
+      "durationMs": 36269,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 55.112,
+        "frame_ms_median": 18.145,
+        "frame_ms_p99": 20.73,
+        "fps_p1_low": 47.185,
+        "jank_60_share": 0.942,
+        "update_ms_median": 0.01,
+        "render_ms_median": 17.98,
+        "gpu_ms_median": 21.116,
+        "other_ms_median": 0.14,
+        "heap_mb_peak": 634.689
+      }
+    },
+    {
+      "file": "runs/073_threejs_D_i9.json",
+      "label": "threejs",
+      "load": "D",
+      "warmup": false,
+      "iteration": 9,
+      "startedAt": "2026-09-19T14:55:50.047Z",
+      "durationMs": 36056,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 52.11,
+        "frame_ms_median": 19.19,
+        "frame_ms_p99": 21.183,
+        "fps_p1_low": 45.267,
+        "jank_60_share": 0.994,
+        "update_ms_median": 0.015,
+        "render_ms_median": 18.96,
+        "gpu_ms_median": 25.286,
+        "other_ms_median": 0.205,
+        "heap_mb_peak": 637.557
+      }
+    },
+    {
+      "file": "runs/074_threejs_A_i9.json",
+      "label": "threejs",
+      "load": "A",
+      "warmup": false,
+      "iteration": 9,
+      "startedAt": "2026-09-19T14:56:29.140Z",
+      "durationMs": 35401,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 185.529,
+        "frame_ms_median": 5.39,
+        "frame_ms_p99": 6.957,
+        "fps_p1_low": 129.988,
+        "jank_60_share": 0,
+        "update_ms_median": 0.005,
+        "render_ms_median": 5.3,
+        "gpu_ms_median": 8.015,
+        "other_ms_median": 0.065,
+        "heap_mb_peak": 87.802
+      }
+    },
+    {
+      "file": "runs/075_r3f-ref_D_i9.json",
+      "label": "r3f-ref",
+      "load": "D",
+      "warmup": false,
+      "iteration": 9,
+      "startedAt": "2026-09-19T14:57:07.584Z",
+      "durationMs": 36249,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 52.206,
+        "frame_ms_median": 19.155,
+        "frame_ms_p99": 20.874,
+        "fps_p1_low": 46.019,
+        "jank_60_share": 0.998,
+        "update_ms_median": 0.015,
+        "render_ms_median": 18.92,
+        "gpu_ms_median": 25.361,
+        "other_ms_median": 0.215,
+        "heap_mb_peak": 645.828
+      }
+    },
+    {
+      "file": "runs/076_r3f-ref_A_i9.json",
+      "label": "r3f-ref",
+      "load": "A",
+      "warmup": false,
+      "iteration": 9,
+      "startedAt": "2026-09-19T14:57:46.878Z",
+      "durationMs": 35545,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 185.701,
+        "frame_ms_median": 5.385,
+        "frame_ms_p99": 7.085,
+        "fps_p1_low": 129.217,
+        "jank_60_share": 0,
+        "update_ms_median": 0.005,
+        "render_ms_median": 5.285,
+        "gpu_ms_median": 8.012,
+        "other_ms_median": 0.07,
+        "heap_mb_peak": 95.67
+      }
+    },
+    {
+      "file": "runs/077_threejs_B_i9.json",
+      "label": "threejs",
+      "load": "B",
+      "warmup": false,
+      "iteration": 9,
+      "startedAt": "2026-09-19T14:58:25.469Z",
+      "durationMs": 36119,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 55.157,
+        "frame_ms_median": 18.13,
+        "frame_ms_p99": 20.755,
+        "fps_p1_low": 47.248,
+        "jank_60_share": 0.958,
+        "update_ms_median": 0.01,
+        "render_ms_median": 17.98,
+        "gpu_ms_median": 21.094,
+        "other_ms_median": 0.135,
+        "heap_mb_peak": 635.086
+      }
+    },
+    {
+      "file": "runs/078_r3f-ref_B_i9.json",
+      "label": "r3f-ref",
+      "load": "B",
+      "warmup": false,
+      "iteration": 9,
+      "startedAt": "2026-09-19T14:59:04.629Z",
+      "durationMs": 36213,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 55.021,
+        "frame_ms_median": 18.175,
+        "frame_ms_p99": 20.778,
+        "fps_p1_low": 47.228,
+        "jank_60_share": 0.949,
+        "update_ms_median": 0.01,
+        "render_ms_median": 18.02,
+        "gpu_ms_median": 21.131,
+        "other_ms_median": 0.135,
+        "heap_mb_peak": 638.612
+      }
+    },
+    {
+      "file": "runs/079_threejs_C_i9.json",
+      "label": "threejs",
+      "load": "C",
+      "warmup": false,
+      "iteration": 9,
+      "startedAt": "2026-09-19T14:59:43.886Z",
+      "durationMs": 35390,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 102.775,
+        "frame_ms_median": 9.73,
+        "frame_ms_p99": 10.911,
+        "fps_p1_low": 89.492,
+        "jank_60_share": 0,
+        "update_ms_median": 0.005,
+        "render_ms_median": 9.61,
+        "gpu_ms_median": 5.953,
+        "other_ms_median": 0.11,
+        "heap_mb_peak": 248.935
+      }
+    },
+    {
+      "file": "runs/080_r3f-ref_C_i9.json",
+      "label": "r3f-ref",
+      "load": "C",
+      "warmup": false,
+      "iteration": 9,
+      "startedAt": "2026-09-19T15:00:22.324Z",
+      "durationMs": 35499,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 103.52,
+        "frame_ms_median": 9.66,
+        "frame_ms_p99": 10.82,
+        "fps_p1_low": 90.6,
+        "jank_60_share": 0,
+        "update_ms_median": 0.005,
+        "render_ms_median": 9.535,
+        "gpu_ms_median": 5.948,
+        "other_ms_median": 0.11,
+        "heap_mb_peak": 269.989
+      }
+    },
+    {
+      "file": "runs/081_r3f-ref_D_i10.json",
+      "label": "r3f-ref",
+      "load": "D",
+      "warmup": false,
+      "iteration": 10,
+      "startedAt": "2026-09-19T15:01:00.865Z",
+      "durationMs": 36210,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 51.827,
+        "frame_ms_median": 19.295,
+        "frame_ms_p99": 21.49,
+        "fps_p1_low": 44.839,
+        "jank_60_share": 0.997,
+        "update_ms_median": 0.015,
+        "render_ms_median": 19.06,
+        "gpu_ms_median": 25.321,
+        "other_ms_median": 0.21,
+        "heap_mb_peak": 648.48
+      }
+    },
+    {
+      "file": "runs/082_threejs_B_i10.json",
+      "label": "threejs",
+      "load": "B",
+      "warmup": false,
+      "iteration": 10,
+      "startedAt": "2026-09-19T15:01:40.121Z",
+      "durationMs": 36065,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 54.526,
+        "frame_ms_median": 18.34,
+        "frame_ms_p99": 22.972,
+        "fps_p1_low": 42.598,
+        "jank_60_share": 0.967,
+        "update_ms_median": 0.01,
+        "render_ms_median": 18.19,
+        "gpu_ms_median": 21.12,
+        "other_ms_median": 0.13,
+        "heap_mb_peak": 634.475
+      }
+    },
+    {
+      "file": "runs/083_threejs_C_i10.json",
+      "label": "threejs",
+      "load": "C",
+      "warmup": false,
+      "iteration": 10,
+      "startedAt": "2026-09-19T15:02:19.233Z",
+      "durationMs": 35424,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 103.306,
+        "frame_ms_median": 9.68,
+        "frame_ms_p99": 10.685,
+        "fps_p1_low": 92.387,
+        "jank_60_share": 0,
+        "update_ms_median": 0.005,
+        "render_ms_median": 9.565,
+        "gpu_ms_median": 5.946,
+        "other_ms_median": 0.11,
+        "heap_mb_peak": 255.87
+      }
+    },
+    {
+      "file": "runs/084_threejs_D_i10.json",
+      "label": "threejs",
+      "load": "D",
+      "warmup": false,
+      "iteration": 10,
+      "startedAt": "2026-09-19T15:02:57.697Z",
+      "durationMs": 36093,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 51.726,
+        "frame_ms_median": 19.333,
+        "frame_ms_p99": 21.142,
+        "fps_p1_low": 46.286,
+        "jank_60_share": 0.999,
+        "update_ms_median": 0.015,
+        "render_ms_median": 19.11,
+        "gpu_ms_median": 25.266,
+        "other_ms_median": 0.2,
+        "heap_mb_peak": 647.334
+      }
+    },
+    {
+      "file": "runs/085_threejs_A_i10.json",
+      "label": "threejs",
+      "load": "A",
+      "warmup": false,
+      "iteration": 10,
+      "startedAt": "2026-09-19T15:03:36.827Z",
+      "durationMs": 35420,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 184.332,
+        "frame_ms_median": 5.425,
+        "frame_ms_p99": 7.56,
+        "fps_p1_low": 120.178,
+        "jank_60_share": 0,
+        "update_ms_median": 0.005,
+        "render_ms_median": 5.325,
+        "gpu_ms_median": 8.066,
+        "other_ms_median": 0.075,
+        "heap_mb_peak": 87.233
+      }
+    },
+    {
+      "file": "runs/086_r3f-ref_C_i10.json",
+      "label": "r3f-ref",
+      "load": "C",
+      "warmup": false,
+      "iteration": 10,
+      "startedAt": "2026-09-19T15:04:15.288Z",
+      "durationMs": 35516,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 104.275,
+        "frame_ms_median": 9.59,
+        "frame_ms_p99": 10.574,
+        "fps_p1_low": 92.73,
+        "jank_60_share": 0,
+        "update_ms_median": 0.005,
+        "render_ms_median": 9.465,
+        "gpu_ms_median": 5.933,
+        "other_ms_median": 0.11,
+        "heap_mb_peak": 267.347
+      }
+    },
+    {
+      "file": "runs/087_r3f-ref_B_i10.json",
+      "label": "r3f-ref",
+      "load": "B",
+      "warmup": false,
+      "iteration": 10,
+      "startedAt": "2026-09-19T15:04:53.848Z",
+      "durationMs": 36238,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 55.34,
+        "frame_ms_median": 18.07,
+        "frame_ms_p99": 20.738,
+        "fps_p1_low": 47.785,
+        "jank_60_share": 0.967,
+        "update_ms_median": 0.01,
+        "render_ms_median": 17.917,
+        "gpu_ms_median": 21.116,
+        "other_ms_median": 0.14,
+        "heap_mb_peak": 640.713
+      }
+    },
+    {
+      "file": "runs/088_r3f-ref_A_i10.json",
+      "label": "r3f-ref",
+      "load": "A",
+      "warmup": false,
+      "iteration": 10,
+      "startedAt": "2026-09-19T15:05:33.131Z",
+      "durationMs": 35572,
+      "thermal": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 185.874,
+        "frame_ms_median": 5.38,
+        "frame_ms_p99": 6.965,
+        "fps_p1_low": 130.054,
+        "jank_60_share": 0,
+        "update_ms_median": 0.005,
+        "render_ms_median": 5.29,
+        "gpu_ms_median": 8.003,
+        "other_ms_median": 0.07,
+        "heap_mb_peak": 97.485
+      }
+    }
+  ]
+}
