@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import { DEV_PORTS, PREVIEW_PORTS, type BenchConfig } from './config.js';
 
 export const ROOT = fileURLToPath(new URL('../../../', import.meta.url));
-const VITE_BIN = join(ROOT, 'node_modules/.bin/vite');
+const VITE_BIN = join(ROOT, 'node_modules/vite/bin/vite.js');
 const PKG_DIR = {
   threejs: join(ROOT, 'packages/impl-threejs'),
   r3f: join(ROOT, 'packages/impl-r3f'),
@@ -54,7 +54,11 @@ export async function startServers(cfg: BenchConfig): Promise<Servers> {
     for (const impl of ['threejs', 'r3f'] as const) {
       const port = cfg.serve === 'preview' ? PREVIEW_PORTS[impl] : DEV_PORTS[impl];
       const args = cfg.serve === 'preview' ? ['preview', '--port', String(port), '--strictPort'] : ['--port', String(port), '--strictPort'];
-      const child = spawn(VITE_BIN, args, { cwd: PKG_DIR[impl], stdio: ['ignore', 'pipe', 'pipe'] });
+      const child = spawn(process.execPath, [VITE_BIN, ...args], {
+        cwd: PKG_DIR[impl],
+        stdio: ['ignore', 'pipe', 'pipe'],
+        env: { ...process.env, FORCE_COLOR: '1' },
+      });
       children.push(child);
       let stderr = '';
       child.stderr?.on('data', (d) => (stderr += String(d)));

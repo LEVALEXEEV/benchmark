@@ -1,0 +1,2849 @@
+{
+  "schema": 2,
+  "createdAt": "2026-09-19T16:06:44.360Z",
+  "config": {
+    "scenario": "s2",
+    "targets": [
+      {
+        "label": "threejs",
+        "impl": "threejs",
+        "mode": null
+      },
+      {
+        "label": "r3f-ref",
+        "impl": "r3f",
+        "mode": "ref"
+      },
+      {
+        "label": "r3f-ref-central",
+        "impl": "r3f",
+        "mode": "ref-central"
+      },
+      {
+        "label": "r3f-state",
+        "impl": "r3f",
+        "mode": "state"
+      },
+      {
+        "label": "r3f-ref+parent-state",
+        "impl": "r3f",
+        "mode": "ref",
+        "extraParams": {
+          "parentState": "1"
+        }
+      }
+    ],
+    "loads": [
+      {
+        "id": "-",
+        "note": "базовая конфигурация"
+      }
+    ],
+    "browser": "chrome",
+    "serve": "preview",
+    "build": true,
+    "iterations": 15,
+    "warmupRuns": 1,
+    "cooldownMs": 3000,
+    "order": "random",
+    "orderSeed": 980119121,
+    "warmupMs": 5000,
+    "recordMs": 30000,
+    "settleMs": 3000,
+    "clickIntervalMs": 250,
+    "clickSeed": 4242,
+    "levels": [
+      100,
+      141,
+      200,
+      283,
+      400,
+      566,
+      800,
+      1131,
+      1600,
+      2263,
+      3200,
+      4525,
+      6400,
+      9051,
+      12800,
+      18102,
+      25600,
+      36204,
+      51200
+    ],
+    "fpsFloor": 30,
+    "levelsBeyondFloor": 2,
+    "minLevelFrames": 60,
+    "renderScale": 1,
+    "detailScale": 1,
+    "parityOnly": false,
+    "skipParity": false,
+    "trace": false,
+    "gpuTimer": true,
+    "device": null,
+    "resultsDir": "C:\\Users\\morko\\Documents\\VScode\\benchmark\\results"
+  },
+  "host": {
+    "node": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "osRelease": "10.0.26200",
+    "osVersion": "Windows 11 Pro",
+    "cpuModel": "AMD Ryzen 5 3550H with Radeon Vega Mobile Gfx  ",
+    "cpuCount": 8,
+    "totalMemGb": 13.9,
+    "lowPowerMode": null,
+    "git": {
+      "commit": "954a694534cafd030eb7b7bd7ffa566d3037f93f",
+      "dirty": true
+    },
+    "libs": {
+      "three": "0.186.0",
+      "react": "19.2.8",
+      "react-dom": "19.2.8",
+      "@react-three/fiber": "9.7.0",
+      "vite": "8.3.0",
+      "playwright": "1.63.0",
+      "typescript": "5.9.3"
+    },
+    "therm": null,
+    "power": null
+  },
+  "browser": {
+    "name": "chrome",
+    "version": "153.0.8010.52",
+    "launchArgs": [
+      "--use-gl=angle",
+      "--enable-gpu",
+      "--ignore-gpu-blocklist",
+      "--disable-frame-rate-limit",
+      "--disable-gpu-vsync",
+      "--enable-precise-memory-info",
+      "--disable-renderer-backgrounding",
+      "--disable-background-timer-throttling",
+      "--disable-backgrounding-occluded-windows"
+    ],
+    "prefs": null,
+    "vsyncUncapped": true
+  },
+  "servers": {
+    "threejs": {
+      "url": "http://localhost:4173/",
+      "coop": "same-origin",
+      "coep": "require-corp"
+    },
+    "r3f": {
+      "url": "http://localhost:4174/",
+      "coop": "same-origin",
+      "coep": "require-corp"
+    }
+  },
+  "bundles": [
+    {
+      "impl": "threejs",
+      "files": [
+        {
+          "path": "assets\\index-CWSjg4EL.js",
+          "bytes": 566834,
+          "gzipBytes": 142496,
+          "brotliBytes": 117260
+        },
+        {
+          "path": "index.html",
+          "bytes": 1973,
+          "gzipBytes": 1190,
+          "brotliBytes": 861
+        }
+      ],
+      "total_bytes": 568807,
+      "total_gzip_bytes": 143686,
+      "total_brotli_bytes": 118121
+    },
+    {
+      "impl": "r3f",
+      "files": [
+        {
+          "path": "assets\\index-DFy9cP-C.js",
+          "bytes": 1124722,
+          "gzipBytes": 304907,
+          "brotliBytes": 236173
+        },
+        {
+          "path": "index.html",
+          "bytes": 1991,
+          "gzipBytes": 1194,
+          "brotliBytes": 867
+        }
+      ],
+      "total_bytes": 1126713,
+      "total_gzip_bytes": 306101,
+      "total_brotli_bytes": 237040
+    }
+  ],
+  "parity": [
+    {
+      "scenario": "s2",
+      "load": "-",
+      "reference": "threejs",
+      "ok": true,
+      "entries": [
+        {
+          "label": "threejs",
+          "ok": true,
+          "issues": [],
+          "image": {
+            "exact": true,
+            "meanAbs": 0,
+            "maxAbs": 0
+          },
+          "summary": {
+            "meshCount": 3000,
+            "meshDigest": "9e875b83",
+            "camera": "PerspectiveCamera|60.00000|1.77778|0.10000|500.00000|1.00000|1.0000,0.0000,0.0000,0.0000,0.0000,0.9762,-0.2169,0.0000,0.0000,0.2169,0.9762,0.0000,0.0000,30.0000,90.0000,1.0000|0.97428,0.00000,0.00000,0.00000,0.00000,1.73205,0.00000,0.00000,0.00000,0.00000,-1.00040,-1.00000,0.00000,0.00000,-0.20004,0.00000",
+            "calls": 2873,
+            "triangles": 34476,
+            "imageHash": "1809f94e"
+          }
+        },
+        {
+          "label": "r3f-ref",
+          "ok": true,
+          "issues": [],
+          "image": {
+            "exact": true,
+            "meanAbs": 0,
+            "maxAbs": 0
+          },
+          "summary": {
+            "meshCount": 3000,
+            "meshDigest": "9e875b83",
+            "camera": "PerspectiveCamera|60.00000|1.77778|0.10000|500.00000|1.00000|1.0000,0.0000,0.0000,0.0000,0.0000,0.9762,-0.2169,0.0000,0.0000,0.2169,0.9762,0.0000,0.0000,30.0000,90.0000,1.0000|0.97428,0.00000,0.00000,0.00000,0.00000,1.73205,0.00000,0.00000,0.00000,0.00000,-1.00040,-1.00000,0.00000,0.00000,-0.20004,0.00000",
+            "calls": 2873,
+            "triangles": 34476,
+            "imageHash": "1809f94e"
+          }
+        },
+        {
+          "label": "r3f-ref-central",
+          "ok": true,
+          "issues": [],
+          "image": {
+            "exact": true,
+            "meanAbs": 0,
+            "maxAbs": 0
+          },
+          "summary": {
+            "meshCount": 3000,
+            "meshDigest": "9e875b83",
+            "camera": "PerspectiveCamera|60.00000|1.77778|0.10000|500.00000|1.00000|1.0000,0.0000,0.0000,0.0000,0.0000,0.9762,-0.2169,0.0000,0.0000,0.2169,0.9762,0.0000,0.0000,30.0000,90.0000,1.0000|0.97428,0.00000,0.00000,0.00000,0.00000,1.73205,0.00000,0.00000,0.00000,0.00000,-1.00040,-1.00000,0.00000,0.00000,-0.20004,0.00000",
+            "calls": 2873,
+            "triangles": 34476,
+            "imageHash": "1809f94e"
+          }
+        },
+        {
+          "label": "r3f-state",
+          "ok": true,
+          "issues": [],
+          "image": {
+            "exact": true,
+            "meanAbs": 0,
+            "maxAbs": 0
+          },
+          "summary": {
+            "meshCount": 3000,
+            "meshDigest": "9e875b83",
+            "camera": "PerspectiveCamera|60.00000|1.77778|0.10000|500.00000|1.00000|1.0000,0.0000,0.0000,0.0000,0.0000,0.9762,-0.2169,0.0000,0.0000,0.2169,0.9762,0.0000,0.0000,30.0000,90.0000,1.0000|0.97428,0.00000,0.00000,0.00000,0.00000,1.73205,0.00000,0.00000,0.00000,0.00000,-1.00040,-1.00000,0.00000,0.00000,-0.20004,0.00000",
+            "calls": 2873,
+            "triangles": 34476,
+            "imageHash": "1809f94e"
+          }
+        },
+        {
+          "label": "r3f-ref+parent-state",
+          "ok": true,
+          "issues": [],
+          "image": {
+            "exact": true,
+            "meanAbs": 0,
+            "maxAbs": 0
+          },
+          "summary": {
+            "meshCount": 3000,
+            "meshDigest": "9e875b83",
+            "camera": "PerspectiveCamera|60.00000|1.77778|0.10000|500.00000|1.00000|1.0000,0.0000,0.0000,0.0000,0.0000,0.9762,-0.2169,0.0000,0.0000,0.2169,0.9762,0.0000,0.0000,30.0000,90.0000,1.0000|0.97428,0.00000,0.00000,0.00000,0.00000,1.73205,0.00000,0.00000,0.00000,0.00000,-1.00040,-1.00000,0.00000,0.00000,-0.20004,0.00000",
+            "calls": 2873,
+            "triangles": 34476,
+            "imageHash": "1809f94e"
+          }
+        }
+      ]
+    }
+  ],
+  "schedule": [
+    {
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": true,
+      "iteration": 1
+    },
+    {
+      "label": "r3f-ref+parent-state",
+      "load": "-",
+      "warmup": true,
+      "iteration": 1
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": true,
+      "iteration": 1
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": true,
+      "iteration": 1
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": true,
+      "iteration": 1
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 1
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 1
+    },
+    {
+      "label": "r3f-ref+parent-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 1
+    },
+    {
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 1
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 1
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 2
+    },
+    {
+      "label": "r3f-ref+parent-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 2
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 2
+    },
+    {
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 2
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 2
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 3
+    },
+    {
+      "label": "r3f-ref+parent-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 3
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 3
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 3
+    },
+    {
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 3
+    },
+    {
+      "label": "r3f-ref+parent-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 4
+    },
+    {
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 4
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 4
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 4
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 4
+    },
+    {
+      "label": "r3f-ref+parent-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 5
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 5
+    },
+    {
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 5
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 5
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 5
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 6
+    },
+    {
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 6
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 6
+    },
+    {
+      "label": "r3f-ref+parent-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 6
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 6
+    },
+    {
+      "label": "r3f-ref+parent-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 7
+    },
+    {
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 7
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 7
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 7
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 7
+    },
+    {
+      "label": "r3f-ref+parent-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 8
+    },
+    {
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 8
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 8
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 8
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 8
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 9
+    },
+    {
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 9
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 9
+    },
+    {
+      "label": "r3f-ref+parent-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 9
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 9
+    },
+    {
+      "label": "r3f-ref+parent-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 10
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 10
+    },
+    {
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 10
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 10
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 10
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 11
+    },
+    {
+      "label": "r3f-ref+parent-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 11
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 11
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 11
+    },
+    {
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 11
+    },
+    {
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 12
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 12
+    },
+    {
+      "label": "r3f-ref+parent-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 12
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 12
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 12
+    },
+    {
+      "label": "r3f-ref+parent-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 13
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 13
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 13
+    },
+    {
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 13
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 13
+    },
+    {
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 14
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 14
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 14
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 14
+    },
+    {
+      "label": "r3f-ref+parent-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 14
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 15
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 15
+    },
+    {
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 15
+    },
+    {
+      "label": "r3f-ref+parent-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 15
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 15
+    }
+  ],
+  "runs": [
+    {
+      "file": "runs/001_r3f-ref-central_w1.json",
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": true,
+      "iteration": 1,
+      "startedAt": "2026-09-19T16:06:55.685Z",
+      "durationMs": 36011,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 75.672,
+        "frame_ms_median": 13.215,
+        "frame_ms_p99": 21.14,
+        "fps_p1_low": 43.174,
+        "jank_60_share": 0.04,
+        "update_ms_median": 0.98,
+        "render_ms_median": 11.965,
+        "gpu_ms_median": 8.729,
+        "other_ms_median": 0.275,
+        "heap_mb_peak": 78.679
+      }
+    },
+    {
+      "file": "runs/002_r3f-ref+parent-state_w1.json",
+      "label": "r3f-ref+parent-state",
+      "load": "-",
+      "warmup": true,
+      "iteration": 1,
+      "startedAt": "2026-09-19T16:07:34.701Z",
+      "durationMs": 36057,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 72.754,
+        "frame_ms_median": 13.745,
+        "frame_ms_p99": 44.498,
+        "fps_p1_low": 20.69,
+        "jank_60_share": 0.057,
+        "update_ms_median": 1.43,
+        "render_ms_median": 11.975,
+        "gpu_ms_median": 8.664,
+        "other_ms_median": 0.285,
+        "heap_mb_peak": 205.673
+      }
+    },
+    {
+      "file": "runs/003_threejs_w1.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": true,
+      "iteration": 1,
+      "startedAt": "2026-09-19T16:08:13.776Z",
+      "durationMs": 35650,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 76.365,
+        "frame_ms_median": 13.095,
+        "frame_ms_p99": 17.991,
+        "fps_p1_low": 50.435,
+        "jank_60_share": 0.027,
+        "update_ms_median": 1.19,
+        "render_ms_median": 11.66,
+        "gpu_ms_median": 8.819,
+        "other_ms_median": 0.26,
+        "heap_mb_peak": 81.909
+      }
+    },
+    {
+      "file": "runs/004_r3f-state_w1.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": true,
+      "iteration": 1,
+      "startedAt": "2026-09-19T16:08:52.435Z",
+      "durationMs": 35982,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 25.427,
+        "frame_ms_median": 39.328,
+        "frame_ms_p99": 58.204,
+        "fps_p1_low": 16.251,
+        "jank_60_share": 1,
+        "update_ms_median": 1.825,
+        "render_ms_median": 11.765,
+        "gpu_ms_median": 8.812,
+        "other_ms_median": 25.685,
+        "heap_mb_peak": 323.586
+      }
+    },
+    {
+      "file": "runs/005_r3f-ref_w1.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": true,
+      "iteration": 1,
+      "startedAt": "2026-09-19T16:09:31.429Z",
+      "durationMs": 35990,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 68.493,
+        "frame_ms_median": 14.6,
+        "frame_ms_p99": 24.918,
+        "fps_p1_low": 34.455,
+        "jank_60_share": 0.213,
+        "update_ms_median": 1.49,
+        "render_ms_median": 12.79,
+        "gpu_ms_median": 8.985,
+        "other_ms_median": 0.28,
+        "heap_mb_peak": 74.685
+      }
+    },
+    {
+      "file": "runs/006_r3f-state_i1.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 1,
+      "startedAt": "2026-09-19T16:10:10.423Z",
+      "durationMs": 36066,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 25.294,
+        "frame_ms_median": 39.535,
+        "frame_ms_p99": 57.253,
+        "fps_p1_low": 16.043,
+        "jank_60_share": 1,
+        "update_ms_median": 1.845,
+        "render_ms_median": 11.515,
+        "gpu_ms_median": 8.788,
+        "other_ms_median": 26.115,
+        "heap_mb_peak": 316.727
+      }
+    },
+    {
+      "file": "runs/007_threejs_i1.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 1,
+      "startedAt": "2026-09-19T16:10:49.501Z",
+      "durationMs": 35646,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 75.643,
+        "frame_ms_median": 13.22,
+        "frame_ms_p99": 17.285,
+        "fps_p1_low": 52.052,
+        "jank_60_share": 0.026,
+        "update_ms_median": 1.07,
+        "render_ms_median": 11.885,
+        "gpu_ms_median": 8.502,
+        "other_ms_median": 0.26,
+        "heap_mb_peak": 66.891
+      }
+    },
+    {
+      "file": "runs/008_r3f-ref+parent-state_i1.json",
+      "label": "r3f-ref+parent-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 1,
+      "startedAt": "2026-09-19T16:11:28.167Z",
+      "durationMs": 35977,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 73.18,
+        "frame_ms_median": 13.665,
+        "frame_ms_p99": 43.318,
+        "fps_p1_low": 20.258,
+        "jank_60_share": 0.07,
+        "update_ms_median": 1.305,
+        "render_ms_median": 12.035,
+        "gpu_ms_median": 8.814,
+        "other_ms_median": 0.28,
+        "heap_mb_peak": 203.654
+      }
+    },
+    {
+      "file": "runs/009_r3f-ref-central_i1.json",
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 1,
+      "startedAt": "2026-09-19T16:12:07.154Z",
+      "durationMs": 35886,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 75.216,
+        "frame_ms_median": 13.295,
+        "frame_ms_p99": 17.835,
+        "fps_p1_low": 51.186,
+        "jank_60_share": 0.021,
+        "update_ms_median": 1.015,
+        "render_ms_median": 11.995,
+        "gpu_ms_median": 8.7,
+        "other_ms_median": 0.275,
+        "heap_mb_peak": 78.56
+      }
+    },
+    {
+      "file": "runs/010_r3f-ref_i1.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 1,
+      "startedAt": "2026-09-19T16:12:46.046Z",
+      "durationMs": 35976,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 71.429,
+        "frame_ms_median": 14,
+        "frame_ms_p99": 18.205,
+        "fps_p1_low": 51.071,
+        "jank_60_share": 0.043,
+        "update_ms_median": 1.51,
+        "render_ms_median": 12.225,
+        "gpu_ms_median": 8.713,
+        "other_ms_median": 0.28,
+        "heap_mb_peak": 90.104
+      }
+    },
+    {
+      "file": "runs/011_r3f-ref_i2.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 2,
+      "startedAt": "2026-09-19T16:13:25.041Z",
+      "durationMs": 36040,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 74.129,
+        "frame_ms_median": 13.49,
+        "frame_ms_p99": 18.291,
+        "fps_p1_low": 46.511,
+        "jank_60_share": 0.024,
+        "update_ms_median": 1.47,
+        "render_ms_median": 11.755,
+        "gpu_ms_median": 8.703,
+        "other_ms_median": 0.27,
+        "heap_mb_peak": 81.625
+      }
+    },
+    {
+      "file": "runs/012_r3f-ref+parent-state_i2.json",
+      "label": "r3f-ref+parent-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 2,
+      "startedAt": "2026-09-19T16:14:04.095Z",
+      "durationMs": 36010,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 72.543,
+        "frame_ms_median": 13.785,
+        "frame_ms_p99": 41.987,
+        "fps_p1_low": 21.305,
+        "jank_60_share": 0.055,
+        "update_ms_median": 1.32,
+        "render_ms_median": 12.14,
+        "gpu_ms_median": 8.654,
+        "other_ms_median": 0.285,
+        "heap_mb_peak": 205.337
+      }
+    },
+    {
+      "file": "runs/013_r3f-state_i2.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 2,
+      "startedAt": "2026-09-19T16:14:43.111Z",
+      "durationMs": 35947,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 25.224,
+        "frame_ms_median": 39.645,
+        "frame_ms_p99": 59.925,
+        "fps_p1_low": 13.604,
+        "jank_60_share": 1,
+        "update_ms_median": 1.88,
+        "render_ms_median": 11.96,
+        "gpu_ms_median": 8.797,
+        "other_ms_median": 25.77,
+        "heap_mb_peak": 306.627
+      }
+    },
+    {
+      "file": "runs/014_r3f-ref-central_i2.json",
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 2,
+      "startedAt": "2026-09-19T16:15:22.070Z",
+      "durationMs": 35905,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 78.585,
+        "frame_ms_median": 12.725,
+        "frame_ms_p99": 16.65,
+        "fps_p1_low": 51.299,
+        "jank_60_share": 0.01,
+        "update_ms_median": 0.965,
+        "render_ms_median": 11.48,
+        "gpu_ms_median": 8.295,
+        "other_ms_median": 0.27,
+        "heap_mb_peak": 78.893
+      }
+    },
+    {
+      "file": "runs/015_threejs_i2.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 2,
+      "startedAt": "2026-09-19T16:16:00.988Z",
+      "durationMs": 35677,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 76.923,
+        "frame_ms_median": 13,
+        "frame_ms_p99": 17.217,
+        "fps_p1_low": 52.815,
+        "jank_60_share": 0.013,
+        "update_ms_median": 1.135,
+        "render_ms_median": 11.61,
+        "gpu_ms_median": 8.82,
+        "other_ms_median": 0.255,
+        "heap_mb_peak": 69.991
+      }
+    },
+    {
+      "file": "runs/016_threejs_i3.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 3,
+      "startedAt": "2026-09-19T16:16:39.681Z",
+      "durationMs": 35713,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 75.529,
+        "frame_ms_median": 13.24,
+        "frame_ms_p99": 16.767,
+        "fps_p1_low": 55.241,
+        "jank_60_share": 0.012,
+        "update_ms_median": 1.285,
+        "render_ms_median": 11.705,
+        "gpu_ms_median": 8.807,
+        "other_ms_median": 0.255,
+        "heap_mb_peak": 83.399
+      }
+    },
+    {
+      "file": "runs/017_r3f-ref+parent-state_i3.json",
+      "label": "r3f-ref+parent-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 3,
+      "startedAt": "2026-09-19T16:17:18.411Z",
+      "durationMs": 36001,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 71.736,
+        "frame_ms_median": 13.94,
+        "frame_ms_p99": 41.297,
+        "fps_p1_low": 21.761,
+        "jank_60_share": 0.059,
+        "update_ms_median": 1.305,
+        "render_ms_median": 12.275,
+        "gpu_ms_median": 8.712,
+        "other_ms_median": 0.285,
+        "heap_mb_peak": 197.997
+      }
+    },
+    {
+      "file": "runs/018_r3f-ref_i3.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 3,
+      "startedAt": "2026-09-19T16:17:57.429Z",
+      "durationMs": 35985,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 74.047,
+        "frame_ms_median": 13.505,
+        "frame_ms_p99": 17.86,
+        "fps_p1_low": 52.168,
+        "jank_60_share": 0.029,
+        "update_ms_median": 1.435,
+        "render_ms_median": 11.8,
+        "gpu_ms_median": 8.695,
+        "other_ms_median": 0.27,
+        "heap_mb_peak": 98.47
+      }
+    },
+    {
+      "file": "runs/019_r3f-state_i3.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 3,
+      "startedAt": "2026-09-19T16:18:36.418Z",
+      "durationMs": 35956,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 25.423,
+        "frame_ms_median": 39.335,
+        "frame_ms_p99": 61.091,
+        "fps_p1_low": 14.283,
+        "jank_60_share": 1,
+        "update_ms_median": 1.885,
+        "render_ms_median": 11.575,
+        "gpu_ms_median": 8.816,
+        "other_ms_median": 25.825,
+        "heap_mb_peak": 306.433
+      }
+    },
+    {
+      "file": "runs/020_r3f-ref-central_i3.json",
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 3,
+      "startedAt": "2026-09-19T16:19:15.381Z",
+      "durationMs": 35880,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 77.7,
+        "frame_ms_median": 12.87,
+        "frame_ms_p99": 16.121,
+        "fps_p1_low": 52.3,
+        "jank_60_share": 0.008,
+        "update_ms_median": 0.93,
+        "render_ms_median": 11.665,
+        "gpu_ms_median": 8.2,
+        "other_ms_median": 0.265,
+        "heap_mb_peak": 84.31
+      }
+    },
+    {
+      "file": "runs/021_r3f-ref+parent-state_i4.json",
+      "label": "r3f-ref+parent-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 4,
+      "startedAt": "2026-09-19T16:19:54.267Z",
+      "durationMs": 36029,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 74.239,
+        "frame_ms_median": 13.47,
+        "frame_ms_p99": 41.48,
+        "fps_p1_low": 21.637,
+        "jank_60_share": 0.06,
+        "update_ms_median": 1.37,
+        "render_ms_median": 11.775,
+        "gpu_ms_median": 8.669,
+        "other_ms_median": 0.28,
+        "heap_mb_peak": 214.827
+      }
+    },
+    {
+      "file": "runs/022_r3f-ref-central_i4.json",
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 4,
+      "startedAt": "2026-09-19T16:20:33.302Z",
+      "durationMs": 35979,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 77.459,
+        "frame_ms_median": 12.91,
+        "frame_ms_p99": 17.497,
+        "fps_p1_low": 51.704,
+        "jank_60_share": 0.016,
+        "update_ms_median": 1.015,
+        "render_ms_median": 11.635,
+        "gpu_ms_median": 8.689,
+        "other_ms_median": 0.27,
+        "heap_mb_peak": 82.059
+      }
+    },
+    {
+      "file": "runs/023_r3f-state_i4.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 4,
+      "startedAt": "2026-09-19T16:21:12.297Z",
+      "durationMs": 35952,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 24.725,
+        "frame_ms_median": 40.445,
+        "frame_ms_p99": 72.55,
+        "fps_p1_low": 13.222,
+        "jank_60_share": 1,
+        "update_ms_median": 1.815,
+        "render_ms_median": 11.745,
+        "gpu_ms_median": 8.796,
+        "other_ms_median": 26.835,
+        "heap_mb_peak": 306.194
+      }
+    },
+    {
+      "file": "runs/024_r3f-ref_i4.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 4,
+      "startedAt": "2026-09-19T16:21:51.264Z",
+      "durationMs": 36025,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 74.377,
+        "frame_ms_median": 13.445,
+        "frame_ms_p99": 17.251,
+        "fps_p1_low": 50.341,
+        "jank_60_share": 0.014,
+        "update_ms_median": 1.32,
+        "render_ms_median": 11.835,
+        "gpu_ms_median": 8.192,
+        "other_ms_median": 0.275,
+        "heap_mb_peak": 81.317
+      }
+    },
+    {
+      "file": "runs/025_threejs_i4.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 4,
+      "startedAt": "2026-09-19T16:22:30.297Z",
+      "durationMs": 35633,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 77.489,
+        "frame_ms_median": 12.905,
+        "frame_ms_p99": 16.381,
+        "fps_p1_low": 56.739,
+        "jank_60_share": 0.009,
+        "update_ms_median": 1.17,
+        "render_ms_median": 11.48,
+        "gpu_ms_median": 8.78,
+        "other_ms_median": 0.26,
+        "heap_mb_peak": 81.535
+      }
+    },
+    {
+      "file": "runs/026_r3f-ref+parent-state_i5.json",
+      "label": "r3f-ref+parent-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 5,
+      "startedAt": "2026-09-19T16:23:08.947Z",
+      "durationMs": 36065,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 73.073,
+        "frame_ms_median": 13.685,
+        "frame_ms_p99": 40.929,
+        "fps_p1_low": 21.595,
+        "jank_60_share": 0.066,
+        "update_ms_median": 1.47,
+        "render_ms_median": 11.9,
+        "gpu_ms_median": 8.71,
+        "other_ms_median": 0.275,
+        "heap_mb_peak": 209.205
+      }
+    },
+    {
+      "file": "runs/027_threejs_i5.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 5,
+      "startedAt": "2026-09-19T16:23:48.027Z",
+      "durationMs": 35769,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 77.369,
+        "frame_ms_median": 12.925,
+        "frame_ms_p99": 17.505,
+        "fps_p1_low": 50.491,
+        "jank_60_share": 0.018,
+        "update_ms_median": 1.15,
+        "render_ms_median": 11.525,
+        "gpu_ms_median": 8.756,
+        "other_ms_median": 0.265,
+        "heap_mb_peak": 67.519
+      }
+    },
+    {
+      "file": "runs/028_r3f-ref-central_i5.json",
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 5,
+      "startedAt": "2026-09-19T16:24:26.807Z",
+      "durationMs": 35931,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 76.658,
+        "frame_ms_median": 13.045,
+        "frame_ms_p99": 19.747,
+        "fps_p1_low": 41.783,
+        "jank_60_share": 0.027,
+        "update_ms_median": 0.985,
+        "render_ms_median": 11.78,
+        "gpu_ms_median": 8.737,
+        "other_ms_median": 0.275,
+        "heap_mb_peak": 85.009
+      }
+    },
+    {
+      "file": "runs/029_r3f-ref_i5.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 5,
+      "startedAt": "2026-09-19T16:25:05.754Z",
+      "durationMs": 35998,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 73.421,
+        "frame_ms_median": 13.62,
+        "frame_ms_p99": 17.923,
+        "fps_p1_low": 50.269,
+        "jank_60_share": 0.031,
+        "update_ms_median": 1.375,
+        "render_ms_median": 11.98,
+        "gpu_ms_median": 8.7,
+        "other_ms_median": 0.27,
+        "heap_mb_peak": 81.289
+      }
+    },
+    {
+      "file": "runs/030_r3f-state_i5.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 5,
+      "startedAt": "2026-09-19T16:25:44.769Z",
+      "durationMs": 36015,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 25.11,
+        "frame_ms_median": 39.825,
+        "frame_ms_p99": 65.779,
+        "fps_p1_low": 13.74,
+        "jank_60_share": 1,
+        "update_ms_median": 1.755,
+        "render_ms_median": 11.55,
+        "gpu_ms_median": 8.852,
+        "other_ms_median": 26.49,
+        "heap_mb_peak": 313.776
+      }
+    },
+    {
+      "file": "runs/031_threejs_i6.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 6,
+      "startedAt": "2026-09-19T16:26:23.791Z",
+      "durationMs": 35628,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 79.334,
+        "frame_ms_median": 12.605,
+        "frame_ms_p99": 16.398,
+        "fps_p1_low": 54.352,
+        "jank_60_share": 0.009,
+        "update_ms_median": 1.05,
+        "render_ms_median": 11.292,
+        "gpu_ms_median": 8.414,
+        "other_ms_median": 0.26,
+        "heap_mb_peak": 76.671
+      }
+    },
+    {
+      "file": "runs/032_r3f-ref-central_i6.json",
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 6,
+      "startedAt": "2026-09-19T16:27:02.426Z",
+      "durationMs": 35952,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 77.61,
+        "frame_ms_median": 12.885,
+        "frame_ms_p99": 16.845,
+        "fps_p1_low": 55.749,
+        "jank_60_share": 0.013,
+        "update_ms_median": 0.985,
+        "render_ms_median": 11.64,
+        "gpu_ms_median": 8.664,
+        "other_ms_median": 0.27,
+        "heap_mb_peak": 94.607
+      }
+    },
+    {
+      "file": "runs/033_r3f-ref_i6.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 6,
+      "startedAt": "2026-09-19T16:27:41.384Z",
+      "durationMs": 36064,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 74.129,
+        "frame_ms_median": 13.49,
+        "frame_ms_p99": 18.471,
+        "fps_p1_low": 49.079,
+        "jank_60_share": 0.033,
+        "update_ms_median": 1.355,
+        "render_ms_median": 11.865,
+        "gpu_ms_median": 8.665,
+        "other_ms_median": 0.27,
+        "heap_mb_peak": 81.242
+      }
+    },
+    {
+      "file": "runs/034_r3f-ref+parent-state_i6.json",
+      "label": "r3f-ref+parent-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 6,
+      "startedAt": "2026-09-19T16:28:20.465Z",
+      "durationMs": 35980,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 73.828,
+        "frame_ms_median": 13.545,
+        "frame_ms_p99": 41.436,
+        "fps_p1_low": 22.166,
+        "jank_60_share": 0.052,
+        "update_ms_median": 1.3,
+        "render_ms_median": 11.92,
+        "gpu_ms_median": 8.697,
+        "other_ms_median": 0.275,
+        "heap_mb_peak": 212.024
+      }
+    },
+    {
+      "file": "runs/035_r3f-state_i6.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 6,
+      "startedAt": "2026-09-19T16:28:59.463Z",
+      "durationMs": 35915,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 24.978,
+        "frame_ms_median": 40.035,
+        "frame_ms_p99": 63.624,
+        "fps_p1_low": 14.518,
+        "jank_60_share": 1,
+        "update_ms_median": 1.93,
+        "render_ms_median": 11.725,
+        "gpu_ms_median": 8.871,
+        "other_ms_median": 26.36,
+        "heap_mb_peak": 322.718
+      }
+    },
+    {
+      "file": "runs/036_r3f-ref+parent-state_i7.json",
+      "label": "r3f-ref+parent-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 7,
+      "startedAt": "2026-09-19T16:29:38.385Z",
+      "durationMs": 35958,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 72.674,
+        "frame_ms_median": 13.76,
+        "frame_ms_p99": 40.23,
+        "fps_p1_low": 22.111,
+        "jank_60_share": 0.041,
+        "update_ms_median": 1.245,
+        "render_ms_median": 12.2,
+        "gpu_ms_median": 8.259,
+        "other_ms_median": 0.275,
+        "heap_mb_peak": 196.337
+      }
+    },
+    {
+      "file": "runs/037_r3f-ref-central_i7.json",
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 7,
+      "startedAt": "2026-09-19T16:30:17.356Z",
+      "durationMs": 35902,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 77.489,
+        "frame_ms_median": 12.905,
+        "frame_ms_p99": 17.536,
+        "fps_p1_low": 52.796,
+        "jank_60_share": 0.017,
+        "update_ms_median": 0.995,
+        "render_ms_median": 11.625,
+        "gpu_ms_median": 8.723,
+        "other_ms_median": 0.275,
+        "heap_mb_peak": 74.511
+      }
+    },
+    {
+      "file": "runs/038_r3f-state_i7.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 7,
+      "startedAt": "2026-09-19T16:30:56.272Z",
+      "durationMs": 36046,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 25.52,
+        "frame_ms_median": 39.185,
+        "frame_ms_p99": 64.38,
+        "fps_p1_low": 14.965,
+        "jank_60_share": 1,
+        "update_ms_median": 1.8,
+        "render_ms_median": 11.78,
+        "gpu_ms_median": 8.832,
+        "other_ms_median": 25.545,
+        "heap_mb_peak": 326.625
+      }
+    },
+    {
+      "file": "runs/039_threejs_i7.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 7,
+      "startedAt": "2026-09-19T16:31:35.322Z",
+      "durationMs": 35660,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 79.239,
+        "frame_ms_median": 12.62,
+        "frame_ms_p99": 16.604,
+        "fps_p1_low": 51.681,
+        "jank_60_share": 0.009,
+        "update_ms_median": 1.05,
+        "render_ms_median": 11.295,
+        "gpu_ms_median": 8.448,
+        "other_ms_median": 0.26,
+        "heap_mb_peak": 84.215
+      }
+    },
+    {
+      "file": "runs/040_r3f-ref_i7.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 7,
+      "startedAt": "2026-09-19T16:32:13.999Z",
+      "durationMs": 35962,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 73.774,
+        "frame_ms_median": 13.555,
+        "frame_ms_p99": 20.217,
+        "fps_p1_low": 43.388,
+        "jank_60_share": 0.039,
+        "update_ms_median": 1.405,
+        "render_ms_median": 11.875,
+        "gpu_ms_median": 8.716,
+        "other_ms_median": 0.27,
+        "heap_mb_peak": 81.175
+      }
+    },
+    {
+      "file": "runs/041_r3f-ref+parent-state_i8.json",
+      "label": "r3f-ref+parent-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 8,
+      "startedAt": "2026-09-19T16:32:52.971Z",
+      "durationMs": 36003,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 72.359,
+        "frame_ms_median": 13.82,
+        "frame_ms_p99": 39.474,
+        "fps_p1_low": 23.261,
+        "jank_60_share": 0.077,
+        "update_ms_median": 1.335,
+        "render_ms_median": 12.14,
+        "gpu_ms_median": 8.746,
+        "other_ms_median": 0.285,
+        "heap_mb_peak": 189.972
+      }
+    },
+    {
+      "file": "runs/042_r3f-ref-central_i8.json",
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 8,
+      "startedAt": "2026-09-19T16:33:31.988Z",
+      "durationMs": 35889,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 76.336,
+        "frame_ms_median": 13.1,
+        "frame_ms_p99": 17.69,
+        "fps_p1_low": 51.954,
+        "jank_60_share": 0.022,
+        "update_ms_median": 1.005,
+        "render_ms_median": 11.82,
+        "gpu_ms_median": 8.734,
+        "other_ms_median": 0.27,
+        "heap_mb_peak": 78.482
+      }
+    },
+    {
+      "file": "runs/043_r3f-ref_i8.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 8,
+      "startedAt": "2026-09-19T16:34:10.892Z",
+      "durationMs": 36000,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 73.099,
+        "frame_ms_median": 13.68,
+        "frame_ms_p99": 18.105,
+        "fps_p1_low": 52.052,
+        "jank_60_share": 0.034,
+        "update_ms_median": 1.405,
+        "render_ms_median": 12,
+        "gpu_ms_median": 8.725,
+        "other_ms_median": 0.275,
+        "heap_mb_peak": 92.608
+      }
+    },
+    {
+      "file": "runs/044_threejs_i8.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 8,
+      "startedAt": "2026-09-19T16:34:49.897Z",
+      "durationMs": 35773,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 76.879,
+        "frame_ms_median": 13.008,
+        "frame_ms_p99": 18.781,
+        "fps_p1_low": 50.227,
+        "jank_60_share": 0.029,
+        "update_ms_median": 1.095,
+        "render_ms_median": 11.66,
+        "gpu_ms_median": 8.768,
+        "other_ms_median": 0.26,
+        "heap_mb_peak": 84.836
+      }
+    },
+    {
+      "file": "runs/045_r3f-state_i8.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 8,
+      "startedAt": "2026-09-19T16:35:28.689Z",
+      "durationMs": 36043,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 24.322,
+        "frame_ms_median": 41.115,
+        "frame_ms_p99": 61.337,
+        "fps_p1_low": 13.732,
+        "jank_60_share": 1,
+        "update_ms_median": 1.88,
+        "render_ms_median": 11.725,
+        "gpu_ms_median": 8.823,
+        "other_ms_median": 27.45,
+        "heap_mb_peak": 306.069
+      }
+    },
+    {
+      "file": "runs/046_r3f-state_i9.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 9,
+      "startedAt": "2026-09-19T16:36:07.748Z",
+      "durationMs": 35975,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 25.288,
+        "frame_ms_median": 39.545,
+        "frame_ms_p99": 58.806,
+        "fps_p1_low": 13.867,
+        "jank_60_share": 1,
+        "update_ms_median": 1.765,
+        "render_ms_median": 11.76,
+        "gpu_ms_median": 8.869,
+        "other_ms_median": 25.965,
+        "heap_mb_peak": 317.279
+      }
+    },
+    {
+      "file": "runs/047_r3f-ref-central_i9.json",
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 9,
+      "startedAt": "2026-09-19T16:36:46.741Z",
+      "durationMs": 35947,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 77.071,
+        "frame_ms_median": 12.975,
+        "frame_ms_p99": 16.952,
+        "fps_p1_low": 50.922,
+        "jank_60_share": 0.012,
+        "update_ms_median": 0.955,
+        "render_ms_median": 11.74,
+        "gpu_ms_median": 8.205,
+        "other_ms_median": 0.265,
+        "heap_mb_peak": 79.387
+      }
+    },
+    {
+      "file": "runs/048_r3f-ref_i9.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 9,
+      "startedAt": "2026-09-19T16:37:25.691Z",
+      "durationMs": 35964,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 75.758,
+        "frame_ms_median": 13.2,
+        "frame_ms_p99": 17.827,
+        "fps_p1_low": 52.612,
+        "jank_60_share": 0.023,
+        "update_ms_median": 1.43,
+        "render_ms_median": 11.495,
+        "gpu_ms_median": 8.6,
+        "other_ms_median": 0.275,
+        "heap_mb_peak": 99.356
+      }
+    },
+    {
+      "file": "runs/049_r3f-ref+parent-state_i9.json",
+      "label": "r3f-ref+parent-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 9,
+      "startedAt": "2026-09-19T16:38:04.664Z",
+      "durationMs": 35969,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 73.368,
+        "frame_ms_median": 13.63,
+        "frame_ms_p99": 43.68,
+        "fps_p1_low": 18.926,
+        "jank_60_share": 0.066,
+        "update_ms_median": 1.335,
+        "render_ms_median": 11.98,
+        "gpu_ms_median": 8.693,
+        "other_ms_median": 0.275,
+        "heap_mb_peak": 232.723
+      }
+    },
+    {
+      "file": "runs/050_threejs_i9.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 9,
+      "startedAt": "2026-09-19T16:38:43.660Z",
+      "durationMs": 35644,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 77.549,
+        "frame_ms_median": 12.895,
+        "frame_ms_p99": 16.935,
+        "fps_p1_low": 52.475,
+        "jank_60_share": 0.013,
+        "update_ms_median": 1.085,
+        "render_ms_median": 11.545,
+        "gpu_ms_median": 8.829,
+        "other_ms_median": 0.26,
+        "heap_mb_peak": 78.199
+      }
+    },
+    {
+      "file": "runs/051_r3f-ref+parent-state_i10.json",
+      "label": "r3f-ref+parent-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 10,
+      "startedAt": "2026-09-19T16:39:22.314Z",
+      "durationMs": 36012,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 74.019,
+        "frame_ms_median": 13.51,
+        "frame_ms_p99": 40.57,
+        "fps_p1_low": 21.57,
+        "jank_60_share": 0.062,
+        "update_ms_median": 1.305,
+        "render_ms_median": 11.895,
+        "gpu_ms_median": 8.722,
+        "other_ms_median": 0.28,
+        "heap_mb_peak": 224.054
+      }
+    },
+    {
+      "file": "runs/052_r3f-ref_i10.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 10,
+      "startedAt": "2026-09-19T16:40:01.342Z",
+      "durationMs": 36020,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 72.072,
+        "frame_ms_median": 13.875,
+        "frame_ms_p99": 18.196,
+        "fps_p1_low": 51.324,
+        "jank_60_share": 0.032,
+        "update_ms_median": 1.48,
+        "render_ms_median": 12.125,
+        "gpu_ms_median": 8.759,
+        "other_ms_median": 0.275,
+        "heap_mb_peak": 85.099
+      }
+    },
+    {
+      "file": "runs/053_r3f-ref-central_i10.json",
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 10,
+      "startedAt": "2026-09-19T16:40:40.370Z",
+      "durationMs": 35866,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 75.586,
+        "frame_ms_median": 13.23,
+        "frame_ms_p99": 17.928,
+        "fps_p1_low": 49.979,
+        "jank_60_share": 0.021,
+        "update_ms_median": 0.99,
+        "render_ms_median": 11.975,
+        "gpu_ms_median": 8.725,
+        "other_ms_median": 0.275,
+        "heap_mb_peak": 78.92
+      }
+    },
+    {
+      "file": "runs/054_threejs_i10.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 10,
+      "startedAt": "2026-09-19T16:41:19.239Z",
+      "durationMs": 35747,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 75.988,
+        "frame_ms_median": 13.16,
+        "frame_ms_p99": 16.847,
+        "fps_p1_low": 55.164,
+        "jank_60_share": 0.012,
+        "update_ms_median": 1.175,
+        "render_ms_median": 11.715,
+        "gpu_ms_median": 8.798,
+        "other_ms_median": 0.26,
+        "heap_mb_peak": 86.365
+      }
+    },
+    {
+      "file": "runs/055_r3f-state_i10.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 10,
+      "startedAt": "2026-09-19T16:41:58.001Z",
+      "durationMs": 36108,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 25.468,
+        "frame_ms_median": 39.265,
+        "frame_ms_p99": 72.996,
+        "fps_p1_low": 13.207,
+        "jank_60_share": 1,
+        "update_ms_median": 1.805,
+        "render_ms_median": 11.49,
+        "gpu_ms_median": 8.814,
+        "other_ms_median": 25.89,
+        "heap_mb_peak": 323.879
+      }
+    },
+    {
+      "file": "runs/056_threejs_i11.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 11,
+      "startedAt": "2026-09-19T16:42:37.121Z",
+      "durationMs": 35756,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 79.46,
+        "frame_ms_median": 12.585,
+        "frame_ms_p99": 16.696,
+        "fps_p1_low": 52.467,
+        "jank_60_share": 0.01,
+        "update_ms_median": 1.09,
+        "render_ms_median": 11.22,
+        "gpu_ms_median": 8.535,
+        "other_ms_median": 0.265,
+        "heap_mb_peak": 88.026
+      }
+    },
+    {
+      "file": "runs/057_r3f-ref+parent-state_i11.json",
+      "label": "r3f-ref+parent-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 11,
+      "startedAt": "2026-09-19T16:43:15.892Z",
+      "durationMs": 35989,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 72.046,
+        "frame_ms_median": 13.88,
+        "frame_ms_p99": 41.112,
+        "fps_p1_low": 21.254,
+        "jank_60_share": 0.063,
+        "update_ms_median": 1.29,
+        "render_ms_median": 12.26,
+        "gpu_ms_median": 8.708,
+        "other_ms_median": 0.28,
+        "heap_mb_peak": 200.237
+      }
+    },
+    {
+      "file": "runs/058_r3f-ref_i11.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 11,
+      "startedAt": "2026-09-19T16:43:54.888Z",
+      "durationMs": 36018,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 73.638,
+        "frame_ms_median": 13.58,
+        "frame_ms_p99": 17.929,
+        "fps_p1_low": 49.382,
+        "jank_60_share": 0.025,
+        "update_ms_median": 1.38,
+        "render_ms_median": 11.92,
+        "gpu_ms_median": 8.723,
+        "other_ms_median": 0.27,
+        "heap_mb_peak": 81.65
+      }
+    },
+    {
+      "file": "runs/059_r3f-state_i11.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 11,
+      "startedAt": "2026-09-19T16:44:33.910Z",
+      "durationMs": 35966,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 24.678,
+        "frame_ms_median": 40.522,
+        "frame_ms_p99": 66.281,
+        "fps_p1_low": 13.964,
+        "jank_60_share": 1,
+        "update_ms_median": 1.928,
+        "render_ms_median": 11.605,
+        "gpu_ms_median": 8.989,
+        "other_ms_median": 26.91,
+        "heap_mb_peak": 320.271
+      }
+    },
+    {
+      "file": "runs/060_r3f-ref-central_i11.json",
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 11,
+      "startedAt": "2026-09-19T16:45:12.879Z",
+      "durationMs": 35888,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 77.071,
+        "frame_ms_median": 12.975,
+        "frame_ms_p99": 17.738,
+        "fps_p1_low": 49.939,
+        "jank_60_share": 0.018,
+        "update_ms_median": 0.95,
+        "render_ms_median": 11.75,
+        "gpu_ms_median": 8.306,
+        "other_ms_median": 0.27,
+        "heap_mb_peak": 77
+      }
+    },
+    {
+      "file": "runs/061_r3f-ref-central_i12.json",
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 12,
+      "startedAt": "2026-09-19T16:45:51.780Z",
+      "durationMs": 36012,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 77.131,
+        "frame_ms_median": 12.965,
+        "frame_ms_p99": 17.25,
+        "fps_p1_low": 52.958,
+        "jank_60_share": 0.016,
+        "update_ms_median": 1.02,
+        "render_ms_median": 11.67,
+        "gpu_ms_median": 8.71,
+        "other_ms_median": 0.275,
+        "heap_mb_peak": 78.439
+      }
+    },
+    {
+      "file": "runs/062_r3f-state_i12.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 12,
+      "startedAt": "2026-09-19T16:46:30.799Z",
+      "durationMs": 35943,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 24.564,
+        "frame_ms_median": 40.71,
+        "frame_ms_p99": 68.27,
+        "fps_p1_low": 13.511,
+        "jank_60_share": 1,
+        "update_ms_median": 1.765,
+        "render_ms_median": 11.68,
+        "gpu_ms_median": 8.823,
+        "other_ms_median": 27.205,
+        "heap_mb_peak": 306.355
+      }
+    },
+    {
+      "file": "runs/063_r3f-ref+parent-state_i12.json",
+      "label": "r3f-ref+parent-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 12,
+      "startedAt": "2026-09-19T16:47:09.748Z",
+      "durationMs": 36005,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 75.16,
+        "frame_ms_median": 13.305,
+        "frame_ms_p99": 39.864,
+        "fps_p1_low": 21.723,
+        "jank_60_share": 0.038,
+        "update_ms_median": 1.305,
+        "render_ms_median": 11.665,
+        "gpu_ms_median": 8.244,
+        "other_ms_median": 0.29,
+        "heap_mb_peak": 223.8
+      }
+    },
+    {
+      "file": "runs/064_threejs_i12.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 12,
+      "startedAt": "2026-09-19T16:47:48.766Z",
+      "durationMs": 35630,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 76.57,
+        "frame_ms_median": 13.06,
+        "frame_ms_p99": 17.122,
+        "fps_p1_low": 51.358,
+        "jank_60_share": 0.013,
+        "update_ms_median": 1.235,
+        "render_ms_median": 11.565,
+        "gpu_ms_median": 8.714,
+        "other_ms_median": 0.26,
+        "heap_mb_peak": 75.982
+      }
+    },
+    {
+      "file": "runs/065_r3f-ref_i12.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 12,
+      "startedAt": "2026-09-19T16:48:27.404Z",
+      "durationMs": 36036,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 72.622,
+        "frame_ms_median": 13.77,
+        "frame_ms_p99": 18.457,
+        "fps_p1_low": 46.484,
+        "jank_60_share": 0.035,
+        "update_ms_median": 1.465,
+        "render_ms_median": 12.035,
+        "gpu_ms_median": 8.739,
+        "other_ms_median": 0.275,
+        "heap_mb_peak": 88.588
+      }
+    },
+    {
+      "file": "runs/066_r3f-ref+parent-state_i13.json",
+      "label": "r3f-ref+parent-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 13,
+      "startedAt": "2026-09-19T16:49:06.453Z",
+      "durationMs": 35971,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 75.188,
+        "frame_ms_median": 13.3,
+        "frame_ms_p99": 41.367,
+        "fps_p1_low": 21.685,
+        "jank_60_share": 0.059,
+        "update_ms_median": 1.34,
+        "render_ms_median": 11.67,
+        "gpu_ms_median": 8.752,
+        "other_ms_median": 0.28,
+        "heap_mb_peak": 163.631
+      }
+    },
+    {
+      "file": "runs/067_r3f-state_i13.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 13,
+      "startedAt": "2026-09-19T16:49:45.431Z",
+      "durationMs": 35996,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 25.23,
+        "frame_ms_median": 39.635,
+        "frame_ms_p99": 67.171,
+        "fps_p1_low": 14.412,
+        "jank_60_share": 1,
+        "update_ms_median": 1.865,
+        "render_ms_median": 12.085,
+        "gpu_ms_median": 8.911,
+        "other_ms_median": 25.645,
+        "heap_mb_peak": 320.8
+      }
+    },
+    {
+      "file": "runs/068_r3f-ref_i13.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 13,
+      "startedAt": "2026-09-19T16:50:24.446Z",
+      "durationMs": 35999,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 73.046,
+        "frame_ms_median": 13.69,
+        "frame_ms_p99": 17.162,
+        "fps_p1_low": 51.211,
+        "jank_60_share": 0.015,
+        "update_ms_median": 1.45,
+        "render_ms_median": 11.965,
+        "gpu_ms_median": 8.263,
+        "other_ms_median": 0.265,
+        "heap_mb_peak": 81.523
+      }
+    },
+    {
+      "file": "runs/069_r3f-ref-central_i13.json",
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 13,
+      "startedAt": "2026-09-19T16:51:03.452Z",
+      "durationMs": 35910,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 76.482,
+        "frame_ms_median": 13.075,
+        "frame_ms_p99": 17.028,
+        "fps_p1_low": 53.1,
+        "jank_60_share": 0.013,
+        "update_ms_median": 0.945,
+        "render_ms_median": 11.85,
+        "gpu_ms_median": 8.673,
+        "other_ms_median": 0.275,
+        "heap_mb_peak": 78.581
+      }
+    },
+    {
+      "file": "runs/070_threejs_i13.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 13,
+      "startedAt": "2026-09-19T16:51:42.387Z",
+      "durationMs": 35688,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 78.478,
+        "frame_ms_median": 12.742,
+        "frame_ms_p99": 17.584,
+        "fps_p1_low": 53.102,
+        "jank_60_share": 0.016,
+        "update_ms_median": 1.12,
+        "render_ms_median": 11.37,
+        "gpu_ms_median": 8.736,
+        "other_ms_median": 0.265,
+        "heap_mb_peak": 86.54
+      }
+    },
+    {
+      "file": "runs/071_r3f-ref-central_i14.json",
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 14,
+      "startedAt": "2026-09-19T16:52:21.091Z",
+      "durationMs": 35995,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 80.241,
+        "frame_ms_median": 12.463,
+        "frame_ms_p99": 17.275,
+        "fps_p1_low": 50.212,
+        "jank_60_share": 0.016,
+        "update_ms_median": 1.005,
+        "render_ms_median": 11.21,
+        "gpu_ms_median": 8.713,
+        "other_ms_median": 0.27,
+        "heap_mb_peak": 85.074
+      }
+    },
+    {
+      "file": "runs/072_threejs_i14.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 14,
+      "startedAt": "2026-09-19T16:53:00.091Z",
+      "durationMs": 35634,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 76.628,
+        "frame_ms_median": 13.05,
+        "frame_ms_p99": 17.749,
+        "fps_p1_low": 48.329,
+        "jank_60_share": 0.023,
+        "update_ms_median": 1.22,
+        "render_ms_median": 11.58,
+        "gpu_ms_median": 8.796,
+        "other_ms_median": 0.26,
+        "heap_mb_peak": 86.868
+      }
+    },
+    {
+      "file": "runs/073_r3f-state_i14.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 14,
+      "startedAt": "2026-09-19T16:53:38.742Z",
+      "durationMs": 35953,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 25.082,
+        "frame_ms_median": 39.87,
+        "frame_ms_p99": 63.861,
+        "fps_p1_low": 14.138,
+        "jank_60_share": 1,
+        "update_ms_median": 1.77,
+        "render_ms_median": 11.645,
+        "gpu_ms_median": 8.837,
+        "other_ms_median": 26.375,
+        "heap_mb_peak": 313.803
+      }
+    },
+    {
+      "file": "runs/074_r3f-ref_i14.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 14,
+      "startedAt": "2026-09-19T16:54:17.703Z",
+      "durationMs": 35982,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 74.074,
+        "frame_ms_median": 13.5,
+        "frame_ms_p99": 17.487,
+        "fps_p1_low": 50.315,
+        "jank_60_share": 0.017,
+        "update_ms_median": 1.505,
+        "render_ms_median": 11.705,
+        "gpu_ms_median": 8.273,
+        "other_ms_median": 0.275,
+        "heap_mb_peak": 81.815
+      }
+    },
+    {
+      "file": "runs/075_r3f-ref+parent-state_i14.json",
+      "label": "r3f-ref+parent-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 14,
+      "startedAt": "2026-09-19T16:54:56.696Z",
+      "durationMs": 35982,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 73.475,
+        "frame_ms_median": 13.61,
+        "frame_ms_p99": 40.805,
+        "fps_p1_low": 21.69,
+        "jank_60_share": 0.06,
+        "update_ms_median": 1.39,
+        "render_ms_median": 11.885,
+        "gpu_ms_median": 8.719,
+        "other_ms_median": 0.28,
+        "heap_mb_peak": 194.042
+      }
+    },
+    {
+      "file": "runs/076_threejs_i15.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 15,
+      "startedAt": "2026-09-19T16:55:35.694Z",
+      "durationMs": 35737,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 77.28,
+        "frame_ms_median": 12.94,
+        "frame_ms_p99": 16.766,
+        "fps_p1_low": 55.616,
+        "jank_60_share": 0.011,
+        "update_ms_median": 1.155,
+        "render_ms_median": 11.527,
+        "gpu_ms_median": 8.748,
+        "other_ms_median": 0.26,
+        "heap_mb_peak": 86.283
+      }
+    },
+    {
+      "file": "runs/077_r3f-state_i15.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 15,
+      "startedAt": "2026-09-19T16:56:14.449Z",
+      "durationMs": 35971,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 25.442,
+        "frame_ms_median": 39.305,
+        "frame_ms_p99": 58.139,
+        "fps_p1_low": 13.907,
+        "jank_60_share": 1,
+        "update_ms_median": 2.155,
+        "render_ms_median": 11.435,
+        "gpu_ms_median": 8.84,
+        "other_ms_median": 25.662,
+        "heap_mb_peak": 313.053
+      }
+    },
+    {
+      "file": "runs/078_r3f-ref-central_i15.json",
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 15,
+      "startedAt": "2026-09-19T16:56:53.430Z",
+      "durationMs": 35872,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 78.125,
+        "frame_ms_median": 12.8,
+        "frame_ms_p99": 16.801,
+        "fps_p1_low": 53.284,
+        "jank_60_share": 0.011,
+        "update_ms_median": 0.935,
+        "render_ms_median": 11.58,
+        "gpu_ms_median": 8.315,
+        "other_ms_median": 0.28,
+        "heap_mb_peak": 77.045
+      }
+    },
+    {
+      "file": "runs/079_r3f-ref+parent-state_i15.json",
+      "label": "r3f-ref+parent-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 15,
+      "startedAt": "2026-09-19T16:57:32.316Z",
+      "durationMs": 35965,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 73.937,
+        "frame_ms_median": 13.525,
+        "frame_ms_p99": 40.525,
+        "fps_p1_low": 22.47,
+        "jank_60_share": 0.052,
+        "update_ms_median": 1.3,
+        "render_ms_median": 11.905,
+        "gpu_ms_median": 8.659,
+        "other_ms_median": 0.275,
+        "heap_mb_peak": 196.56
+      }
+    },
+    {
+      "file": "runs/080_r3f-ref_i15.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 15,
+      "startedAt": "2026-09-19T16:58:11.298Z",
+      "durationMs": 36004,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 73.801,
+        "frame_ms_median": 13.55,
+        "frame_ms_p99": 18.209,
+        "fps_p1_low": 47.932,
+        "jank_60_share": 0.036,
+        "update_ms_median": 1.425,
+        "render_ms_median": 11.87,
+        "gpu_ms_median": 8.753,
+        "other_ms_median": 0.27,
+        "heap_mb_peak": 81.768
+      }
+    }
+  ]
+}

@@ -1,0 +1,3200 @@
+{
+  "schema": 2,
+  "createdAt": "2026-09-19T19:34:58.452Z",
+  "config": {
+    "scenario": "s1",
+    "targets": [
+      {
+        "label": "threejs",
+        "impl": "threejs",
+        "mode": null
+      },
+      {
+        "label": "r3f-ref",
+        "impl": "r3f",
+        "mode": "ref"
+      }
+    ],
+    "loads": [
+      {
+        "id": "A",
+        "note": "заливка: мало объектов, 2× разрешение, тени 4096",
+        "objects": 300,
+        "shadowMapSize": 4096,
+        "renderScale": 2
+      },
+      {
+        "id": "B",
+        "note": "вершины: 3000 объектов, половинное разрешение",
+        "objects": 3000,
+        "renderScale": 0.5
+      },
+      {
+        "id": "C",
+        "note": "draw calls: 3000 объектов, лёгкая геометрия и разрешение",
+        "objects": 3000,
+        "renderScale": 0.5,
+        "detailScale": 0.25
+      },
+      {
+        "id": "D",
+        "note": "исходная сцена НИР2 (смешанная нагрузка)"
+      }
+    ],
+    "browser": "firefox",
+    "serve": "preview",
+    "build": false,
+    "iterations": 10,
+    "warmupRuns": 1,
+    "cooldownMs": 3000,
+    "order": "random",
+    "orderSeed": 992615572,
+    "warmupMs": 5000,
+    "recordMs": 30000,
+    "settleMs": 3000,
+    "clickIntervalMs": 250,
+    "clickSeed": 4242,
+    "levels": [
+      100,
+      141,
+      200,
+      283,
+      400,
+      566,
+      800,
+      1131,
+      1600,
+      2263,
+      3200,
+      4525,
+      6400,
+      9051,
+      12800,
+      18102,
+      25600,
+      36204,
+      51200
+    ],
+    "fpsFloor": 30,
+    "levelsBeyondFloor": 2,
+    "minLevelFrames": 60,
+    "renderScale": 1,
+    "detailScale": 1,
+    "parityOnly": false,
+    "skipParity": false,
+    "trace": false,
+    "gpuTimer": true,
+    "device": null,
+    "resultsDir": "C:\\Users\\morko\\Documents\\VScode\\benchmark\\results"
+  },
+  "host": {
+    "node": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "osRelease": "10.0.26200",
+    "osVersion": "Windows 11 Pro",
+    "cpuModel": "AMD Ryzen 5 3550H with Radeon Vega Mobile Gfx  ",
+    "cpuCount": 8,
+    "totalMemGb": 13.9,
+    "lowPowerMode": null,
+    "git": {
+      "commit": "954a694534cafd030eb7b7bd7ffa566d3037f93f",
+      "dirty": true
+    },
+    "libs": {
+      "three": "0.186.0",
+      "react": "19.2.8",
+      "react-dom": "19.2.8",
+      "@react-three/fiber": "9.7.0",
+      "vite": "8.3.0",
+      "playwright": "1.63.0",
+      "typescript": "5.9.3"
+    },
+    "therm": null,
+    "power": null
+  },
+  "browser": {
+    "name": "firefox",
+    "version": "155.0",
+    "launchArgs": [],
+    "prefs": {
+      "layout.frame_rate": 0,
+      "privacy.reduceTimerPrecision": false,
+      "webgl.force-enabled": true,
+      "dom.timeout.enable_budget_timer_throttling": false
+    },
+    "vsyncUncapped": true
+  },
+  "servers": {
+    "threejs": {
+      "url": "http://localhost:4173/",
+      "coop": "same-origin",
+      "coep": "require-corp"
+    },
+    "r3f": {
+      "url": "http://localhost:4174/",
+      "coop": "same-origin",
+      "coep": "require-corp"
+    }
+  },
+  "bundles": [
+    {
+      "impl": "threejs",
+      "files": [
+        {
+          "path": "assets\\index-CWSjg4EL.js",
+          "bytes": 566834,
+          "gzipBytes": 142496,
+          "brotliBytes": 117260
+        },
+        {
+          "path": "index.html",
+          "bytes": 1973,
+          "gzipBytes": 1190,
+          "brotliBytes": 861
+        }
+      ],
+      "total_bytes": 568807,
+      "total_gzip_bytes": 143686,
+      "total_brotli_bytes": 118121
+    },
+    {
+      "impl": "r3f",
+      "files": [
+        {
+          "path": "assets\\index-DFy9cP-C.js",
+          "bytes": 1124722,
+          "gzipBytes": 304907,
+          "brotliBytes": 236173
+        },
+        {
+          "path": "index.html",
+          "bytes": 1991,
+          "gzipBytes": 1194,
+          "brotliBytes": 867
+        }
+      ],
+      "total_bytes": 1126713,
+      "total_gzip_bytes": 306101,
+      "total_brotli_bytes": 237040
+    }
+  ],
+  "parity": [
+    {
+      "scenario": "s1",
+      "load": "A",
+      "reference": "threejs",
+      "ok": true,
+      "entries": [
+        {
+          "label": "threejs",
+          "ok": true,
+          "issues": [],
+          "image": {
+            "exact": true,
+            "meanAbs": 0,
+            "maxAbs": 0
+          },
+          "summary": {
+            "meshCount": 301,
+            "meshDigest": "f24ef7d8",
+            "camera": "PerspectiveCamera|50.00000|1.77778|0.10000|500.00000|1.00000|0.9748,0.0000,0.2231,0.0000,0.0476,0.9770,-0.2078,0.0000,-0.2180,0.2132,0.9524,0.0000,-12.2708,18.0000,53.6137,1.0000|1.20629,0.00000,0.00000,0.00000,0.00000,2.14451,0.00000,0.00000,0.00000,0.00000,-1.00040,-1.00000,0.00000,0.00000,-0.20004,0.00000",
+            "calls": 561,
+            "triangles": 4587522,
+            "imageHash": "5b22a793"
+          }
+        },
+        {
+          "label": "r3f-ref",
+          "ok": true,
+          "issues": [],
+          "image": {
+            "exact": true,
+            "meanAbs": 0,
+            "maxAbs": 0
+          },
+          "summary": {
+            "meshCount": 301,
+            "meshDigest": "f24ef7d8",
+            "camera": "PerspectiveCamera|50.00000|1.77778|0.10000|500.00000|1.00000|0.9748,0.0000,0.2231,0.0000,0.0476,0.9770,-0.2078,0.0000,-0.2180,0.2132,0.9524,0.0000,-12.2708,18.0000,53.6137,1.0000|1.20629,0.00000,0.00000,0.00000,0.00000,2.14451,0.00000,0.00000,0.00000,0.00000,-1.00040,-1.00000,0.00000,0.00000,-0.20004,0.00000",
+            "calls": 561,
+            "triangles": 4587522,
+            "imageHash": "5b22a793"
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "s1",
+      "load": "B",
+      "reference": "threejs",
+      "ok": true,
+      "entries": [
+        {
+          "label": "threejs",
+          "ok": true,
+          "issues": [],
+          "image": {
+            "exact": true,
+            "meanAbs": 0,
+            "maxAbs": 0
+          },
+          "summary": {
+            "meshCount": 3001,
+            "meshDigest": "13ecfcb6",
+            "camera": "PerspectiveCamera|50.00000|1.77778|0.10000|500.00000|1.00000|0.9748,0.0000,0.2231,0.0000,0.0476,0.9770,-0.2078,0.0000,-0.2180,0.2132,0.9524,0.0000,-12.2708,18.0000,53.6137,1.0000|1.20629,0.00000,0.00000,0.00000,0.00000,2.14451,0.00000,0.00000,0.00000,0.00000,-1.00040,-1.00000,0.00000,0.00000,-0.20004,0.00000",
+            "calls": 5631,
+            "triangles": 46120962,
+            "imageHash": "56d6c3a9"
+          }
+        },
+        {
+          "label": "r3f-ref",
+          "ok": true,
+          "issues": [],
+          "image": {
+            "exact": true,
+            "meanAbs": 0,
+            "maxAbs": 0
+          },
+          "summary": {
+            "meshCount": 3001,
+            "meshDigest": "13ecfcb6",
+            "camera": "PerspectiveCamera|50.00000|1.77778|0.10000|500.00000|1.00000|0.9748,0.0000,0.2231,0.0000,0.0476,0.9770,-0.2078,0.0000,-0.2180,0.2132,0.9524,0.0000,-12.2708,18.0000,53.6137,1.0000|1.20629,0.00000,0.00000,0.00000,0.00000,2.14451,0.00000,0.00000,0.00000,0.00000,-1.00040,-1.00000,0.00000,0.00000,-0.20004,0.00000",
+            "calls": 5631,
+            "triangles": 46120962,
+            "imageHash": "56d6c3a9"
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "s1",
+      "load": "C",
+      "reference": "threejs",
+      "ok": true,
+      "entries": [
+        {
+          "label": "threejs",
+          "ok": true,
+          "issues": [],
+          "image": {
+            "exact": true,
+            "meanAbs": 0,
+            "maxAbs": 0
+          },
+          "summary": {
+            "meshCount": 3001,
+            "meshDigest": "cc2f4806",
+            "camera": "PerspectiveCamera|50.00000|1.77778|0.10000|500.00000|1.00000|0.9748,0.0000,0.2231,0.0000,0.0476,0.9770,-0.2078,0.0000,-0.2180,0.2132,0.9524,0.0000,-12.2708,18.0000,53.6137,1.0000|1.20629,0.00000,0.00000,0.00000,0.00000,2.14451,0.00000,0.00000,0.00000,0.00000,-1.00040,-1.00000,0.00000,0.00000,-0.20004,0.00000",
+            "calls": 5631,
+            "triangles": 2882562,
+            "imageHash": "6b4deb1f"
+          }
+        },
+        {
+          "label": "r3f-ref",
+          "ok": true,
+          "issues": [],
+          "image": {
+            "exact": true,
+            "meanAbs": 0,
+            "maxAbs": 0
+          },
+          "summary": {
+            "meshCount": 3001,
+            "meshDigest": "cc2f4806",
+            "camera": "PerspectiveCamera|50.00000|1.77778|0.10000|500.00000|1.00000|0.9748,0.0000,0.2231,0.0000,0.0476,0.9770,-0.2078,0.0000,-0.2180,0.2132,0.9524,0.0000,-12.2708,18.0000,53.6137,1.0000|1.20629,0.00000,0.00000,0.00000,0.00000,2.14451,0.00000,0.00000,0.00000,0.00000,-1.00040,-1.00000,0.00000,0.00000,-0.20004,0.00000",
+            "calls": 5631,
+            "triangles": 2882562,
+            "imageHash": "6b4deb1f"
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "s1",
+      "load": "D",
+      "reference": "threejs",
+      "ok": true,
+      "entries": [
+        {
+          "label": "threejs",
+          "ok": true,
+          "issues": [],
+          "image": {
+            "exact": true,
+            "meanAbs": 0,
+            "maxAbs": 0
+          },
+          "summary": {
+            "meshCount": 3001,
+            "meshDigest": "13ecfcb6",
+            "camera": "PerspectiveCamera|50.00000|1.77778|0.10000|500.00000|1.00000|0.9748,0.0000,0.2231,0.0000,0.0476,0.9770,-0.2078,0.0000,-0.2180,0.2132,0.9524,0.0000,-12.2708,18.0000,53.6137,1.0000|1.20629,0.00000,0.00000,0.00000,0.00000,2.14451,0.00000,0.00000,0.00000,0.00000,-1.00040,-1.00000,0.00000,0.00000,-0.20004,0.00000",
+            "calls": 5631,
+            "triangles": 46120962,
+            "imageHash": "a11caed8"
+          }
+        },
+        {
+          "label": "r3f-ref",
+          "ok": true,
+          "issues": [],
+          "image": {
+            "exact": true,
+            "meanAbs": 0,
+            "maxAbs": 0
+          },
+          "summary": {
+            "meshCount": 3001,
+            "meshDigest": "13ecfcb6",
+            "camera": "PerspectiveCamera|50.00000|1.77778|0.10000|500.00000|1.00000|0.9748,0.0000,0.2231,0.0000,0.0476,0.9770,-0.2078,0.0000,-0.2180,0.2132,0.9524,0.0000,-12.2708,18.0000,53.6137,1.0000|1.20629,0.00000,0.00000,0.00000,0.00000,2.14451,0.00000,0.00000,0.00000,0.00000,-1.00040,-1.00000,0.00000,0.00000,-0.20004,0.00000",
+            "calls": 5631,
+            "triangles": 46120962,
+            "imageHash": "a11caed8"
+          }
+        }
+      ]
+    }
+  ],
+  "schedule": [
+    {
+      "label": "r3f-ref",
+      "load": "C",
+      "warmup": true,
+      "iteration": 1
+    },
+    {
+      "label": "threejs",
+      "load": "B",
+      "warmup": true,
+      "iteration": 1
+    },
+    {
+      "label": "r3f-ref",
+      "load": "B",
+      "warmup": true,
+      "iteration": 1
+    },
+    {
+      "label": "threejs",
+      "load": "D",
+      "warmup": true,
+      "iteration": 1
+    },
+    {
+      "label": "r3f-ref",
+      "load": "A",
+      "warmup": true,
+      "iteration": 1
+    },
+    {
+      "label": "r3f-ref",
+      "load": "D",
+      "warmup": true,
+      "iteration": 1
+    },
+    {
+      "label": "threejs",
+      "load": "C",
+      "warmup": true,
+      "iteration": 1
+    },
+    {
+      "label": "threejs",
+      "load": "A",
+      "warmup": true,
+      "iteration": 1
+    },
+    {
+      "label": "threejs",
+      "load": "C",
+      "warmup": false,
+      "iteration": 1
+    },
+    {
+      "label": "r3f-ref",
+      "load": "C",
+      "warmup": false,
+      "iteration": 1
+    },
+    {
+      "label": "r3f-ref",
+      "load": "A",
+      "warmup": false,
+      "iteration": 1
+    },
+    {
+      "label": "threejs",
+      "load": "D",
+      "warmup": false,
+      "iteration": 1
+    },
+    {
+      "label": "r3f-ref",
+      "load": "D",
+      "warmup": false,
+      "iteration": 1
+    },
+    {
+      "label": "threejs",
+      "load": "B",
+      "warmup": false,
+      "iteration": 1
+    },
+    {
+      "label": "r3f-ref",
+      "load": "B",
+      "warmup": false,
+      "iteration": 1
+    },
+    {
+      "label": "threejs",
+      "load": "A",
+      "warmup": false,
+      "iteration": 1
+    },
+    {
+      "label": "threejs",
+      "load": "C",
+      "warmup": false,
+      "iteration": 2
+    },
+    {
+      "label": "r3f-ref",
+      "load": "C",
+      "warmup": false,
+      "iteration": 2
+    },
+    {
+      "label": "threejs",
+      "load": "D",
+      "warmup": false,
+      "iteration": 2
+    },
+    {
+      "label": "r3f-ref",
+      "load": "D",
+      "warmup": false,
+      "iteration": 2
+    },
+    {
+      "label": "r3f-ref",
+      "load": "B",
+      "warmup": false,
+      "iteration": 2
+    },
+    {
+      "label": "threejs",
+      "load": "A",
+      "warmup": false,
+      "iteration": 2
+    },
+    {
+      "label": "r3f-ref",
+      "load": "A",
+      "warmup": false,
+      "iteration": 2
+    },
+    {
+      "label": "threejs",
+      "load": "B",
+      "warmup": false,
+      "iteration": 2
+    },
+    {
+      "label": "r3f-ref",
+      "load": "A",
+      "warmup": false,
+      "iteration": 3
+    },
+    {
+      "label": "threejs",
+      "load": "A",
+      "warmup": false,
+      "iteration": 3
+    },
+    {
+      "label": "threejs",
+      "load": "C",
+      "warmup": false,
+      "iteration": 3
+    },
+    {
+      "label": "r3f-ref",
+      "load": "D",
+      "warmup": false,
+      "iteration": 3
+    },
+    {
+      "label": "threejs",
+      "load": "D",
+      "warmup": false,
+      "iteration": 3
+    },
+    {
+      "label": "r3f-ref",
+      "load": "C",
+      "warmup": false,
+      "iteration": 3
+    },
+    {
+      "label": "threejs",
+      "load": "B",
+      "warmup": false,
+      "iteration": 3
+    },
+    {
+      "label": "r3f-ref",
+      "load": "B",
+      "warmup": false,
+      "iteration": 3
+    },
+    {
+      "label": "threejs",
+      "load": "B",
+      "warmup": false,
+      "iteration": 4
+    },
+    {
+      "label": "threejs",
+      "load": "D",
+      "warmup": false,
+      "iteration": 4
+    },
+    {
+      "label": "r3f-ref",
+      "load": "C",
+      "warmup": false,
+      "iteration": 4
+    },
+    {
+      "label": "r3f-ref",
+      "load": "B",
+      "warmup": false,
+      "iteration": 4
+    },
+    {
+      "label": "threejs",
+      "load": "A",
+      "warmup": false,
+      "iteration": 4
+    },
+    {
+      "label": "r3f-ref",
+      "load": "D",
+      "warmup": false,
+      "iteration": 4
+    },
+    {
+      "label": "threejs",
+      "load": "C",
+      "warmup": false,
+      "iteration": 4
+    },
+    {
+      "label": "r3f-ref",
+      "load": "A",
+      "warmup": false,
+      "iteration": 4
+    },
+    {
+      "label": "r3f-ref",
+      "load": "A",
+      "warmup": false,
+      "iteration": 5
+    },
+    {
+      "label": "r3f-ref",
+      "load": "D",
+      "warmup": false,
+      "iteration": 5
+    },
+    {
+      "label": "threejs",
+      "load": "B",
+      "warmup": false,
+      "iteration": 5
+    },
+    {
+      "label": "r3f-ref",
+      "load": "B",
+      "warmup": false,
+      "iteration": 5
+    },
+    {
+      "label": "threejs",
+      "load": "A",
+      "warmup": false,
+      "iteration": 5
+    },
+    {
+      "label": "threejs",
+      "load": "D",
+      "warmup": false,
+      "iteration": 5
+    },
+    {
+      "label": "threejs",
+      "load": "C",
+      "warmup": false,
+      "iteration": 5
+    },
+    {
+      "label": "r3f-ref",
+      "load": "C",
+      "warmup": false,
+      "iteration": 5
+    },
+    {
+      "label": "r3f-ref",
+      "load": "D",
+      "warmup": false,
+      "iteration": 6
+    },
+    {
+      "label": "r3f-ref",
+      "load": "B",
+      "warmup": false,
+      "iteration": 6
+    },
+    {
+      "label": "threejs",
+      "load": "A",
+      "warmup": false,
+      "iteration": 6
+    },
+    {
+      "label": "r3f-ref",
+      "load": "C",
+      "warmup": false,
+      "iteration": 6
+    },
+    {
+      "label": "r3f-ref",
+      "load": "A",
+      "warmup": false,
+      "iteration": 6
+    },
+    {
+      "label": "threejs",
+      "load": "B",
+      "warmup": false,
+      "iteration": 6
+    },
+    {
+      "label": "threejs",
+      "load": "C",
+      "warmup": false,
+      "iteration": 6
+    },
+    {
+      "label": "threejs",
+      "load": "D",
+      "warmup": false,
+      "iteration": 6
+    },
+    {
+      "label": "threejs",
+      "load": "C",
+      "warmup": false,
+      "iteration": 7
+    },
+    {
+      "label": "r3f-ref",
+      "load": "D",
+      "warmup": false,
+      "iteration": 7
+    },
+    {
+      "label": "r3f-ref",
+      "load": "B",
+      "warmup": false,
+      "iteration": 7
+    },
+    {
+      "label": "r3f-ref",
+      "load": "A",
+      "warmup": false,
+      "iteration": 7
+    },
+    {
+      "label": "r3f-ref",
+      "load": "C",
+      "warmup": false,
+      "iteration": 7
+    },
+    {
+      "label": "threejs",
+      "load": "D",
+      "warmup": false,
+      "iteration": 7
+    },
+    {
+      "label": "threejs",
+      "load": "A",
+      "warmup": false,
+      "iteration": 7
+    },
+    {
+      "label": "threejs",
+      "load": "B",
+      "warmup": false,
+      "iteration": 7
+    },
+    {
+      "label": "threejs",
+      "load": "C",
+      "warmup": false,
+      "iteration": 8
+    },
+    {
+      "label": "threejs",
+      "load": "A",
+      "warmup": false,
+      "iteration": 8
+    },
+    {
+      "label": "r3f-ref",
+      "load": "A",
+      "warmup": false,
+      "iteration": 8
+    },
+    {
+      "label": "r3f-ref",
+      "load": "C",
+      "warmup": false,
+      "iteration": 8
+    },
+    {
+      "label": "r3f-ref",
+      "load": "B",
+      "warmup": false,
+      "iteration": 8
+    },
+    {
+      "label": "threejs",
+      "load": "B",
+      "warmup": false,
+      "iteration": 8
+    },
+    {
+      "label": "threejs",
+      "load": "D",
+      "warmup": false,
+      "iteration": 8
+    },
+    {
+      "label": "r3f-ref",
+      "load": "D",
+      "warmup": false,
+      "iteration": 8
+    },
+    {
+      "label": "r3f-ref",
+      "load": "D",
+      "warmup": false,
+      "iteration": 9
+    },
+    {
+      "label": "threejs",
+      "load": "C",
+      "warmup": false,
+      "iteration": 9
+    },
+    {
+      "label": "threejs",
+      "load": "D",
+      "warmup": false,
+      "iteration": 9
+    },
+    {
+      "label": "r3f-ref",
+      "load": "B",
+      "warmup": false,
+      "iteration": 9
+    },
+    {
+      "label": "r3f-ref",
+      "load": "A",
+      "warmup": false,
+      "iteration": 9
+    },
+    {
+      "label": "threejs",
+      "load": "A",
+      "warmup": false,
+      "iteration": 9
+    },
+    {
+      "label": "threejs",
+      "load": "B",
+      "warmup": false,
+      "iteration": 9
+    },
+    {
+      "label": "r3f-ref",
+      "load": "C",
+      "warmup": false,
+      "iteration": 9
+    },
+    {
+      "label": "r3f-ref",
+      "load": "D",
+      "warmup": false,
+      "iteration": 10
+    },
+    {
+      "label": "r3f-ref",
+      "load": "A",
+      "warmup": false,
+      "iteration": 10
+    },
+    {
+      "label": "r3f-ref",
+      "load": "B",
+      "warmup": false,
+      "iteration": 10
+    },
+    {
+      "label": "threejs",
+      "load": "B",
+      "warmup": false,
+      "iteration": 10
+    },
+    {
+      "label": "threejs",
+      "load": "D",
+      "warmup": false,
+      "iteration": 10
+    },
+    {
+      "label": "threejs",
+      "load": "C",
+      "warmup": false,
+      "iteration": 10
+    },
+    {
+      "label": "r3f-ref",
+      "load": "C",
+      "warmup": false,
+      "iteration": 10
+    },
+    {
+      "label": "threejs",
+      "load": "A",
+      "warmup": false,
+      "iteration": 10
+    }
+  ],
+  "runs": [
+    {
+      "file": "runs/001_r3f-ref_C_w1.json",
+      "label": "r3f-ref",
+      "load": "C",
+      "warmup": true,
+      "iteration": 1,
+      "startedAt": "2026-09-19T19:36:06.094Z",
+      "durationMs": 37599,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 22.676,
+        "frame_ms_median": 44.1,
+        "frame_ms_p99": 50.357,
+        "fps_p1_low": 18.433,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 41.88,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.16,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/002_threejs_B_w1.json",
+      "label": "threejs",
+      "load": "B",
+      "warmup": true,
+      "iteration": 1,
+      "startedAt": "2026-09-19T19:36:46.710Z",
+      "durationMs": 41390,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 19.15,
+        "frame_ms_median": 52.22,
+        "frame_ms_p99": 66.836,
+        "fps_p1_low": 12.245,
+        "jank_60_share": 1,
+        "update_ms_median": 0.08,
+        "render_ms_median": 49.37,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.66,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/003_r3f-ref_B_w1.json",
+      "label": "r3f-ref",
+      "load": "B",
+      "warmup": true,
+      "iteration": 1,
+      "startedAt": "2026-09-19T19:37:31.110Z",
+      "durationMs": 39718,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 19.402,
+        "frame_ms_median": 51.54,
+        "frame_ms_p99": 59.414,
+        "fps_p1_low": 16.213,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 48.82,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.62,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/004_threejs_D_w1.json",
+      "label": "threejs",
+      "load": "D",
+      "warmup": true,
+      "iteration": 1,
+      "startedAt": "2026-09-19T19:38:13.844Z",
+      "durationMs": 40791,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 18.012,
+        "frame_ms_median": 55.52,
+        "frame_ms_p99": 72.27,
+        "fps_p1_low": 10.818,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 50.1,
+        "gpu_ms_median": null,
+        "other_ms_median": 3.16,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/005_r3f-ref_A_w1.json",
+      "label": "r3f-ref",
+      "load": "A",
+      "warmup": true,
+      "iteration": 1,
+      "startedAt": "2026-09-19T19:38:57.655Z",
+      "durationMs": 36859,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": [
+          "median FPS ≈ 60 — похоже, vsync не снят"
+        ]
+      },
+      "brief": {
+        "fps_median": 60.901,
+        "frame_ms_median": 16.42,
+        "frame_ms_p99": 28.84,
+        "fps_p1_low": 28.445,
+        "jank_60_share": 0.426,
+        "update_ms_median": 0.08,
+        "render_ms_median": 6.58,
+        "gpu_ms_median": null,
+        "other_ms_median": 9.6,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/006_r3f-ref_D_w1.json",
+      "label": "r3f-ref",
+      "load": "D",
+      "warmup": true,
+      "iteration": 1,
+      "startedAt": "2026-09-19T19:39:37.525Z",
+      "durationMs": 40598,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 16.502,
+        "frame_ms_median": 60.6,
+        "frame_ms_p99": 73.745,
+        "fps_p1_low": 12.015,
+        "jank_60_share": 1,
+        "update_ms_median": 0.08,
+        "render_ms_median": 57.72,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.8,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/007_threejs_C_w1.json",
+      "label": "threejs",
+      "load": "C",
+      "warmup": true,
+      "iteration": 1,
+      "startedAt": "2026-09-19T19:40:21.144Z",
+      "durationMs": 36764,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 21.645,
+        "frame_ms_median": 46.2,
+        "frame_ms_p99": 52.56,
+        "fps_p1_low": 17.188,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 43.92,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.22,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/008_threejs_A_w1.json",
+      "label": "threejs",
+      "load": "A",
+      "warmup": true,
+      "iteration": 1,
+      "startedAt": "2026-09-19T19:41:00.917Z",
+      "durationMs": 36709,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 58.005,
+        "frame_ms_median": 17.24,
+        "frame_ms_p99": 30.696,
+        "fps_p1_low": 27.322,
+        "jank_60_share": 0.738,
+        "update_ms_median": 0.1,
+        "render_ms_median": 6.78,
+        "gpu_ms_median": null,
+        "other_ms_median": 10.2,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/009_threejs_C_i1.json",
+      "label": "threejs",
+      "load": "C",
+      "warmup": false,
+      "iteration": 1,
+      "startedAt": "2026-09-19T19:41:40.634Z",
+      "durationMs": 36810,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 23.041,
+        "frame_ms_median": 43.4,
+        "frame_ms_p99": 52.242,
+        "fps_p1_low": 17.438,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 40.94,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.34,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/010_r3f-ref_C_i1.json",
+      "label": "r3f-ref",
+      "load": "C",
+      "warmup": false,
+      "iteration": 1,
+      "startedAt": "2026-09-19T19:42:20.454Z",
+      "durationMs": 36919,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 23.43,
+        "frame_ms_median": 42.68,
+        "frame_ms_p99": 49.825,
+        "fps_p1_low": 19.589,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 40.25,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.36,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/011_r3f-ref_A_i1.json",
+      "label": "r3f-ref",
+      "load": "A",
+      "warmup": false,
+      "iteration": 1,
+      "startedAt": "2026-09-19T19:43:00.385Z",
+      "durationMs": 36945,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": [
+          "median FPS ≈ 60 — похоже, vsync не снят"
+        ]
+      },
+      "brief": {
+        "fps_median": 59.172,
+        "frame_ms_median": 16.9,
+        "frame_ms_p99": 30.15,
+        "fps_p1_low": 28.296,
+        "jank_60_share": 0.548,
+        "update_ms_median": 0.08,
+        "render_ms_median": 6.86,
+        "gpu_ms_median": null,
+        "other_ms_median": 9.78,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/012_threejs_D_i1.json",
+      "label": "threejs",
+      "load": "D",
+      "warmup": false,
+      "iteration": 1,
+      "startedAt": "2026-09-19T19:43:40.335Z",
+      "durationMs": 41585,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 16.356,
+        "frame_ms_median": 61.14,
+        "frame_ms_p99": 73.334,
+        "fps_p1_low": 10.602,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 51.48,
+        "gpu_ms_median": null,
+        "other_ms_median": 9,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/013_r3f-ref_D_i1.json",
+      "label": "r3f-ref",
+      "load": "D",
+      "warmup": false,
+      "iteration": 1,
+      "startedAt": "2026-09-19T19:44:24.938Z",
+      "durationMs": 40056,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 16.578,
+        "frame_ms_median": 60.32,
+        "frame_ms_p99": 74.335,
+        "fps_p1_low": 12.914,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 52.16,
+        "gpu_ms_median": null,
+        "other_ms_median": 4.7,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/014_threejs_B_i1.json",
+      "label": "threejs",
+      "load": "B",
+      "warmup": false,
+      "iteration": 1,
+      "startedAt": "2026-09-19T19:45:08.011Z",
+      "durationMs": 41144,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 18.051,
+        "frame_ms_median": 55.4,
+        "frame_ms_p99": 73.558,
+        "fps_p1_low": 10.501,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 50.02,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.98,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/015_r3f-ref_B_i1.json",
+      "label": "r3f-ref",
+      "load": "B",
+      "warmup": false,
+      "iteration": 1,
+      "startedAt": "2026-09-19T19:45:52.179Z",
+      "durationMs": 39992,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 17.489,
+        "frame_ms_median": 57.18,
+        "frame_ms_p99": 64.806,
+        "fps_p1_low": 15.179,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 54.5,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.64,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/016_threejs_A_i1.json",
+      "label": "threejs",
+      "load": "A",
+      "warmup": false,
+      "iteration": 1,
+      "startedAt": "2026-09-19T19:46:35.192Z",
+      "durationMs": 36674,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 58.14,
+        "frame_ms_median": 17.2,
+        "frame_ms_p99": 30.73,
+        "fps_p1_low": 27.3,
+        "jank_60_share": 0.712,
+        "update_ms_median": 0.1,
+        "render_ms_median": 6.78,
+        "gpu_ms_median": null,
+        "other_ms_median": 10.18,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/017_threejs_C_i2.json",
+      "label": "threejs",
+      "load": "C",
+      "warmup": false,
+      "iteration": 2,
+      "startedAt": "2026-09-19T19:47:14.878Z",
+      "durationMs": 36716,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 21.72,
+        "frame_ms_median": 46.04,
+        "frame_ms_p99": 52.12,
+        "fps_p1_low": 16.457,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 43.72,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.26,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/018_r3f-ref_C_i2.json",
+      "label": "r3f-ref",
+      "load": "C",
+      "warmup": false,
+      "iteration": 2,
+      "startedAt": "2026-09-19T19:47:54.618Z",
+      "durationMs": 36900,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 22.232,
+        "frame_ms_median": 44.98,
+        "frame_ms_p99": 49.52,
+        "fps_p1_low": 19.889,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 42.57,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.3,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/019_threejs_D_i2.json",
+      "label": "threejs",
+      "load": "D",
+      "warmup": false,
+      "iteration": 2,
+      "startedAt": "2026-09-19T19:48:34.535Z",
+      "durationMs": 41363,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 16.276,
+        "frame_ms_median": 61.44,
+        "frame_ms_p99": 76.685,
+        "fps_p1_low": 10.206,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 53.52,
+        "gpu_ms_median": null,
+        "other_ms_median": 6.5,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/020_r3f-ref_D_i2.json",
+      "label": "r3f-ref",
+      "load": "D",
+      "warmup": false,
+      "iteration": 2,
+      "startedAt": "2026-09-19T19:49:18.912Z",
+      "durationMs": 39881,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 16.393,
+        "frame_ms_median": 61,
+        "frame_ms_p99": 70.73,
+        "fps_p1_low": 13.289,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 53.02,
+        "gpu_ms_median": null,
+        "other_ms_median": 3.5,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/021_r3f-ref_B_i2.json",
+      "label": "r3f-ref",
+      "load": "B",
+      "warmup": false,
+      "iteration": 2,
+      "startedAt": "2026-09-19T19:50:01.803Z",
+      "durationMs": 40189,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 18.437,
+        "frame_ms_median": 54.24,
+        "frame_ms_p99": 73.044,
+        "fps_p1_low": 12.536,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 51.42,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.66,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/022_threejs_A_i2.json",
+      "label": "threejs",
+      "load": "A",
+      "warmup": false,
+      "iteration": 2,
+      "startedAt": "2026-09-19T19:50:45.006Z",
+      "durationMs": 37232,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 57.208,
+        "frame_ms_median": 17.48,
+        "frame_ms_p99": 31.055,
+        "fps_p1_low": 26.714,
+        "jank_60_share": 0.787,
+        "update_ms_median": 0.1,
+        "render_ms_median": 6.7,
+        "gpu_ms_median": null,
+        "other_ms_median": 10.48,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/023_r3f-ref_A_i2.json",
+      "label": "r3f-ref",
+      "load": "A",
+      "warmup": false,
+      "iteration": 2,
+      "startedAt": "2026-09-19T19:51:25.241Z",
+      "durationMs": 36910,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": [
+          "median FPS ≈ 60 — похоже, vsync не снят"
+        ]
+      },
+      "brief": {
+        "fps_median": 58.548,
+        "frame_ms_median": 17.08,
+        "frame_ms_p99": 33.434,
+        "fps_p1_low": 27.345,
+        "jank_60_share": 0.608,
+        "update_ms_median": 0.08,
+        "render_ms_median": 6.68,
+        "gpu_ms_median": null,
+        "other_ms_median": 10.1,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/024_threejs_B_i2.json",
+      "label": "threejs",
+      "load": "B",
+      "warmup": false,
+      "iteration": 2,
+      "startedAt": "2026-09-19T19:52:05.165Z",
+      "durationMs": 40955,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 18.288,
+        "frame_ms_median": 54.68,
+        "frame_ms_p99": 66.392,
+        "fps_p1_low": 11.784,
+        "jank_60_share": 1,
+        "update_ms_median": 0.08,
+        "render_ms_median": 51.36,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.74,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/025_r3f-ref_A_i3.json",
+      "label": "r3f-ref",
+      "load": "A",
+      "warmup": false,
+      "iteration": 3,
+      "startedAt": "2026-09-19T19:52:49.133Z",
+      "durationMs": 36879,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": [
+          "median FPS ≈ 60 — похоже, vsync не снят"
+        ]
+      },
+      "brief": {
+        "fps_median": 58.685,
+        "frame_ms_median": 17.04,
+        "frame_ms_p99": 30.673,
+        "fps_p1_low": 28.277,
+        "jank_60_share": 0.637,
+        "update_ms_median": 0.08,
+        "render_ms_median": 6.88,
+        "gpu_ms_median": null,
+        "other_ms_median": 9.9,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/026_threejs_A_i3.json",
+      "label": "threejs",
+      "load": "A",
+      "warmup": false,
+      "iteration": 3,
+      "startedAt": "2026-09-19T19:53:29.034Z",
+      "durationMs": 36711,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 57.703,
+        "frame_ms_median": 17.33,
+        "frame_ms_p99": 30.98,
+        "fps_p1_low": 26.866,
+        "jank_60_share": 0.752,
+        "update_ms_median": 0.1,
+        "render_ms_median": 6.68,
+        "gpu_ms_median": null,
+        "other_ms_median": 10.34,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/027_threejs_C_i3.json",
+      "label": "threejs",
+      "load": "C",
+      "warmup": false,
+      "iteration": 3,
+      "startedAt": "2026-09-19T19:54:08.758Z",
+      "durationMs": 36747,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 23.202,
+        "frame_ms_median": 43.1,
+        "frame_ms_p99": 53.258,
+        "fps_p1_low": 15.404,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 40.44,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.34,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/028_r3f-ref_D_i3.json",
+      "label": "r3f-ref",
+      "load": "D",
+      "warmup": false,
+      "iteration": 3,
+      "startedAt": "2026-09-19T19:54:48.523Z",
+      "durationMs": 39859,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 16.548,
+        "frame_ms_median": 60.43,
+        "frame_ms_p99": 69.325,
+        "fps_p1_low": 12.063,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 52.78,
+        "gpu_ms_median": null,
+        "other_ms_median": 3.95,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/029_threejs_D_i3.json",
+      "label": "threejs",
+      "load": "D",
+      "warmup": false,
+      "iteration": 3,
+      "startedAt": "2026-09-19T19:55:31.394Z",
+      "durationMs": 41367,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 16.228,
+        "frame_ms_median": 61.62,
+        "frame_ms_p99": 70.916,
+        "fps_p1_low": 10.622,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 53.05,
+        "gpu_ms_median": null,
+        "other_ms_median": 7.77,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/030_r3f-ref_C_i3.json",
+      "label": "r3f-ref",
+      "load": "C",
+      "warmup": false,
+      "iteration": 3,
+      "startedAt": "2026-09-19T19:56:15.780Z",
+      "durationMs": 36917,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 23.73,
+        "frame_ms_median": 42.14,
+        "frame_ms_p99": 49.155,
+        "fps_p1_low": 19.822,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 39.68,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.4,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/031_threejs_B_i3.json",
+      "label": "threejs",
+      "load": "B",
+      "warmup": false,
+      "iteration": 3,
+      "startedAt": "2026-09-19T19:56:55.726Z",
+      "durationMs": 41267,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 18.477,
+        "frame_ms_median": 54.12,
+        "frame_ms_p99": 70.288,
+        "fps_p1_low": 10.361,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 50.84,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.74,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/032_r3f-ref_B_i3.json",
+      "label": "r3f-ref",
+      "load": "B",
+      "warmup": false,
+      "iteration": 3,
+      "startedAt": "2026-09-19T19:57:40.011Z",
+      "durationMs": 40531,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 17.218,
+        "frame_ms_median": 58.08,
+        "frame_ms_p99": 65.304,
+        "fps_p1_low": 15.112,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 55.32,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.64,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/033_threejs_B_i4.json",
+      "label": "threejs",
+      "load": "B",
+      "warmup": false,
+      "iteration": 4,
+      "startedAt": "2026-09-19T19:58:23.560Z",
+      "durationMs": 41567,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 18.025,
+        "frame_ms_median": 55.48,
+        "frame_ms_p99": 69.124,
+        "fps_p1_low": 11.489,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 50.46,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.88,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/034_threejs_D_i4.json",
+      "label": "threejs",
+      "load": "D",
+      "warmup": false,
+      "iteration": 4,
+      "startedAt": "2026-09-19T19:59:08.133Z",
+      "durationMs": 41194,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 16.855,
+        "frame_ms_median": 59.33,
+        "frame_ms_p99": 68.793,
+        "fps_p1_low": 11.4,
+        "jank_60_share": 1,
+        "update_ms_median": 0.08,
+        "render_ms_median": 54.96,
+        "gpu_ms_median": null,
+        "other_ms_median": 3.4,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/035_r3f-ref_C_i4.json",
+      "label": "r3f-ref",
+      "load": "C",
+      "warmup": false,
+      "iteration": 4,
+      "startedAt": "2026-09-19T19:59:52.337Z",
+      "durationMs": 36923,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 23.191,
+        "frame_ms_median": 43.12,
+        "frame_ms_p99": 51.758,
+        "fps_p1_low": 18.578,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 40.64,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.38,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/036_r3f-ref_B_i4.json",
+      "label": "r3f-ref",
+      "load": "B",
+      "warmup": false,
+      "iteration": 4,
+      "startedAt": "2026-09-19T20:00:32.266Z",
+      "durationMs": 39954,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 18.525,
+        "frame_ms_median": 53.98,
+        "frame_ms_p99": 64.173,
+        "fps_p1_low": 15.385,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 50,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.8,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/037_threejs_A_i4.json",
+      "label": "threejs",
+      "load": "A",
+      "warmup": false,
+      "iteration": 4,
+      "startedAt": "2026-09-19T20:01:15.234Z",
+      "durationMs": 36728,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 57.87,
+        "frame_ms_median": 17.28,
+        "frame_ms_p99": 30.59,
+        "fps_p1_low": 26.81,
+        "jank_60_share": 0.765,
+        "update_ms_median": 0.1,
+        "render_ms_median": 6.78,
+        "gpu_ms_median": null,
+        "other_ms_median": 10.24,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/038_r3f-ref_D_i4.json",
+      "label": "r3f-ref",
+      "load": "D",
+      "warmup": false,
+      "iteration": 4,
+      "startedAt": "2026-09-19T20:01:54.977Z",
+      "durationMs": 39967,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 16.678,
+        "frame_ms_median": 59.96,
+        "frame_ms_p99": 67.394,
+        "fps_p1_low": 12.951,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 53.25,
+        "gpu_ms_median": null,
+        "other_ms_median": 3.02,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/039_threejs_C_i4.json",
+      "label": "threejs",
+      "load": "C",
+      "warmup": false,
+      "iteration": 4,
+      "startedAt": "2026-09-19T20:02:37.959Z",
+      "durationMs": 36708,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 23.277,
+        "frame_ms_median": 42.96,
+        "frame_ms_p99": 53.5,
+        "fps_p1_low": 17.355,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 40.38,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.42,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/040_r3f-ref_A_i4.json",
+      "label": "r3f-ref",
+      "load": "A",
+      "warmup": false,
+      "iteration": 4,
+      "startedAt": "2026-09-19T20:03:17.680Z",
+      "durationMs": 36927,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": [
+          "median FPS ≈ 60 — похоже, vsync не снят"
+        ]
+      },
+      "brief": {
+        "fps_median": 58.548,
+        "frame_ms_median": 17.08,
+        "frame_ms_p99": 30.419,
+        "fps_p1_low": 28.069,
+        "jank_60_share": 0.656,
+        "update_ms_median": 0.08,
+        "render_ms_median": 6.73,
+        "gpu_ms_median": null,
+        "other_ms_median": 10.1,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/041_r3f-ref_A_i5.json",
+      "label": "r3f-ref",
+      "load": "A",
+      "warmup": false,
+      "iteration": 5,
+      "startedAt": "2026-09-19T20:03:57.618Z",
+      "durationMs": 36969,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": [
+          "median FPS ≈ 60 — похоже, vsync не снят"
+        ]
+      },
+      "brief": {
+        "fps_median": 58.858,
+        "frame_ms_median": 16.99,
+        "frame_ms_p99": 30.517,
+        "fps_p1_low": 27.967,
+        "jank_60_share": 0.59,
+        "update_ms_median": 0.08,
+        "render_ms_median": 6.85,
+        "gpu_ms_median": null,
+        "other_ms_median": 9.96,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/042_r3f-ref_D_i5.json",
+      "label": "r3f-ref",
+      "load": "D",
+      "warmup": false,
+      "iteration": 5,
+      "startedAt": "2026-09-19T20:04:37.597Z",
+      "durationMs": 40476,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 16.697,
+        "frame_ms_median": 59.89,
+        "frame_ms_p99": 68.012,
+        "fps_p1_low": 13.458,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 56.9,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.84,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/043_threejs_B_i5.json",
+      "label": "threejs",
+      "load": "B",
+      "warmup": false,
+      "iteration": 5,
+      "startedAt": "2026-09-19T20:05:21.087Z",
+      "durationMs": 41587,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 18.248,
+        "frame_ms_median": 54.8,
+        "frame_ms_p99": 66.048,
+        "fps_p1_low": 9.484,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 50.52,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.84,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/044_r3f-ref_B_i5.json",
+      "label": "r3f-ref",
+      "load": "B",
+      "warmup": false,
+      "iteration": 5,
+      "startedAt": "2026-09-19T20:06:05.686Z",
+      "durationMs": 40106,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 18.594,
+        "frame_ms_median": 53.78,
+        "frame_ms_p99": 63.63,
+        "fps_p1_low": 15.175,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 50.82,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.66,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/045_threejs_A_i5.json",
+      "label": "threejs",
+      "load": "A",
+      "warmup": false,
+      "iteration": 5,
+      "startedAt": "2026-09-19T20:06:48.802Z",
+      "durationMs": 36739,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 57.339,
+        "frame_ms_median": 17.44,
+        "frame_ms_p99": 35.589,
+        "fps_p1_low": 26.198,
+        "jank_60_share": 0.785,
+        "update_ms_median": 0.1,
+        "render_ms_median": 6.7,
+        "gpu_ms_median": null,
+        "other_ms_median": 10.48,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/046_threejs_D_i5.json",
+      "label": "threejs",
+      "load": "D",
+      "warmup": false,
+      "iteration": 5,
+      "startedAt": "2026-09-19T20:07:28.567Z",
+      "durationMs": 40937,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 16.134,
+        "frame_ms_median": 61.98,
+        "frame_ms_p99": 90.658,
+        "fps_p1_low": 8.716,
+        "jank_60_share": 1,
+        "update_ms_median": 0.08,
+        "render_ms_median": 58.76,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.84,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/047_threejs_C_i5.json",
+      "label": "threejs",
+      "load": "C",
+      "warmup": false,
+      "iteration": 5,
+      "startedAt": "2026-09-19T20:08:12.517Z",
+      "durationMs": 36747,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 21.177,
+        "frame_ms_median": 47.22,
+        "frame_ms_p99": 58.798,
+        "fps_p1_low": 15.824,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 44.84,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.28,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/048_r3f-ref_C_i5.json",
+      "label": "r3f-ref",
+      "load": "C",
+      "warmup": false,
+      "iteration": 5,
+      "startedAt": "2026-09-19T20:08:52.274Z",
+      "durationMs": 36938,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 22.81,
+        "frame_ms_median": 43.84,
+        "frame_ms_p99": 52.803,
+        "fps_p1_low": 16.405,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 41.4,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.34,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/049_r3f-ref_D_i6.json",
+      "label": "r3f-ref",
+      "load": "D",
+      "warmup": false,
+      "iteration": 6,
+      "startedAt": "2026-09-19T20:09:32.229Z",
+      "durationMs": 40106,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 16.502,
+        "frame_ms_median": 60.6,
+        "frame_ms_p99": 72.144,
+        "fps_p1_low": 13.077,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 53.04,
+        "gpu_ms_median": null,
+        "other_ms_median": 3.74,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/050_r3f-ref_B_i6.json",
+      "label": "r3f-ref",
+      "load": "B",
+      "warmup": false,
+      "iteration": 6,
+      "startedAt": "2026-09-19T20:10:15.347Z",
+      "durationMs": 39985,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 17.331,
+        "frame_ms_median": 57.7,
+        "frame_ms_p99": 63.69,
+        "fps_p1_low": 15.245,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 54.92,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.64,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/051_threejs_A_i6.json",
+      "label": "threejs",
+      "load": "A",
+      "warmup": false,
+      "iteration": 6,
+      "startedAt": "2026-09-19T20:10:58.353Z",
+      "durationMs": 36767,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 57.87,
+        "frame_ms_median": 17.28,
+        "frame_ms_p99": 33.006,
+        "fps_p1_low": 26.226,
+        "jank_60_share": 0.708,
+        "update_ms_median": 0.1,
+        "render_ms_median": 6.66,
+        "gpu_ms_median": null,
+        "other_ms_median": 10.32,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/052_r3f-ref_C_i6.json",
+      "label": "r3f-ref",
+      "load": "C",
+      "warmup": false,
+      "iteration": 6,
+      "startedAt": "2026-09-19T20:11:38.133Z",
+      "durationMs": 37459,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 21.678,
+        "frame_ms_median": 46.13,
+        "frame_ms_p99": 50.909,
+        "fps_p1_low": 17.158,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 43.84,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.24,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/053_r3f-ref_A_i6.json",
+      "label": "r3f-ref",
+      "load": "A",
+      "warmup": false,
+      "iteration": 6,
+      "startedAt": "2026-09-19T20:12:18.601Z",
+      "durationMs": 36849,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": [
+          "median FPS ≈ 60 — похоже, vsync не снят"
+        ]
+      },
+      "brief": {
+        "fps_median": 58.962,
+        "frame_ms_median": 16.96,
+        "frame_ms_p99": 30.163,
+        "fps_p1_low": 29.593,
+        "jank_60_share": 0.58,
+        "update_ms_median": 0.08,
+        "render_ms_median": 6.82,
+        "gpu_ms_median": null,
+        "other_ms_median": 9.88,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/054_threejs_B_i6.json",
+      "label": "threejs",
+      "load": "B",
+      "warmup": false,
+      "iteration": 6,
+      "startedAt": "2026-09-19T20:12:58.457Z",
+      "durationMs": 41032,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 17.59,
+        "frame_ms_median": 56.85,
+        "frame_ms_p99": 71.805,
+        "fps_p1_low": 11.232,
+        "jank_60_share": 1,
+        "update_ms_median": 0.08,
+        "render_ms_median": 54.04,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.64,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/055_threejs_C_i6.json",
+      "label": "threejs",
+      "load": "C",
+      "warmup": false,
+      "iteration": 6,
+      "startedAt": "2026-09-19T20:13:42.502Z",
+      "durationMs": 36753,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 22.779,
+        "frame_ms_median": 43.9,
+        "frame_ms_p99": 54.637,
+        "fps_p1_low": 14.201,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 41.42,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.32,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/056_threejs_D_i6.json",
+      "label": "threejs",
+      "load": "D",
+      "warmup": false,
+      "iteration": 6,
+      "startedAt": "2026-09-19T20:14:22.283Z",
+      "durationMs": 40873,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 16.351,
+        "frame_ms_median": 61.16,
+        "frame_ms_p99": 72.673,
+        "fps_p1_low": 10.871,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 51.4,
+        "gpu_ms_median": null,
+        "other_ms_median": 9.26,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/057_threejs_C_i7.json",
+      "label": "threejs",
+      "load": "C",
+      "warmup": false,
+      "iteration": 7,
+      "startedAt": "2026-09-19T20:15:06.169Z",
+      "durationMs": 36741,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 21.72,
+        "frame_ms_median": 46.04,
+        "frame_ms_p99": 54.278,
+        "fps_p1_low": 15.899,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 43.5,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.3,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/058_r3f-ref_D_i7.json",
+      "label": "r3f-ref",
+      "load": "D",
+      "warmup": false,
+      "iteration": 7,
+      "startedAt": "2026-09-19T20:15:45.932Z",
+      "durationMs": 39833,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 16.589,
+        "frame_ms_median": 60.28,
+        "frame_ms_p99": 67.584,
+        "fps_p1_low": 14.347,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 57.34,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.8,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/059_r3f-ref_B_i7.json",
+      "label": "r3f-ref",
+      "load": "B",
+      "warmup": false,
+      "iteration": 7,
+      "startedAt": "2026-09-19T20:16:28.780Z",
+      "durationMs": 39972,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 17.042,
+        "frame_ms_median": 58.68,
+        "frame_ms_p99": 65.14,
+        "fps_p1_low": 15.005,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 55.9,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.58,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/060_r3f-ref_A_i7.json",
+      "label": "r3f-ref",
+      "load": "A",
+      "warmup": false,
+      "iteration": 7,
+      "startedAt": "2026-09-19T20:17:11.770Z",
+      "durationMs": 36917,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": [
+          "median FPS ≈ 60 — похоже, vsync не снят"
+        ]
+      },
+      "brief": {
+        "fps_median": 58.824,
+        "frame_ms_median": 17,
+        "frame_ms_p99": 30.273,
+        "fps_p1_low": 28.456,
+        "jank_60_share": 0.613,
+        "update_ms_median": 0.08,
+        "render_ms_median": 6.88,
+        "gpu_ms_median": null,
+        "other_ms_median": 9.9,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/061_r3f-ref_C_i7.json",
+      "label": "r3f-ref",
+      "load": "C",
+      "warmup": false,
+      "iteration": 7,
+      "startedAt": "2026-09-19T20:17:51.704Z",
+      "durationMs": 36926,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 23.419,
+        "frame_ms_median": 42.7,
+        "frame_ms_p99": 50.781,
+        "fps_p1_low": 19.464,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 40.2,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.4,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/062_threejs_D_i7.json",
+      "label": "threejs",
+      "load": "D",
+      "warmup": false,
+      "iteration": 7,
+      "startedAt": "2026-09-19T20:18:31.647Z",
+      "durationMs": 41534,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 16.869,
+        "frame_ms_median": 59.28,
+        "frame_ms_p99": 69.81,
+        "fps_p1_low": 10.952,
+        "jank_60_share": 1,
+        "update_ms_median": 0.08,
+        "render_ms_median": 54.9,
+        "gpu_ms_median": null,
+        "other_ms_median": 3.16,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/063_threejs_A_i7.json",
+      "label": "threejs",
+      "load": "A",
+      "warmup": false,
+      "iteration": 7,
+      "startedAt": "2026-09-19T20:19:16.198Z",
+      "durationMs": 36872,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 57.937,
+        "frame_ms_median": 17.26,
+        "frame_ms_p99": 30.57,
+        "fps_p1_low": 27.527,
+        "jank_60_share": 0.754,
+        "update_ms_median": 0.1,
+        "render_ms_median": 6.78,
+        "gpu_ms_median": null,
+        "other_ms_median": 10.24,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/064_threejs_B_i7.json",
+      "label": "threejs",
+      "load": "B",
+      "warmup": false,
+      "iteration": 7,
+      "startedAt": "2026-09-19T20:19:56.079Z",
+      "durationMs": 40931,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 17.599,
+        "frame_ms_median": 56.82,
+        "frame_ms_p99": 73.46,
+        "fps_p1_low": 11.662,
+        "jank_60_share": 1,
+        "update_ms_median": 0.08,
+        "render_ms_median": 54.14,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.68,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/065_threejs_C_i8.json",
+      "label": "threejs",
+      "load": "C",
+      "warmup": false,
+      "iteration": 8,
+      "startedAt": "2026-09-19T20:20:40.030Z",
+      "durationMs": 36801,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 23.095,
+        "frame_ms_median": 43.3,
+        "frame_ms_p99": 54.227,
+        "fps_p1_low": 15.007,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 40.78,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.38,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/066_threejs_A_i8.json",
+      "label": "threejs",
+      "load": "A",
+      "warmup": false,
+      "iteration": 8,
+      "startedAt": "2026-09-19T20:21:19.857Z",
+      "durationMs": 36675,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 57.604,
+        "frame_ms_median": 17.36,
+        "frame_ms_p99": 33.404,
+        "fps_p1_low": 26.333,
+        "jank_60_share": 0.744,
+        "update_ms_median": 0.1,
+        "render_ms_median": 6.74,
+        "gpu_ms_median": null,
+        "other_ms_median": 10.3,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/067_r3f-ref_A_i8.json",
+      "label": "r3f-ref",
+      "load": "A",
+      "warmup": false,
+      "iteration": 8,
+      "startedAt": "2026-09-19T20:21:59.549Z",
+      "durationMs": 36889,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": [
+          "median FPS ≈ 60 — похоже, vsync не снят"
+        ]
+      },
+      "brief": {
+        "fps_median": 58.548,
+        "frame_ms_median": 17.08,
+        "frame_ms_p99": 30.079,
+        "fps_p1_low": 30.436,
+        "jank_60_share": 0.609,
+        "update_ms_median": 0.08,
+        "render_ms_median": 6.92,
+        "gpu_ms_median": null,
+        "other_ms_median": 9.88,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/068_r3f-ref_C_i8.json",
+      "label": "r3f-ref",
+      "load": "C",
+      "warmup": false,
+      "iteration": 8,
+      "startedAt": "2026-09-19T20:22:39.446Z",
+      "durationMs": 36974,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 23.641,
+        "frame_ms_median": 42.3,
+        "frame_ms_p99": 50.687,
+        "fps_p1_low": 18.762,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 39.86,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.36,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/069_r3f-ref_B_i8.json",
+      "label": "r3f-ref",
+      "load": "B",
+      "warmup": false,
+      "iteration": 8,
+      "startedAt": "2026-09-19T20:23:19.430Z",
+      "durationMs": 40017,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 17.313,
+        "frame_ms_median": 57.76,
+        "frame_ms_p99": 64.942,
+        "fps_p1_low": 14.973,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 54.98,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.6,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/070_threejs_B_i8.json",
+      "label": "threejs",
+      "load": "B",
+      "warmup": false,
+      "iteration": 8,
+      "startedAt": "2026-09-19T20:24:02.462Z",
+      "durationMs": 40788,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 18.228,
+        "frame_ms_median": 54.86,
+        "frame_ms_p99": 73.887,
+        "fps_p1_low": 10.402,
+        "jank_60_share": 1,
+        "update_ms_median": 0.08,
+        "render_ms_median": 50.88,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.82,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/071_threejs_D_i8.json",
+      "label": "threejs",
+      "load": "D",
+      "warmup": false,
+      "iteration": 8,
+      "startedAt": "2026-09-19T20:24:46.266Z",
+      "durationMs": 41435,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 16.391,
+        "frame_ms_median": 61.01,
+        "frame_ms_p99": 74.722,
+        "fps_p1_low": 10.461,
+        "jank_60_share": 1,
+        "update_ms_median": 0.08,
+        "render_ms_median": 53.36,
+        "gpu_ms_median": null,
+        "other_ms_median": 4.54,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/072_r3f-ref_D_i8.json",
+      "label": "r3f-ref",
+      "load": "D",
+      "warmup": false,
+      "iteration": 8,
+      "startedAt": "2026-09-19T20:25:30.715Z",
+      "durationMs": 41086,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 16.611,
+        "frame_ms_median": 60.2,
+        "frame_ms_p99": 66.02,
+        "fps_p1_low": 14.873,
+        "jank_60_share": 1,
+        "update_ms_median": 0.08,
+        "render_ms_median": 57.28,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.78,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/073_r3f-ref_D_i9.json",
+      "label": "r3f-ref",
+      "load": "D",
+      "warmup": false,
+      "iteration": 9,
+      "startedAt": "2026-09-19T20:26:14.814Z",
+      "durationMs": 39928,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 16.7,
+        "frame_ms_median": 59.88,
+        "frame_ms_p99": 65.9,
+        "fps_p1_low": 15.002,
+        "jank_60_share": 1,
+        "update_ms_median": 0.08,
+        "render_ms_median": 57,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.76,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/074_threejs_C_i9.json",
+      "label": "threejs",
+      "load": "C",
+      "warmup": false,
+      "iteration": 9,
+      "startedAt": "2026-09-19T20:26:57.755Z",
+      "durationMs": 36665,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 21.692,
+        "frame_ms_median": 46.1,
+        "frame_ms_p99": 54.045,
+        "fps_p1_low": 16.518,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 43.76,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.26,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/075_threejs_D_i9.json",
+      "label": "threejs",
+      "load": "D",
+      "warmup": false,
+      "iteration": 9,
+      "startedAt": "2026-09-19T20:27:37.440Z",
+      "durationMs": 41504,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 16.447,
+        "frame_ms_median": 60.8,
+        "frame_ms_p99": 70.792,
+        "fps_p1_low": 10.529,
+        "jank_60_share": 1,
+        "update_ms_median": 0.08,
+        "render_ms_median": 54.95,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.96,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/076_r3f-ref_B_i9.json",
+      "label": "r3f-ref",
+      "load": "B",
+      "warmup": false,
+      "iteration": 9,
+      "startedAt": "2026-09-19T20:28:21.961Z",
+      "durationMs": 39931,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 17.489,
+        "frame_ms_median": 57.18,
+        "frame_ms_p99": 64.775,
+        "fps_p1_low": 14.556,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 54.43,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.66,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/077_r3f-ref_A_i9.json",
+      "label": "r3f-ref",
+      "load": "A",
+      "warmup": false,
+      "iteration": 9,
+      "startedAt": "2026-09-19T20:29:04.914Z",
+      "durationMs": 36941,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 58.411,
+        "frame_ms_median": 17.12,
+        "frame_ms_p99": 30.388,
+        "fps_p1_low": 30.046,
+        "jank_60_share": 0.636,
+        "update_ms_median": 0.08,
+        "render_ms_median": 6.8,
+        "gpu_ms_median": null,
+        "other_ms_median": 9.98,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/078_threejs_A_i9.json",
+      "label": "threejs",
+      "load": "A",
+      "warmup": false,
+      "iteration": 9,
+      "startedAt": "2026-09-19T20:29:44.879Z",
+      "durationMs": 36679,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 57.604,
+        "frame_ms_median": 17.36,
+        "frame_ms_p99": 30.619,
+        "fps_p1_low": 27.242,
+        "jank_60_share": 0.724,
+        "update_ms_median": 0.1,
+        "render_ms_median": 6.68,
+        "gpu_ms_median": null,
+        "other_ms_median": 10.4,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/079_threejs_B_i9.json",
+      "label": "threejs",
+      "load": "B",
+      "warmup": false,
+      "iteration": 9,
+      "startedAt": "2026-09-19T20:30:24.566Z",
+      "durationMs": 41459,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 18.342,
+        "frame_ms_median": 54.52,
+        "frame_ms_p99": 66.76,
+        "fps_p1_low": 11.388,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 50.82,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.82,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/080_r3f-ref_C_i9.json",
+      "label": "r3f-ref",
+      "load": "C",
+      "warmup": false,
+      "iteration": 9,
+      "startedAt": "2026-09-19T20:31:09.049Z",
+      "durationMs": 36882,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 21.673,
+        "frame_ms_median": 46.14,
+        "frame_ms_p99": 52.541,
+        "fps_p1_low": 17.89,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 43.78,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.24,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/081_r3f-ref_D_i10.json",
+      "label": "r3f-ref",
+      "load": "D",
+      "warmup": false,
+      "iteration": 10,
+      "startedAt": "2026-09-19T20:31:48.952Z",
+      "durationMs": 40052,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 16.661,
+        "frame_ms_median": 60.02,
+        "frame_ms_p99": 75.445,
+        "fps_p1_low": 5.475,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 52.22,
+        "gpu_ms_median": null,
+        "other_ms_median": 4.66,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/082_r3f-ref_A_i10.json",
+      "label": "r3f-ref",
+      "load": "A",
+      "warmup": false,
+      "iteration": 10,
+      "startedAt": "2026-09-19T20:32:32.019Z",
+      "durationMs": 37409,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": [
+          "median FPS ≈ 60 — похоже, vsync не снят"
+        ]
+      },
+      "brief": {
+        "fps_median": 58.617,
+        "frame_ms_median": 17.06,
+        "frame_ms_p99": 30.639,
+        "fps_p1_low": 28.915,
+        "jank_60_share": 0.635,
+        "update_ms_median": 0.08,
+        "render_ms_median": 6.82,
+        "gpu_ms_median": null,
+        "other_ms_median": 9.98,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/083_r3f-ref_B_i10.json",
+      "label": "r3f-ref",
+      "load": "B",
+      "warmup": false,
+      "iteration": 10,
+      "startedAt": "2026-09-19T20:33:12.438Z",
+      "durationMs": 39874,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 18.639,
+        "frame_ms_median": 53.65,
+        "frame_ms_p99": 66.591,
+        "fps_p1_low": 14.04,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 50.41,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.74,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/084_threejs_B_i10.json",
+      "label": "threejs",
+      "load": "B",
+      "warmup": false,
+      "iteration": 10,
+      "startedAt": "2026-09-19T20:33:55.325Z",
+      "durationMs": 41013,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 17.966,
+        "frame_ms_median": 55.66,
+        "frame_ms_p99": 70.703,
+        "fps_p1_low": 10.796,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 49.64,
+        "gpu_ms_median": null,
+        "other_ms_median": 3.38,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/085_threejs_D_i10.json",
+      "label": "threejs",
+      "load": "D",
+      "warmup": false,
+      "iteration": 10,
+      "startedAt": "2026-09-19T20:34:39.359Z",
+      "durationMs": 41244,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 16.287,
+        "frame_ms_median": 61.4,
+        "frame_ms_p99": 75.589,
+        "fps_p1_low": 10.084,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 52.89,
+        "gpu_ms_median": null,
+        "other_ms_median": 7.29,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/086_threejs_C_i10.json",
+      "label": "threejs",
+      "load": "C",
+      "warmup": false,
+      "iteration": 10,
+      "startedAt": "2026-09-19T20:35:23.609Z",
+      "durationMs": 36719,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 21.441,
+        "frame_ms_median": 46.64,
+        "frame_ms_p99": 56.69,
+        "fps_p1_low": 16.207,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 44.3,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.26,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/087_r3f-ref_C_i10.json",
+      "label": "r3f-ref",
+      "load": "C",
+      "warmup": false,
+      "iteration": 10,
+      "startedAt": "2026-09-19T20:36:03.346Z",
+      "durationMs": 36986,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 23.267,
+        "frame_ms_median": 42.98,
+        "frame_ms_p99": 51.289,
+        "fps_p1_low": 16.301,
+        "jank_60_share": 1,
+        "update_ms_median": 0.06,
+        "render_ms_median": 40.56,
+        "gpu_ms_median": null,
+        "other_ms_median": 2.34,
+        "heap_mb_peak": null
+      }
+    },
+    {
+      "file": "runs/088_threejs_A_i10.json",
+      "label": "threejs",
+      "load": "A",
+      "warmup": false,
+      "iteration": 10,
+      "startedAt": "2026-09-19T20:36:43.345Z",
+      "durationMs": 36772,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "fps_median": 57.937,
+        "frame_ms_median": 17.26,
+        "frame_ms_p99": 30.718,
+        "fps_p1_low": 26.578,
+        "jank_60_share": 0.713,
+        "update_ms_median": 0.1,
+        "render_ms_median": 6.64,
+        "gpu_ms_median": null,
+        "other_ms_median": 10.36,
+        "heap_mb_peak": null
+      }
+    }
+  ]
+}

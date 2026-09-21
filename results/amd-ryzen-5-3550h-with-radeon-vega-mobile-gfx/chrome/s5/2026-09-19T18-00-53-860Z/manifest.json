@@ -1,0 +1,1199 @@
+{
+  "schema": 2,
+  "createdAt": "2026-09-19T18:01:00.337Z",
+  "config": {
+    "scenario": "s5",
+    "targets": [
+      {
+        "label": "threejs",
+        "impl": "threejs",
+        "mode": null
+      },
+      {
+        "label": "r3f-ref",
+        "impl": "r3f",
+        "mode": "ref"
+      },
+      {
+        "label": "r3f-ref-central",
+        "impl": "r3f",
+        "mode": "ref-central"
+      },
+      {
+        "label": "r3f-state",
+        "impl": "r3f",
+        "mode": "state"
+      }
+    ],
+    "loads": [
+      {
+        "id": "-",
+        "note": "базовая конфигурация"
+      }
+    ],
+    "browser": "chrome",
+    "serve": "preview",
+    "build": true,
+    "iterations": 8,
+    "warmupRuns": 1,
+    "cooldownMs": 3000,
+    "order": "random",
+    "orderSeed": 986975076,
+    "warmupMs": 1500,
+    "recordMs": 3000,
+    "settleMs": 3000,
+    "clickIntervalMs": 250,
+    "clickSeed": 4242,
+    "levels": [
+      100,
+      141,
+      200,
+      283,
+      400,
+      566,
+      800,
+      1131,
+      1600,
+      2263,
+      3200,
+      4525,
+      6400,
+      9051,
+      12800,
+      18102,
+      25600,
+      36204,
+      51200
+    ],
+    "fpsFloor": 30,
+    "levelsBeyondFloor": 2,
+    "minLevelFrames": 60,
+    "renderScale": 1,
+    "detailScale": 1,
+    "parityOnly": false,
+    "skipParity": false,
+    "trace": false,
+    "gpuTimer": true,
+    "device": null,
+    "resultsDir": "C:\\Users\\morko\\Documents\\VScode\\benchmark\\results"
+  },
+  "host": {
+    "node": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "osRelease": "10.0.26200",
+    "osVersion": "Windows 11 Pro",
+    "cpuModel": "AMD Ryzen 5 3550H with Radeon Vega Mobile Gfx  ",
+    "cpuCount": 8,
+    "totalMemGb": 13.9,
+    "lowPowerMode": null,
+    "git": {
+      "commit": "954a694534cafd030eb7b7bd7ffa566d3037f93f",
+      "dirty": true
+    },
+    "libs": {
+      "three": "0.186.0",
+      "react": "19.2.8",
+      "react-dom": "19.2.8",
+      "@react-three/fiber": "9.7.0",
+      "vite": "8.3.0",
+      "playwright": "1.63.0",
+      "typescript": "5.9.3"
+    },
+    "therm": null,
+    "power": null
+  },
+  "browser": {
+    "name": "chrome",
+    "version": "153.0.8010.52",
+    "launchArgs": [
+      "--use-gl=angle",
+      "--enable-gpu",
+      "--ignore-gpu-blocklist",
+      "--disable-frame-rate-limit",
+      "--disable-gpu-vsync",
+      "--enable-precise-memory-info",
+      "--disable-renderer-backgrounding",
+      "--disable-background-timer-throttling",
+      "--disable-backgrounding-occluded-windows"
+    ],
+    "prefs": null,
+    "vsyncUncapped": true
+  },
+  "servers": {
+    "threejs": {
+      "url": "http://localhost:4173/",
+      "coop": "same-origin",
+      "coep": "require-corp"
+    },
+    "r3f": {
+      "url": "http://localhost:4174/",
+      "coop": "same-origin",
+      "coep": "require-corp"
+    }
+  },
+  "bundles": [
+    {
+      "impl": "threejs",
+      "files": [
+        {
+          "path": "assets\\index-CWSjg4EL.js",
+          "bytes": 566834,
+          "gzipBytes": 142496,
+          "brotliBytes": 117260
+        },
+        {
+          "path": "index.html",
+          "bytes": 1973,
+          "gzipBytes": 1190,
+          "brotliBytes": 861
+        }
+      ],
+      "total_bytes": 568807,
+      "total_gzip_bytes": 143686,
+      "total_brotli_bytes": 118121
+    },
+    {
+      "impl": "r3f",
+      "files": [
+        {
+          "path": "assets\\index-DFy9cP-C.js",
+          "bytes": 1124722,
+          "gzipBytes": 304907,
+          "brotliBytes": 236173
+        },
+        {
+          "path": "index.html",
+          "bytes": 1991,
+          "gzipBytes": 1194,
+          "brotliBytes": 867
+        }
+      ],
+      "total_bytes": 1126713,
+      "total_gzip_bytes": 306101,
+      "total_brotli_bytes": 237040
+    }
+  ],
+  "parity": [
+    {
+      "scenario": "s5",
+      "load": "-",
+      "reference": "threejs",
+      "ok": true,
+      "entries": [
+        {
+          "label": "threejs",
+          "ok": true,
+          "issues": [],
+          "image": {
+            "exact": true,
+            "meanAbs": 0,
+            "maxAbs": 0
+          },
+          "summary": {
+            "meshCount": 2000,
+            "meshDigest": "ae411f24",
+            "camera": "PerspectiveCamera|60.00000|1.77778|0.10000|603.17474|1.00000|1.0000,0.0000,0.0000,0.0000,0.0000,0.9614,-0.2750,0.0000,0.0000,0.2750,0.9614,0.0000,0.0000,40.3175,140.9524,1.0000|0.97428,0.00000,0.00000,0.00000,0.00000,1.73205,0.00000,0.00000,0.00000,0.00000,-1.00033,-1.00000,0.00000,0.00000,-0.20003,0.00000",
+            "calls": 2000,
+            "triangles": 24000,
+            "imageHash": "fd42c790"
+          }
+        },
+        {
+          "label": "r3f-ref",
+          "ok": true,
+          "issues": [],
+          "image": {
+            "exact": true,
+            "meanAbs": 0,
+            "maxAbs": 0
+          },
+          "summary": {
+            "meshCount": 2000,
+            "meshDigest": "ae411f24",
+            "camera": "PerspectiveCamera|60.00000|1.77778|0.10000|603.17474|1.00000|1.0000,0.0000,0.0000,0.0000,0.0000,0.9614,-0.2750,0.0000,0.0000,0.2750,0.9614,0.0000,0.0000,40.3175,140.9524,1.0000|0.97428,0.00000,0.00000,0.00000,0.00000,1.73205,0.00000,0.00000,0.00000,0.00000,-1.00033,-1.00000,0.00000,0.00000,-0.20003,0.00000",
+            "calls": 2000,
+            "triangles": 24000,
+            "imageHash": "fd42c790"
+          }
+        },
+        {
+          "label": "r3f-ref-central",
+          "ok": true,
+          "issues": [],
+          "image": {
+            "exact": true,
+            "meanAbs": 0,
+            "maxAbs": 0
+          },
+          "summary": {
+            "meshCount": 2000,
+            "meshDigest": "ae411f24",
+            "camera": "PerspectiveCamera|60.00000|1.77778|0.10000|603.17474|1.00000|1.0000,0.0000,0.0000,0.0000,0.0000,0.9614,-0.2750,0.0000,0.0000,0.2750,0.9614,0.0000,0.0000,40.3175,140.9524,1.0000|0.97428,0.00000,0.00000,0.00000,0.00000,1.73205,0.00000,0.00000,0.00000,0.00000,-1.00033,-1.00000,0.00000,0.00000,-0.20003,0.00000",
+            "calls": 2000,
+            "triangles": 24000,
+            "imageHash": "fd42c790"
+          }
+        },
+        {
+          "label": "r3f-state",
+          "ok": true,
+          "issues": [],
+          "image": {
+            "exact": true,
+            "meanAbs": 0,
+            "maxAbs": 0
+          },
+          "summary": {
+            "meshCount": 2000,
+            "meshDigest": "ae411f24",
+            "camera": "PerspectiveCamera|60.00000|1.77778|0.10000|603.17474|1.00000|1.0000,0.0000,0.0000,0.0000,0.0000,0.9614,-0.2750,0.0000,0.0000,0.2750,0.9614,0.0000,0.0000,40.3175,140.9524,1.0000|0.97428,0.00000,0.00000,0.00000,0.00000,1.73205,0.00000,0.00000,0.00000,0.00000,-1.00033,-1.00000,0.00000,0.00000,-0.20003,0.00000",
+            "calls": 2000,
+            "triangles": 24000,
+            "imageHash": "fd42c790"
+          }
+        }
+      ]
+    }
+  ],
+  "schedule": [
+    {
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": true,
+      "iteration": 1
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": true,
+      "iteration": 1
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": true,
+      "iteration": 1
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": true,
+      "iteration": 1
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 1
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 1
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 1
+    },
+    {
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 1
+    },
+    {
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 2
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 2
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 2
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 2
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 3
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 3
+    },
+    {
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 3
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 3
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 4
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 4
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 4
+    },
+    {
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 4
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 5
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 5
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 5
+    },
+    {
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 5
+    },
+    {
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 6
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 6
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 6
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 6
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 7
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 7
+    },
+    {
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 7
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 7
+    },
+    {
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 8
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 8
+    },
+    {
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 8
+    },
+    {
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 8
+    }
+  ],
+  "runs": [
+    {
+      "file": "runs/001_r3f-ref-central_w1.json",
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": true,
+      "iteration": 1,
+      "startedAt": "2026-09-19T18:01:08.256Z",
+      "durationMs": 79943,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 16,
+        "capacity_fps60": 3643,
+        "capacity_fps30": 7185,
+        "first_below_floor": 9051
+      }
+    },
+    {
+      "file": "runs/002_threejs_w1.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": true,
+      "iteration": 1,
+      "startedAt": "2026-09-19T18:02:31.202Z",
+      "durationMs": 83528,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 16,
+        "capacity_fps60": 3517,
+        "capacity_fps30": 6486,
+        "first_below_floor": 9051
+      }
+    },
+    {
+      "file": "runs/003_r3f-state_w1.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": true,
+      "iteration": 1,
+      "startedAt": "2026-09-19T18:03:57.736Z",
+      "durationMs": 66251,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 13,
+        "capacity_fps60": 1194,
+        "capacity_fps30": 2432,
+        "first_below_floor": 3200
+      }
+    },
+    {
+      "file": "runs/004_r3f-ref_w1.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": true,
+      "iteration": 1,
+      "startedAt": "2026-09-19T18:05:06.994Z",
+      "durationMs": 85296,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 16,
+        "capacity_fps60": 3480,
+        "capacity_fps30": 6905,
+        "first_below_floor": 9051
+      }
+    },
+    {
+      "file": "runs/005_r3f-state_i1.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 1,
+      "startedAt": "2026-09-19T18:06:35.311Z",
+      "durationMs": 66462,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 13,
+        "capacity_fps60": 1194,
+        "capacity_fps30": 2377,
+        "first_below_floor": 3200
+      }
+    },
+    {
+      "file": "runs/006_r3f-ref_i1.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 1,
+      "startedAt": "2026-09-19T18:07:44.788Z",
+      "durationMs": 85540,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 16,
+        "capacity_fps60": 3423,
+        "capacity_fps30": 6610,
+        "first_below_floor": 9051
+      }
+    },
+    {
+      "file": "runs/007_threejs_i1.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 1,
+      "startedAt": "2026-09-19T18:09:13.333Z",
+      "durationMs": 82828,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 16,
+        "capacity_fps60": 3345,
+        "capacity_fps30": 6596,
+        "first_below_floor": 9051
+      }
+    },
+    {
+      "file": "runs/008_r3f-ref-central_i1.json",
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 1,
+      "startedAt": "2026-09-19T18:10:39.171Z",
+      "durationMs": 79522,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 16,
+        "capacity_fps60": 3536,
+        "capacity_fps30": 6814,
+        "first_below_floor": 9051
+      }
+    },
+    {
+      "file": "runs/009_r3f-ref-central_i2.json",
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 2,
+      "startedAt": "2026-09-19T18:12:01.700Z",
+      "durationMs": 79586,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 16,
+        "capacity_fps60": 3559,
+        "capacity_fps30": 6956,
+        "first_below_floor": 9051
+      }
+    },
+    {
+      "file": "runs/010_threejs_i2.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 2,
+      "startedAt": "2026-09-19T18:13:24.299Z",
+      "durationMs": 83180,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 16,
+        "capacity_fps60": 3683,
+        "capacity_fps30": 6785,
+        "first_below_floor": 9051
+      }
+    },
+    {
+      "file": "runs/011_r3f-state_i2.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 2,
+      "startedAt": "2026-09-19T18:14:50.492Z",
+      "durationMs": 66302,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 13,
+        "capacity_fps60": 1191,
+        "capacity_fps30": 2377,
+        "first_below_floor": 3200
+      }
+    },
+    {
+      "file": "runs/012_r3f-ref_i2.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 2,
+      "startedAt": "2026-09-19T18:15:59.804Z",
+      "durationMs": 85177,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 16,
+        "capacity_fps60": 3603,
+        "capacity_fps30": 7077,
+        "first_below_floor": 9051
+      }
+    },
+    {
+      "file": "runs/013_threejs_i3.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 3,
+      "startedAt": "2026-09-19T18:17:27.998Z",
+      "durationMs": 83029,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 16,
+        "capacity_fps60": 3403,
+        "capacity_fps30": 6636,
+        "first_below_floor": 9051
+      }
+    },
+    {
+      "file": "runs/014_r3f-state_i3.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 3,
+      "startedAt": "2026-09-19T18:18:54.030Z",
+      "durationMs": 65705,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 13,
+        "capacity_fps60": 1191,
+        "capacity_fps30": 2311,
+        "first_below_floor": 3200
+      }
+    },
+    {
+      "file": "runs/015_r3f-ref-central_i3.json",
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 3,
+      "startedAt": "2026-09-19T18:20:02.744Z",
+      "durationMs": 79827,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 16,
+        "capacity_fps60": 3530,
+        "capacity_fps30": 6872,
+        "first_below_floor": 9051
+      }
+    },
+    {
+      "file": "runs/016_r3f-ref_i3.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 3,
+      "startedAt": "2026-09-19T18:21:25.587Z",
+      "durationMs": 74970,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 15,
+        "capacity_fps60": 3509,
+        "capacity_fps30": 5580,
+        "first_below_floor": 6400
+      }
+    },
+    {
+      "file": "runs/017_r3f-ref_i4.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 4,
+      "startedAt": "2026-09-19T18:22:43.573Z",
+      "durationMs": 85188,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 16,
+        "capacity_fps60": 3510,
+        "capacity_fps30": 6804,
+        "first_below_floor": 9051
+      }
+    },
+    {
+      "file": "runs/018_r3f-state_i4.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 4,
+      "startedAt": "2026-09-19T18:24:11.770Z",
+      "durationMs": 66148,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 13,
+        "capacity_fps60": 1205,
+        "capacity_fps30": 2436,
+        "first_below_floor": 3200
+      }
+    },
+    {
+      "file": "runs/019_threejs_i4.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 4,
+      "startedAt": "2026-09-19T18:25:20.923Z",
+      "durationMs": 83025,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 16,
+        "capacity_fps60": 3430,
+        "capacity_fps30": 6687,
+        "first_below_floor": 9051
+      }
+    },
+    {
+      "file": "runs/020_r3f-ref-central_i4.json",
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 4,
+      "startedAt": "2026-09-19T18:26:46.961Z",
+      "durationMs": 79416,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 16,
+        "capacity_fps60": 3531,
+        "capacity_fps30": 6874,
+        "first_below_floor": 9051
+      }
+    },
+    {
+      "file": "runs/021_r3f-ref_i5.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 5,
+      "startedAt": "2026-09-19T18:28:09.394Z",
+      "durationMs": 85572,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 16,
+        "capacity_fps60": 3390,
+        "capacity_fps30": 6526,
+        "first_below_floor": 9051
+      }
+    },
+    {
+      "file": "runs/022_threejs_i5.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 5,
+      "startedAt": "2026-09-19T18:29:37.981Z",
+      "durationMs": 83357,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 16,
+        "capacity_fps60": 3459,
+        "capacity_fps30": 6647,
+        "first_below_floor": 9051
+      }
+    },
+    {
+      "file": "runs/023_r3f-state_i5.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 5,
+      "startedAt": "2026-09-19T18:31:04.351Z",
+      "durationMs": 66070,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 13,
+        "capacity_fps60": 1209,
+        "capacity_fps30": 2388,
+        "first_below_floor": 3200
+      }
+    },
+    {
+      "file": "runs/024_r3f-ref-central_i5.json",
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 5,
+      "startedAt": "2026-09-19T18:32:13.434Z",
+      "durationMs": 79672,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 16,
+        "capacity_fps60": 3574,
+        "capacity_fps30": 7075,
+        "first_below_floor": 9051
+      }
+    },
+    {
+      "file": "runs/025_r3f-ref-central_i6.json",
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 6,
+      "startedAt": "2026-09-19T18:33:36.125Z",
+      "durationMs": 79908,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 16,
+        "capacity_fps60": 3507,
+        "capacity_fps30": 6835,
+        "first_below_floor": 9051
+      }
+    },
+    {
+      "file": "runs/026_r3f-state_i6.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 6,
+      "startedAt": "2026-09-19T18:34:59.042Z",
+      "durationMs": 66361,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 13,
+        "capacity_fps60": 1173,
+        "capacity_fps30": 2348,
+        "first_below_floor": 3200
+      }
+    },
+    {
+      "file": "runs/027_threejs_i6.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 6,
+      "startedAt": "2026-09-19T18:36:08.408Z",
+      "durationMs": 82704,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 16,
+        "capacity_fps60": 3455,
+        "capacity_fps30": 6677,
+        "first_below_floor": 9051
+      }
+    },
+    {
+      "file": "runs/028_r3f-ref_i6.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 6,
+      "startedAt": "2026-09-19T18:37:34.129Z",
+      "durationMs": 84961,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 16,
+        "capacity_fps60": 3555,
+        "capacity_fps30": 6804,
+        "first_below_floor": 9051
+      }
+    },
+    {
+      "file": "runs/029_r3f-state_i7.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 7,
+      "startedAt": "2026-09-19T18:39:02.098Z",
+      "durationMs": 57691,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 12,
+        "capacity_fps60": 1204,
+        "capacity_fps30": 2132,
+        "first_below_floor": 2263
+      }
+    },
+    {
+      "file": "runs/030_threejs_i7.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 7,
+      "startedAt": "2026-09-19T18:40:02.796Z",
+      "durationMs": 83140,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 16,
+        "capacity_fps60": 3446,
+        "capacity_fps30": 6572,
+        "first_below_floor": 9051
+      }
+    },
+    {
+      "file": "runs/031_r3f-ref-central_i7.json",
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 7,
+      "startedAt": "2026-09-19T18:41:28.954Z",
+      "durationMs": 79351,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 16,
+        "capacity_fps60": 3557,
+        "capacity_fps30": 6759,
+        "first_below_floor": 9051
+      }
+    },
+    {
+      "file": "runs/032_r3f-ref_i7.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 7,
+      "startedAt": "2026-09-19T18:42:51.323Z",
+      "durationMs": 85580,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 16,
+        "capacity_fps60": 3312,
+        "capacity_fps30": 6571,
+        "first_below_floor": 9051
+      }
+    },
+    {
+      "file": "runs/033_r3f-ref_i8.json",
+      "label": "r3f-ref",
+      "load": "-",
+      "warmup": false,
+      "iteration": 8,
+      "startedAt": "2026-09-19T18:44:19.920Z",
+      "durationMs": 85459,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 16,
+        "capacity_fps60": 3386,
+        "capacity_fps30": 6968,
+        "first_below_floor": 9051
+      }
+    },
+    {
+      "file": "runs/034_threejs_i8.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "iteration": 8,
+      "startedAt": "2026-09-19T18:45:48.393Z",
+      "durationMs": 82830,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 16,
+        "capacity_fps60": 3465,
+        "capacity_fps30": 6591,
+        "first_below_floor": 9051
+      }
+    },
+    {
+      "file": "runs/035_r3f-state_i8.json",
+      "label": "r3f-state",
+      "load": "-",
+      "warmup": false,
+      "iteration": 8,
+      "startedAt": "2026-09-19T18:47:14.225Z",
+      "durationMs": 66491,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 13,
+        "capacity_fps60": 1173,
+        "capacity_fps30": 2366,
+        "first_below_floor": 3200
+      }
+    },
+    {
+      "file": "runs/036_r3f-ref-central_i8.json",
+      "label": "r3f-ref-central",
+      "load": "-",
+      "warmup": false,
+      "iteration": 8,
+      "startedAt": "2026-09-19T18:48:23.722Z",
+      "durationMs": 79525,
+      "thermal": null,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "levels": 16,
+        "capacity_fps60": 3564,
+        "capacity_fps30": 6956,
+        "first_below_floor": 9051
+      }
+    }
+  ]
+}
