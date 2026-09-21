@@ -18,6 +18,7 @@ foreach ($a in @($s.adapters)) { if ($a) { Enable-NetAdapter -Name $a -Confirm:$
 foreach ($p in @($s.exclusions)) {
   if ($p) { try { Remove-MpPreference -ExclusionPath $p; Write-Host "Защитник: исключение $p снято" } catch { Write-Warning "Защитник: $p — $($_.Exception.Message)" } }
 }
+if ($s.node) { powercfg /powerthrottling reset /path "$($s.node)"; Write-Host "Power throttling: сброшен для $($s.node)" }
 if ($s.scheme) { powercfg /setactive $s.scheme; Write-Host "Питание: схема $($s.scheme) восстановлена" }
 
 # Start в реестре: 2 — автоматически (с DelayedAutostart — отложенно), 3 — вручную, 4 — отключена

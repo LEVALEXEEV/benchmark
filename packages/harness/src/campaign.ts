@@ -63,7 +63,9 @@ const PLAN: Record<Session, Record<DeviceId, Series[]>> = {
     D1: [
       ...series('chromium', 'base', ALL),
       ...series('chromium', 'trace', ['s2']),
-      ...series('webkit', 'base', ['s2', 's3', 's4', 's5']),
+      // S5 в WebKit не снимается: от ≈ 6400 объектов (у каждого своя геометрия
+      // и материал) WebKit теряет контекст WebGL — ёмкость не определена
+      ...series('webkit', 'base', ['s2', 's3', 's4']),
       ...series('chromium', 'cpu4', ['s2', 's3', 's4']),
       ...series('chromium', 'slow4g', ['s3']),
       ...series('webkit', 'base', ['s1'], true),
@@ -84,8 +86,12 @@ const PLAN: Record<Session, Record<DeviceId, Series[]>> = {
   },
 };
 
-/** грубая оценка по протоколу пилота, мин (с прогревом и контрольными прогонами) */
-const MINUTES: Record<ScenarioId, number> = { s1: 42, s2: 55, s3: 9, s4: 60, s5: 50 };
+/**
+ * Оценка длительности серии, мин: длительности прогонов первой серии на M4
+ * + прогрев, контрольные прогоны, пауза и открытие окна. Запись фиксирована
+ * по времени, поэтому от устройства и условия почти не зависит.
+ */
+const MINUTES: Record<ScenarioId, number> = { s1: 60, s2: 105, s3: 8, s4: 57, s5: 58 };
 
 const seriesId = (s: Series) => `${s.browser}/${s.condition.id}/${s.scenario}`;
 
@@ -98,6 +104,8 @@ interface Args {
   idleMin: number;
   pauseSec: number;
   yes: boolean;
+  /** каталог результатов; по умолчанию results/ — другой только для проверки самой кампании */
+  results: string;
 }
 
 function parse(argv: string[]): Args {
@@ -126,6 +134,7 @@ function parse(argv: string[]): Args {
     idleMin: Number(v.get('idle') ?? 10),
     pauseSec: Number(v.get('pause') ?? 120),
     yes: flags.has('yes'),
+    results: v.get('results') ?? join(ROOT, 'results'),
   };
 }
 
@@ -142,8 +151,9 @@ interface Found {
 }
 
 /** серии этой кампании на диске, в том числе прерванные */
-function findSeries(session: Session, s: Series): Found[] {
-  const dir = join(ROOT, 'results', deviceSlug(null), s.browser, s.scenario);
+function findSeries(a: Args, s: Series): Found[] {
+  const session = a.session;
+  const dir = join(a.results, deviceSlug(null), s.browser, s.scenario);
   if (!existsSync(dir)) return [];
   const out: Found[] = [];
   for (const folder of readdirSync(dir)) {
@@ -166,7 +176,7 @@ function findSeries(session: Session, s: Series): Found[] {
 }
 
 function journalPath(a: Args): string {
-  const dir = join(ROOT, 'results', deviceSlug(null));
+  const dir = join(a.results, deviceSlug(null));
   mkdirSync(dir, { recursive: true });
   return join(dir, `journal-${a.session}.md`);
 }
@@ -181,10 +191,10 @@ function list(a: Args): void {
   let left = 0;
   console.log(`\nКампания ${a.session}, устройство ${a.device} (${deviceSlug(null)})\n`);
   for (const s of selected(a)) {
-    const found = findSeries(a.session, s);
+    const found = findSeries(a, s);
     const done = found.some((f) => f.complete);
     const partial = !done && found.length > 0;
-    if (!done) left += MINUTES[s.scenario] * (s.condition.id === 'cpu4' ? 1.3 : 1);
+    if (!done) left += MINUTES[s.scenario] * (s.condition.id === 'cpu4' ? 1.1 : 1);
     console.log(`  ${done ? '✓' : partial ? '…' : '·'} ${seriesId(s).padEnd(26)}${s.optional ? ' (необязательно)' : ''}${partial ? ' прервана, будет снята заново' : ''}`);
   }
   console.log(`\nОсталось ≈ ${Math.round(left / 6) / 10} ч машинного времени.`);
@@ -200,7 +210,7 @@ function prepare(a: Args): void {
   if (git.dirty !== false) throw new Error(`Код не закоммичен: ${git.dirtyFiles.join(', ') || 'состояние git неизвестно'}`);
   // протокол: один коммит на всю кампанию
   for (const s of PLAN[a.session][a.device]) {
-    for (const f of findSeries(a.session, s)) {
+    for (const f of findSeries(a, s)) {
       if (f.complete && f.commit !== git.commit) {
         throw new Error(
           `Серия ${f.folder} кампании ${a.session} снята на коммите ${f.commit}, сейчас ${git.commit}.\n` +
@@ -222,6 +232,7 @@ const CHECKLIST: Record<DeviceId, string[]> = {
     'Все приложения закрыты (IDE, браузеры, мессенджеры, облачные клиенты)',
     'Встроенный дисплей, внешние мониторы отключены, крышка открыта',
     'Режим «Не беспокоить» включён',
+    'Заставка выключена («Никогда»), блокировка экрана не сработает за время кампании',
   ],
   D2: [
     'Зарядное устройство подключено',
@@ -229,6 +240,8 @@ const CHECKLIST: Record<DeviceId, string[]> = {
     'Выполнена «чистая загрузка» (msconfig: службы не Microsoft отключены; автозагрузка отключена)',
     'Все приложения закрыты, утилиты производителя и оверлей AMD выключены',
     'Встроенный дисплей, внешние мониторы отключены, крышка открыта',
+    // SetThreadExecutionState не мешает заставке — её нужно выключить вручную
+    'Заставка выключена, блокировка экрана по бездействию отключена',
   ],
 };
 
@@ -253,6 +266,8 @@ async function confirmChecklist(a: Args): Promise<void> {
 
 function runSeries(a: Args, s: Series): Promise<number> {
   const args = ['run', 'bench', '--', '--scenario', s.scenario, '--browser', s.browser, '--campaign', a.session, '--no-build', ...s.condition.args];
+  // только для проверки кампании: в Windows аргументы идут через cmd.exe без кавычек
+  if (a.results !== join(ROOT, 'results')) args.push('--out', a.results);
   return new Promise((resolve) => {
     const p = spawn('npm', args, { cwd: ROOT, stdio: 'inherit', shell: process.platform === 'win32' });
     p.on('exit', (code) => resolve(code ?? 1));
@@ -262,7 +277,7 @@ function runSeries(a: Args, s: Series): Promise<number> {
 const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 
 async function run(a: Args): Promise<void> {
-  const todo = selected(a).filter((s) => !findSeries(a.session, s).some((f) => f.complete));
+  const todo = selected(a).filter((s) => !findSeries(a, s).some((f) => f.complete));
   if (todo.length === 0) {
     console.log('[campaign] все выбранные серии уже сняты');
     return;
@@ -284,7 +299,7 @@ async function run(a: Args): Promise<void> {
     const t0 = Date.now();
     const code = await runSeries(a, s);
     const min = Math.round((Date.now() - t0) / 6000) / 10;
-    const ok = code === 0 && findSeries(a.session, s).some((f) => f.complete);
+    const ok = code === 0 && findSeries(a, s).some((f) => f.complete);
     journal(a, `${seriesId(s)}: ${ok ? 'готово' : `ОШИБКА (код ${code})`}, ${min} мин`);
     if (!ok) failed.push(seriesId(s));
   }

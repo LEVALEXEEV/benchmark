@@ -161,7 +161,9 @@ export interface BenchConfig {
  * мощности 0,8. Расчёт и таблица CV — analysis/pilot_variance.py и nir3-plan.md.
  *
  *   S1 — CV ≤ 1,6%: 10 повторов дают границу эквивалентности ±5%;
- *   S2 — CV до 4,5%: 15 повторов на центральные метрики (±5%), хвосты ±10%;
+ *   S2 — CV до 4,5%, но на M4 каждый процесс страницы получает случайное
+ *        состояние V8 (два уровня кадра, ≈ 7%; nir3-plan.md, этап 0) —
+ *        30 повторов, чтобы доли уровней оценивались, а не угадывались;
  *   S3 — CV до 21%, но прогон дешёвый и эффект двукратный: 30 загрузок;
  *   S4 — CV до 7,3%: 20 повторов на эквивалентность с границей ±10%;
  *   S5 — CV ≤ 6,5%: 8 свипов.
@@ -173,7 +175,7 @@ const SCENARIO_DEFAULTS: Record<
   { iterations: number; warmupMs: number; recordMs: number }
 > = {
   s1: { iterations: 10, warmupMs: 5000, recordMs: 30000 },
-  s2: { iterations: 15, warmupMs: 5000, recordMs: 30000 },
+  s2: { iterations: 30, warmupMs: 5000, recordMs: 30000 },
   // S3: одна загрузка страницы — дёшево, повторов больше
   s3: { iterations: 30, warmupMs: 0, recordMs: 1 },
   s4: { iterations: 20, warmupMs: 5000, recordMs: 30000 },

@@ -59,6 +59,10 @@ class BenchRuntime {
     this.publish();
     window.addEventListener('error', (e) => this.fail(e.error ?? e.message));
     window.addEventListener('unhandledrejection', (e) => this.fail(e.reason));
+    // Потеря контекста останавливает кадры, и без этого прогон молча висел бы
+    // до таймаута harness (WebKit теряет контекст на S5 от ≈ 6400 объектов).
+    // Событие не всплывает — ловится на фазе перехвата, от любого холста.
+    window.addEventListener('webglcontextlost', () => this.fail(new Error('WebGL: контекст потерян')), true);
   }
 
   configureHud(enabled: boolean, implLabel: string): void {

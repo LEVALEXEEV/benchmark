@@ -44,11 +44,14 @@ try {
   $existing = @((Get-MpPreference).ExclusionPath)
   $exclusions = @($root, $playwright | Where-Object { $existing -notcontains $_ })
 } catch { Write-Warning "Защитник Windows недоступен: $($_.Exception.Message)" }
+# Node — это harness и серверы vite preview (отдают бандл в S3); Windows 11
+# ограничивает фоновые процессы (power throttling, EcoQoS)
+$node = (Get-Command node -ErrorAction SilentlyContinue).Source
 $adapters = @()
 if (-not $KeepNetwork) { $adapters = @(Get-NetAdapter -Physical | Where-Object Status -eq 'Up' | ForEach-Object Name) }
 
 # сначала состояние, потом изменения: откат возможен, даже если скрипт упадёт на середине
-[ordered]@{ services = @($services); scheme = $scheme; exclusions = $exclusions; adapters = $adapters } |
+[ordered]@{ services = @($services); scheme = $scheme; exclusions = $exclusions; adapters = $adapters; node = $node } |
   ConvertTo-Json -Depth 4 | Set-Content -Path $state -Encoding UTF8
 
 foreach ($s in $services) {
@@ -68,6 +71,10 @@ else { Write-Warning 'Схемы «Высокая производительно
 foreach ($p in $exclusions) {
   try { Add-MpPreference -ExclusionPath $p; Write-Host "Защитник: исключение $p" }
   catch { Write-Warning "Защитник: исключение $p не добавлено ($($_.Exception.Message))" }
+}
+if ($node) {
+  cmd /c "powercfg /powerthrottling disable /path `"$node`" >nul 2>&1"
+  Write-Host "Power throttling: отключён для $node"
 }
 foreach ($a in $adapters) { Disable-NetAdapter -Name $a -Confirm:$false; Write-Host "Сеть: адаптер «$a» выключен" }
 Write-Host 'Готово. Откат: scripts\windows\restore-os.ps1'

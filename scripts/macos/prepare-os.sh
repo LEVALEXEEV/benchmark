@@ -19,6 +19,11 @@ swcheck=$(defaults read /Library/Preferences/com.apple.SoftwareUpdate AutomaticC
 wifi_dev=$(networksetup -listallhardwareports | awk '/Wi-Fi/{getline; print $2}')
 wifi=Off
 [[ -n $wifi_dev ]] && wifi=$(networksetup -getairportpower "$wifi_dev" | awk '{print $NF}')
+# App Nap — настройка пользователя (скрипт идёт под sudo, поэтому от его имени):
+# усыплённый в фоне терминал замедлил бы harness и серверы vite preview,
+# которые отдают бандл в S3
+user=${SUDO_USER:-$USER}
+appnap=$(sudo -u "$user" defaults read NSGlobalDomain NSAppSleepDisabled 2>/dev/null || echo unset)
 
 # сначала состояние, потом изменения: откат возможен, даже если скрипт упадёт на середине
 cat > "$STATE" <<STATE_EOF
@@ -28,11 +33,14 @@ swcheck=$swcheck
 wifi_dev=$wifi_dev
 wifi=$wifi
 keep_network=$KEEP_NETWORK
+user=$user
+appnap=$appnap
 STATE_EOF
 
 [[ $spotlight == on ]] && mdutil -a -i off >/dev/null && echo "Spotlight: индексация выключена"
 [[ $timemachine == 1 ]] && tmutil disable && echo "Time Machine: автоматическое копирование выключено"
 [[ $swcheck != 0 ]] && defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled -bool false && echo "Обновления: автопроверка выключена"
+sudo -u "$user" defaults write NSGlobalDomain NSAppSleepDisabled -bool YES && echo "App Nap: выключен"
 if [[ $KEEP_NETWORK == 0 && $wifi == On ]]; then
   networksetup -setairportpower "$wifi_dev" off && echo "Wi-Fi ($wifi_dev): выключен"
 fi

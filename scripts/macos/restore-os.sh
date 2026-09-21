@@ -11,6 +11,12 @@ source "$STATE"
 [[ $spotlight == on ]] && mdutil -a -i on >/dev/null && echo "Spotlight: индексация включена"
 [[ $timemachine == 1 ]] && tmutil enable && echo "Time Machine: включена"
 [[ $swcheck != 0 ]] && defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled -bool true && echo "Обновления: автопроверка включена"
+if [[ $appnap == unset ]]; then
+  sudo -u "$user" defaults delete NSGlobalDomain NSAppSleepDisabled 2>/dev/null || true
+else
+  sudo -u "$user" defaults write NSGlobalDomain NSAppSleepDisabled -int "$appnap"
+fi
+echo "App Nap: исходная настройка возвращена"
 if [[ $keep_network == 0 && $wifi == On ]]; then
   networksetup -setairportpower "$wifi_dev" on && echo "Wi-Fi ($wifi_dev): включён"
 fi

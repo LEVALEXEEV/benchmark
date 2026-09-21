@@ -95,6 +95,9 @@ function withControls(cfg: BenchConfig, main: ScheduleItem[]): ScheduleItem[] {
   return out;
 }
 
+/** попыток на прогон: сбой браузера повторяется один раз */
+const MAX_ATTEMPTS = 2;
+
 /** пауза после открытия окна до загрузки стенда (см. runOne) */
 const WINDOW_READY_MS = 1000;
 
@@ -416,6 +419,7 @@ async function main(): Promise<void> {
     }));
     const briefs: { label: string; warmup: boolean; control: boolean; brief: Record<string, number | null> }[] = [];
     const controls: { name: string; value: number }[] = [];
+    const retries: { tag: string; attempt: number; error: string }[] = [];
 
     for (let idx = 0; idx < schedule.length; idx++) {
       const item = schedule[idx]!;
@@ -423,14 +427,34 @@ async function main(): Promise<void> {
       const kind = item.warmup ? 'w' : item.control ? 'c' : 'i';
       const tag = `${String(idx + 1).padStart(3, '0')}_${item.target.label}${loadTag}_${kind}${item.iteration}`;
       if (idx > 0) await sleep(cfg.cooldownMs);
-      const startedAt = new Date().toISOString();
-      const t0 = Date.now();
+      let startedAt = new Date().toISOString();
+      let t0 = Date.now();
       console.log(
         `[harness] ${idx + 1}/${schedule.length} ${item.target.label}${item.load.id === '-' ? '' : ` [${item.load.id}]`} ` +
           `${item.warmup ? `прогрев ${item.iteration}` : item.control ? `контроль ${item.iteration}` : `итерация ${item.iteration}`}`
       );
       const tracePath = cfg.trace ? join(outDir, 'traces', `${tag}.json.gz`) : null;
-      const { result, consoleErrors, gc, clicks } = await runOne(lb, cfg, item, tracePath);
+      // Сбой браузера (таймаут, падение страницы) повторяется один раз: иначе
+      // случайный сбой обрывал серию S2 длиной ≈ 1¾ ч, и кампания снимала её
+      // заново целиком. Нарушения условий (validity.fatal) не повторяются.
+      let out: Awaited<ReturnType<typeof runOne>>;
+      for (let attempt = 1; ; attempt++) {
+        try {
+          out = await runOne(lb, cfg, item, tracePath);
+          break;
+        } catch (e) {
+          const error = (e instanceof Error ? e.message : String(e)).split('\n').slice(0, 3).join(' | ');
+          retries.push({ tag, attempt, error });
+          manifest.retries = retries;
+          await saveManifest();
+          if (attempt >= MAX_ATTEMPTS) throw e;
+          console.warn(`           ⚠ сбой прогона: ${error} — повтор`);
+          await sleep(cfg.cooldownMs * 3);
+          startedAt = new Date().toISOString();
+          t0 = Date.now();
+        }
+      }
+      const { result, consoleErrors, gc, clicks } = out;
       const validity = validate(cfg, lb, item.load, result, consoleErrors);
       const b = brief(result);
       console.log(`           ${JSON.stringify(b)}`);
