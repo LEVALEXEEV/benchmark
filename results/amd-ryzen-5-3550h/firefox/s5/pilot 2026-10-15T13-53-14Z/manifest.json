@@ -1,0 +1,148 @@
+{
+  "series": "pilot 2026-10-15T13-53-14Z",
+  "scenario": "s5",
+  "created": "2026-10-15T13:53:14Z",
+  "finished": "2026-10-15T14:09:51Z",
+  "device": {
+    "id": "amd-ryzen-5-3550h",
+    "cpu": "AMD Ryzen 5 3550H with Radeon Vega Mobile Gfx",
+    "cores": 8,
+    "memory_gb": 14,
+    "os": "Windows 11 Pro",
+    "gpu": "ANGLE (AMD, Radeon R9 200 Series Direct3D11 vs_5_0 ps_5_0), or similar"
+  },
+  "browser": {
+    "name": "firefox",
+    "version": "155.0",
+    "flags": [
+      "layout.frame_rate=0",
+      "network.proxy.type=0",
+      "privacy.reduceTimerPrecision=false",
+      "webgl.force-enabled=true",
+      "dom.timeout.enable_budget_timer_throttling=false"
+    ]
+  },
+  "code": {
+    "commit": "3e2dfc28f2cbf982f4f9978d9e000e1db221eecc",
+    "clean": true
+  },
+  "libs": {
+    "three": "0.186.0",
+    "react": "19.2.8",
+    "@react-three/fiber": "9.7.0",
+    "vite": "8.3.0",
+    "playwright": "1.63.0",
+    "node": "24.21.0"
+  },
+  "page": {
+    "build": "production",
+    "isolated": true,
+    "timer_resolution_ms": 0.02,
+    "canvas": "1280x720",
+    "device_pixel_ratio": 1.25
+  },
+  "settings": {
+    "variants": [
+      "threejs",
+      "r3f-ref"
+    ],
+    "repeats": 5,
+    "warmup_runs": 1,
+    "order": "random",
+    "order_seed": 1071032440,
+    "pause_ms": 3000,
+    "levels": [
+      100,
+      141,
+      200,
+      283,
+      400,
+      566,
+      800,
+      1131,
+      1600,
+      2263,
+      3200,
+      4525,
+      6400,
+      9051,
+      12800,
+      18102,
+      25600,
+      36204,
+      51200
+    ],
+    "fps_floor": 30,
+    "levels_beyond_floor": 2,
+    "min_level_frames": 60,
+    "level_warmup_ms": 1500,
+    "level_record_ms": 3000
+  },
+  "parity": {
+    "ok": true,
+    "frame_identical": true
+  },
+  "runs": [
+    {
+      "file": "runs/001_r3f-ref_1.csv",
+      "variant": "r3f-ref",
+      "repeat": 1,
+      "started": "2026-10-15T13:56:08Z"
+    },
+    {
+      "file": "runs/002_threejs_1.csv",
+      "variant": "threejs",
+      "repeat": 1,
+      "started": "2026-10-15T13:57:32Z"
+    },
+    {
+      "file": "runs/003_threejs_2.csv",
+      "variant": "threejs",
+      "repeat": 2,
+      "started": "2026-10-15T13:58:53Z"
+    },
+    {
+      "file": "runs/004_r3f-ref_2.csv",
+      "variant": "r3f-ref",
+      "repeat": 2,
+      "started": "2026-10-15T14:00:15Z"
+    },
+    {
+      "file": "runs/005_r3f-ref_3.csv",
+      "variant": "r3f-ref",
+      "repeat": 3,
+      "started": "2026-10-15T14:01:38Z"
+    },
+    {
+      "file": "runs/006_threejs_3.csv",
+      "variant": "threejs",
+      "repeat": 3,
+      "started": "2026-10-15T14:03:02Z"
+    },
+    {
+      "file": "runs/007_threejs_4.csv",
+      "variant": "threejs",
+      "repeat": 4,
+      "started": "2026-10-15T14:04:24Z"
+    },
+    {
+      "file": "runs/008_r3f-ref_4.csv",
+      "variant": "r3f-ref",
+      "repeat": 4,
+      "started": "2026-10-15T14:05:45Z"
+    },
+    {
+      "file": "runs/009_r3f-ref_5.csv",
+      "variant": "r3f-ref",
+      "repeat": 5,
+      "started": "2026-10-15T14:07:09Z"
+    },
+    {
+      "file": "runs/010_threejs_5.csv",
+      "variant": "threejs",
+      "repeat": 5,
+      "started": "2026-10-15T14:08:32Z"
+    }
+  ],
+  "retries": []
+}
