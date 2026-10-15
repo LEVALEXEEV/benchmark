@@ -1,8 +1,14 @@
 import type { Locator, Page } from 'playwright';
 import { mulberry32 } from '@bench/scene-spec';
 
-/** доля каждой стороны canvas, отсекаемая при выборе точки: облако S4 в центре кадра */
-const CLICK_REGION_INSET = 0.2;
+/**
+ * Доля каждой стороны canvas, отсекаемая при выборе точки: клики идут в
+ * центральные 40% холста. Облако S4 на экране шире (≈ 16–84%), но к краям
+ * редеет: при зоне 60% попадали 57–58% кликов, при 40% — ≈ 76%; дальше
+ * сужать бесполезно — просветы между кубиками есть и в центре (проверено
+ * лучами по scene-spec и кликами в странице, 2026-10-15).
+ */
+const CLICK_REGION_INSET = 0.3;
 
 export interface ClickPoint {
   readonly x: number;
