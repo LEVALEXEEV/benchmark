@@ -2,7 +2,7 @@ import { execSync, spawn } from 'node:child_process';
 import { appendFileSync, existsSync, mkdirSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { createInterface } from 'node:readline/promises';
-import { SCENARIO_DEFAULTS, type BrowserName, type ScenarioId } from './config.js';
+import type { BrowserName, ScenarioId } from './config.js';
 import { codeGitState, deviceSlug } from './host-env.js';
 import { ROOT } from './servers.js';
 
@@ -60,18 +60,6 @@ const PLAN: Record<Session, Record<DeviceId, Series[]>> = {
     D2: [...series('chromium', ALL), ...series('firefox', ALL)],
   },
 };
-
-/**
- * Оценка длительности серии, мин, при повторах по умолчанию — по времени
- * серий пилота (analysis/pilot.ipynb, раздел 7), с запасом по медленной
- * платформе.
- */
-const MINUTES: Record<ScenarioId, number> = { s1: 45, s2: 105, s3: 6, s4: 30, s5: 100 };
-
-function minutes(s: Series): number {
-  const def = SCENARIO_DEFAULTS[s.scenario].repeats;
-  return (MINUTES[s.scenario] * ((s.repeats ?? def) + 1)) / (def + 1);
-}
 
 const seriesId = (s: Series) => `${s.browser}/${s.scenario}`;
 
@@ -154,16 +142,14 @@ function journal(a: Args, line: string): void {
 }
 
 function list(a: Args): void {
-  let left = 0;
   console.log(`\nКампания ${a.session}, устройство ${a.device} (${deviceSlug(null)})\n`);
   for (const s of selected(a)) {
     const found = findSeries(a, s);
     const done = found.some((f) => f.complete);
     const partial = !done && found.length > 0;
-    if (!done) left += minutes(s);
     console.log(`  ${done ? '✓' : partial ? '…' : '·'} ${seriesId(s).padEnd(18)}${partial ? ' прервана, будет снята заново' : ''}`);
   }
-  console.log(`\nОсталось ≈ ${Math.round(left / 6) / 10} ч машинного времени.`);
+  console.log('\nДлительность кампании — docs/MEASURE.md.');
 }
 
 function sh(cmd: string): void {
