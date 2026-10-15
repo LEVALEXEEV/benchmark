@@ -1,0 +1,13 @@
+platform,condition,scenario,label,kind,warned,excluded,runs
+amd-ryzen-5 · chromium,base,s5,r3f-ref,SN: повтор уровня N отличается от свипа ×N,5,0,8
+amd-ryzen-5 · chromium,base,s5,r3f-ref-central,SN: повтор уровня N отличается от свипа ×N,6,0,8
+amd-ryzen-5 · chromium,base,s5,r3f-state,SN: повтор уровня N отличается от свипа ×N,4,0,8
+amd-ryzen-5 · chromium,base,s5,threejs,SN: повтор уровня N отличается от свипа ×N,7,0,8
+amd-ryzen-5 · firefox,base,s5,r3f-ref-central,SN: повтор уровня N отличается от свипа ×N,3,0,8
+amd-ryzen-5 · firefox,base,s5,r3f-state,SN: повтор уровня N отличается от свипа ×N,8,0,8
+apple-m4 · chromium,base,s5,r3f-ref,SN: повтор уровня N отличается от свипа ×N,7,0,8
+apple-m4 · chromium,base,s5,r3f-ref-central,SN: повтор уровня N отличается от свипа ×N,7,0,8
+apple-m4 · chromium,base,s5,r3f-state,SN: повтор уровня N отличается от свипа ×N,2,0,8
+apple-m4 · chromium,base,s5,threejs,SN: повтор уровня N отличается от свипа ×N,8,0,8
+apple-m4 · chromium,cpu×4,s2,r3f-ref-central,median FPS ≈ N,1,0,30
+apple-m4 · chromium,cpu×4,s2,threejs,median FPS ≈ N,27,0,30

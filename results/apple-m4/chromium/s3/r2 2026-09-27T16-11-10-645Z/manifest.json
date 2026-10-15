@@ -1,0 +1,2093 @@
+{
+  "schema": 3,
+  "createdAt": "2026-09-27T16:11:12.751Z",
+  "config": {
+    "scenario": "s3",
+    "targets": [
+      {
+        "label": "threejs",
+        "impl": "threejs",
+        "mode": null
+      },
+      {
+        "label": "r3f",
+        "impl": "r3f",
+        "mode": null
+      }
+    ],
+    "loads": [
+      {
+        "id": "-",
+        "note": "базовая конфигурация"
+      }
+    ],
+    "browser": "chromium",
+    "serve": "preview",
+    "build": false,
+    "iterations": 30,
+    "warmupRuns": 1,
+    "cooldownMs": 3000,
+    "order": "random",
+    "orderSeed": 1671591861,
+    "warmupMs": 0,
+    "recordMs": 1,
+    "settleMs": 3000,
+    "clickIntervalMs": 250,
+    "clickSeed": 4242,
+    "levels": [
+      100,
+      141,
+      200,
+      283,
+      400,
+      566,
+      800,
+      1131,
+      1600,
+      2263,
+      3200,
+      4525,
+      6400,
+      9051,
+      12800,
+      18102,
+      25600,
+      36204,
+      51200
+    ],
+    "fpsFloor": 30,
+    "levelsBeyondFloor": 2,
+    "minLevelFrames": 60,
+    "renderScale": 1,
+    "detailScale": 1,
+    "parityOnly": false,
+    "skipParity": false,
+    "trace": false,
+    "gpuTimer": true,
+    "device": null,
+    "resultsDir": "/Users/levalekseev/Documents/vscode/NIR/benchmark/results",
+    "campaign": "r2",
+    "controlRuns": 0,
+    "levelControl": false,
+    "cpuThrottle": 1,
+    "network": "slow4g",
+    "vsync": false,
+    "allowDirty": false
+  },
+  "protocol": {
+    "usable": true,
+    "violations": []
+  },
+  "host": {
+    "node": "v22.20.0",
+    "platform": "darwin",
+    "arch": "arm64",
+    "osRelease": "27.0.0",
+    "osVersion": "27.0",
+    "cpuModel": "Apple M4",
+    "cpuCount": 10,
+    "totalMemGb": 16,
+    "git": {
+      "commit": "710cbf78d30a58b7ad7b13bc8cc9aca854545881",
+      "dirty": false,
+      "dirtyFiles": [],
+      "scope": [
+        "packages",
+        "package.json",
+        "package-lock.json",
+        "tsconfig.base.json"
+      ]
+    },
+    "libs": {
+      "three": "0.186.0",
+      "react": "19.2.8",
+      "react-dom": "19.2.8",
+      "@react-three/fiber": "9.7.0",
+      "vite": "8.3.0",
+      "playwright": "1.63.0",
+      "typescript": "5.9.3"
+    }
+  },
+  "browser": {
+    "name": "chromium",
+    "version": "153.0.8010.12",
+    "pinned": true,
+    "launchArgs": [
+      "--use-gl=angle",
+      "--enable-gpu",
+      "--ignore-gpu-blocklist",
+      "--enable-precise-memory-info",
+      "--disable-renderer-backgrounding",
+      "--disable-background-timer-throttling",
+      "--disable-backgrounding-occluded-windows",
+      "--disable-frame-rate-limit",
+      "--disable-gpu-vsync"
+    ],
+    "prefs": null,
+    "vsyncUncapped": true
+  },
+  "servers": {
+    "threejs": {
+      "url": "http://localhost:4173/",
+      "coop": "same-origin",
+      "coep": "require-corp"
+    },
+    "r3f": {
+      "url": "http://localhost:4174/",
+      "coop": "same-origin",
+      "coep": "require-corp"
+    }
+  },
+  "bundles": [
+    {
+      "impl": "threejs",
+      "files": [
+        {
+          "path": "assets/index--9mRPItI.js",
+          "bytes": 567560,
+          "gzipBytes": 142729,
+          "brotliBytes": 117466
+        },
+        {
+          "path": "index.html",
+          "bytes": 1941,
+          "gzipBytes": 1181,
+          "brotliBytes": 862
+        }
+      ],
+      "total_bytes": 569501,
+      "total_gzip_bytes": 143910,
+      "total_brotli_bytes": 118328
+    },
+    {
+      "impl": "r3f",
+      "files": [
+        {
+          "path": "assets/index-DtH3wYRE.js",
+          "bytes": 1125552,
+          "gzipBytes": 305188,
+          "brotliBytes": 236064
+        },
+        {
+          "path": "index.html",
+          "bytes": 1959,
+          "gzipBytes": 1189,
+          "brotliBytes": 871
+        }
+      ],
+      "total_bytes": 1127511,
+      "total_gzip_bytes": 306377,
+      "total_brotli_bytes": 236935
+    }
+  ],
+  "parity": [
+    {
+      "scenario": "s3",
+      "load": "-",
+      "reference": "threejs",
+      "ok": true,
+      "entries": [
+        {
+          "label": "threejs",
+          "ok": true,
+          "issues": [],
+          "image": {
+            "exact": true,
+            "meanAbs": 0,
+            "maxAbs": 0
+          },
+          "summary": {
+            "meshCount": 100,
+            "meshDigest": "4e9821d0",
+            "camera": "PerspectiveCamera|50.00000|1.77778|0.10000|200.00000|1.00000|1.0000,0.0000,0.0000,0.0000,0.0000,0.9701,-0.2425,0.0000,0.0000,0.2425,0.9701,0.0000,0.0000,12.0000,36.0000,1.0000|1.20629,0.00000,0.00000,0.00000,0.00000,2.14451,0.00000,0.00000,0.00000,0.00000,-1.00100,-1.00000,0.00000,0.00000,-0.20010,0.00000",
+            "calls": 100,
+            "triangles": 204800,
+            "imageHash": "6db3e490"
+          }
+        },
+        {
+          "label": "r3f",
+          "ok": true,
+          "issues": [],
+          "image": {
+            "exact": true,
+            "meanAbs": 0,
+            "maxAbs": 0
+          },
+          "summary": {
+            "meshCount": 100,
+            "meshDigest": "4e9821d0",
+            "camera": "PerspectiveCamera|50.00000|1.77778|0.10000|200.00000|1.00000|1.0000,0.0000,0.0000,0.0000,0.0000,0.9701,-0.2425,0.0000,0.0000,0.2425,0.9701,0.0000,0.0000,12.0000,36.0000,1.0000|1.20629,0.00000,0.00000,0.00000,0.00000,2.14451,0.00000,0.00000,0.00000,0.00000,-1.00100,-1.00000,0.00000,0.00000,-0.20010,0.00000",
+            "calls": 100,
+            "triangles": 204800,
+            "imageHash": "6db3e490"
+          }
+        }
+      ]
+    }
+  ],
+  "schedule": [
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": true,
+      "control": false,
+      "iteration": 1
+    },
+    {
+      "label": "r3f",
+      "load": "-",
+      "warmup": true,
+      "control": false,
+      "iteration": 1
+    },
+    {
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 1
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 1
+    },
+    {
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 2
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 2
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 3
+    },
+    {
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 3
+    },
+    {
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 4
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 4
+    },
+    {
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 5
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 5
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 6
+    },
+    {
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 6
+    },
+    {
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 7
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 7
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 8
+    },
+    {
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 8
+    },
+    {
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 9
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 9
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 10
+    },
+    {
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 10
+    },
+    {
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 11
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 11
+    },
+    {
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 12
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 12
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 13
+    },
+    {
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 13
+    },
+    {
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 14
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 14
+    },
+    {
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 15
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 15
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 16
+    },
+    {
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 16
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 17
+    },
+    {
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 17
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 18
+    },
+    {
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 18
+    },
+    {
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 19
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 19
+    },
+    {
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 20
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 20
+    },
+    {
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 21
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 21
+    },
+    {
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 22
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 22
+    },
+    {
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 23
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 23
+    },
+    {
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 24
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 24
+    },
+    {
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 25
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 25
+    },
+    {
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 26
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 26
+    },
+    {
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 27
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 27
+    },
+    {
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 28
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 28
+    },
+    {
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 29
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 29
+    },
+    {
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 30
+    },
+    {
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 30
+    }
+  ],
+  "runs": [
+    {
+      "file": "runs/001_threejs_w1.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": true,
+      "control": false,
+      "iteration": 1,
+      "startedAt": "2026-09-27T16:11:13.925Z",
+      "durationMs": 6190,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 1933.055,
+        "ttfr_submit_ms": 1975.62,
+        "ttfr_frame_ms": 1976.695,
+        "init_ms": 42.565,
+        "first_frame_render_ms": 21.385,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 12.622
+      }
+    },
+    {
+      "file": "runs/002_r3f_w1.json",
+      "label": "r3f",
+      "load": "-",
+      "warmup": true,
+      "control": false,
+      "iteration": 1,
+      "startedAt": "2026-09-27T16:11:23.118Z",
+      "durationMs": 7206,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 2827.085,
+        "ttfr_submit_ms": 2989.985,
+        "ttfr_frame_ms": 2990.555,
+        "init_ms": 162.9,
+        "first_frame_render_ms": 22.195,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 18.861
+      }
+    },
+    {
+      "file": "runs/003_r3f_i1.json",
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 1,
+      "startedAt": "2026-09-27T16:11:33.327Z",
+      "durationMs": 7207,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 2833.085,
+        "ttfr_submit_ms": 2995.435,
+        "ttfr_frame_ms": 2996.01,
+        "init_ms": 162.35,
+        "first_frame_render_ms": 21.61,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 16.062
+      }
+    },
+    {
+      "file": "runs/004_threejs_i1.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 1,
+      "startedAt": "2026-09-27T16:11:43.537Z",
+      "durationMs": 6160,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 1917.17,
+        "ttfr_submit_ms": 1961.725,
+        "ttfr_frame_ms": 1962.78,
+        "init_ms": 44.555,
+        "first_frame_render_ms": 23.1,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 12.685
+      }
+    },
+    {
+      "file": "runs/005_r3f_i2.json",
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 2,
+      "startedAt": "2026-09-27T16:11:52.698Z",
+      "durationMs": 7185,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 2815.665,
+        "ttfr_submit_ms": 2969.11,
+        "ttfr_frame_ms": 2969.665,
+        "init_ms": 153.445,
+        "first_frame_render_ms": 21.145,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 17.062
+      }
+    },
+    {
+      "file": "runs/006_threejs_i2.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 2,
+      "startedAt": "2026-09-27T16:12:02.886Z",
+      "durationMs": 6187,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 1934.815,
+        "ttfr_submit_ms": 1979.25,
+        "ttfr_frame_ms": 1980.35,
+        "init_ms": 44.435,
+        "first_frame_render_ms": 22.595,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 13.054
+      }
+    },
+    {
+      "file": "runs/007_threejs_i3.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 3,
+      "startedAt": "2026-09-27T16:12:12.075Z",
+      "durationMs": 6211,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 1932.485,
+        "ttfr_submit_ms": 1977.56,
+        "ttfr_frame_ms": 1978.64,
+        "init_ms": 45.075,
+        "first_frame_render_ms": 22.935,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 12.646
+      }
+    },
+    {
+      "file": "runs/008_r3f_i3.json",
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 3,
+      "startedAt": "2026-09-27T16:12:21.289Z",
+      "durationMs": 7176,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 2817.39,
+        "ttfr_submit_ms": 2973.79,
+        "ttfr_frame_ms": 2974.375,
+        "init_ms": 156.4,
+        "first_frame_render_ms": 20.695,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 17.064
+      }
+    },
+    {
+      "file": "runs/009_r3f_i4.json",
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 4,
+      "startedAt": "2026-09-27T16:12:31.465Z",
+      "durationMs": 7209,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 2829.32,
+        "ttfr_submit_ms": 2992.175,
+        "ttfr_frame_ms": 2992.72,
+        "init_ms": 162.855,
+        "first_frame_render_ms": 21.025,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 17.064
+      }
+    },
+    {
+      "file": "runs/010_threejs_i4.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 4,
+      "startedAt": "2026-09-27T16:12:41.677Z",
+      "durationMs": 6181,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 1918.645,
+        "ttfr_submit_ms": 1963.365,
+        "ttfr_frame_ms": 1964.43,
+        "init_ms": 44.72,
+        "first_frame_render_ms": 22.615,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 13.1
+      }
+    },
+    {
+      "file": "runs/011_r3f_i5.json",
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 5,
+      "startedAt": "2026-09-27T16:12:50.861Z",
+      "durationMs": 7206,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 2819.555,
+        "ttfr_submit_ms": 2978.325,
+        "ttfr_frame_ms": 2978.87,
+        "init_ms": 158.77,
+        "first_frame_render_ms": 19.62,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 15.085
+      }
+    },
+    {
+      "file": "runs/012_threejs_i5.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 5,
+      "startedAt": "2026-09-27T16:13:01.070Z",
+      "durationMs": 6174,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 1925.185,
+        "ttfr_submit_ms": 1968.27,
+        "ttfr_frame_ms": 1969.195,
+        "init_ms": 43.085,
+        "first_frame_render_ms": 21.6,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 12.402
+      }
+    },
+    {
+      "file": "runs/013_threejs_i6.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 6,
+      "startedAt": "2026-09-27T16:13:10.246Z",
+      "durationMs": 6182,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 1926.74,
+        "ttfr_submit_ms": 1969.885,
+        "ttfr_frame_ms": 1970.96,
+        "init_ms": 43.145,
+        "first_frame_render_ms": 21.645,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 12.506
+      }
+    },
+    {
+      "file": "runs/014_r3f_i6.json",
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 6,
+      "startedAt": "2026-09-27T16:13:19.430Z",
+      "durationMs": 7196,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 2828.62,
+        "ttfr_submit_ms": 2992.295,
+        "ttfr_frame_ms": 2992.87,
+        "init_ms": 163.675,
+        "first_frame_render_ms": 21.695,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 20.689
+      }
+    },
+    {
+      "file": "runs/015_r3f_i7.json",
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 7,
+      "startedAt": "2026-09-27T16:13:29.628Z",
+      "durationMs": 7201,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 2826.67,
+        "ttfr_submit_ms": 2980.925,
+        "ttfr_frame_ms": 2981.47,
+        "init_ms": 154.255,
+        "first_frame_render_ms": 21.42,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 17.556
+      }
+    },
+    {
+      "file": "runs/016_threejs_i7.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 7,
+      "startedAt": "2026-09-27T16:13:39.833Z",
+      "durationMs": 6176,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 1918.915,
+        "ttfr_submit_ms": 1961.82,
+        "ttfr_frame_ms": 1962.745,
+        "init_ms": 42.905,
+        "first_frame_render_ms": 21.38,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 12.64
+      }
+    },
+    {
+      "file": "runs/017_threejs_i8.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 8,
+      "startedAt": "2026-09-27T16:13:49.010Z",
+      "durationMs": 6168,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 1916.785,
+        "ttfr_submit_ms": 1961.31,
+        "ttfr_frame_ms": 1962.405,
+        "init_ms": 44.525,
+        "first_frame_render_ms": 22.83,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 13.063
+      }
+    },
+    {
+      "file": "runs/018_r3f_i8.json",
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 8,
+      "startedAt": "2026-09-27T16:13:58.182Z",
+      "durationMs": 7193,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 2836.955,
+        "ttfr_submit_ms": 2985.29,
+        "ttfr_frame_ms": 2985.83,
+        "init_ms": 148.335,
+        "first_frame_render_ms": 18.41,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 15.54
+      }
+    },
+    {
+      "file": "runs/019_r3f_i9.json",
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 9,
+      "startedAt": "2026-09-27T16:14:08.378Z",
+      "durationMs": 7207,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 2833.775,
+        "ttfr_submit_ms": 2995.7,
+        "ttfr_frame_ms": 2996.275,
+        "init_ms": 161.925,
+        "first_frame_render_ms": 21.57,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 18.436
+      }
+    },
+    {
+      "file": "runs/020_threejs_i9.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 9,
+      "startedAt": "2026-09-27T16:14:18.588Z",
+      "durationMs": 6172,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 1927.72,
+        "ttfr_submit_ms": 1971.385,
+        "ttfr_frame_ms": 1972.465,
+        "init_ms": 43.665,
+        "first_frame_render_ms": 22.275,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 13.134
+      }
+    },
+    {
+      "file": "runs/021_threejs_i10.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 10,
+      "startedAt": "2026-09-27T16:14:27.762Z",
+      "durationMs": 6170,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 1917.55,
+        "ttfr_submit_ms": 1962,
+        "ttfr_frame_ms": 1963.1,
+        "init_ms": 44.45,
+        "first_frame_render_ms": 22.835,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 13.083
+      }
+    },
+    {
+      "file": "runs/022_r3f_i10.json",
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 10,
+      "startedAt": "2026-09-27T16:14:36.934Z",
+      "durationMs": 7225,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 2835.395,
+        "ttfr_submit_ms": 2994.865,
+        "ttfr_frame_ms": 2995.415,
+        "init_ms": 159.47,
+        "first_frame_render_ms": 20.265,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 18.778
+      }
+    },
+    {
+      "file": "runs/023_r3f_i11.json",
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 11,
+      "startedAt": "2026-09-27T16:14:47.162Z",
+      "durationMs": 7205,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 2835.905,
+        "ttfr_submit_ms": 2993.375,
+        "ttfr_frame_ms": 2993.915,
+        "init_ms": 157.47,
+        "first_frame_render_ms": 19.06,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 20.783
+      }
+    },
+    {
+      "file": "runs/024_threejs_i11.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 11,
+      "startedAt": "2026-09-27T16:14:57.370Z",
+      "durationMs": 6171,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 1926.795,
+        "ttfr_submit_ms": 1971.515,
+        "ttfr_frame_ms": 1972.55,
+        "init_ms": 44.72,
+        "first_frame_render_ms": 22.87,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 13.135
+      }
+    },
+    {
+      "file": "runs/025_r3f_i12.json",
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 12,
+      "startedAt": "2026-09-27T16:15:06.543Z",
+      "durationMs": 7192,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 2814.935,
+        "ttfr_submit_ms": 2974.435,
+        "ttfr_frame_ms": 2974.98,
+        "init_ms": 159.5,
+        "first_frame_render_ms": 20.81,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 16.698
+      }
+    },
+    {
+      "file": "runs/026_threejs_i12.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 12,
+      "startedAt": "2026-09-27T16:15:16.738Z",
+      "durationMs": 6190,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 1931.975,
+        "ttfr_submit_ms": 1975.29,
+        "ttfr_frame_ms": 1976.36,
+        "init_ms": 43.315,
+        "first_frame_render_ms": 21.845,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 12.494
+      }
+    },
+    {
+      "file": "runs/027_threejs_i13.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 13,
+      "startedAt": "2026-09-27T16:15:25.931Z",
+      "durationMs": 6185,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 1927.73,
+        "ttfr_submit_ms": 1971.075,
+        "ttfr_frame_ms": 1972.12,
+        "init_ms": 43.345,
+        "first_frame_render_ms": 21.895,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 12.152
+      }
+    },
+    {
+      "file": "runs/028_r3f_i13.json",
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 13,
+      "startedAt": "2026-09-27T16:15:35.119Z",
+      "durationMs": 7201,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 2819.05,
+        "ttfr_submit_ms": 2982.34,
+        "ttfr_frame_ms": 2982.89,
+        "init_ms": 163.29,
+        "first_frame_render_ms": 20.98,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 17.132
+      }
+    },
+    {
+      "file": "runs/029_r3f_i14.json",
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 14,
+      "startedAt": "2026-09-27T16:15:45.321Z",
+      "durationMs": 7200,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 2816.875,
+        "ttfr_submit_ms": 2978.72,
+        "ttfr_frame_ms": 2979.31,
+        "init_ms": 161.845,
+        "first_frame_render_ms": 20.27,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 14.344
+      }
+    },
+    {
+      "file": "runs/030_threejs_i14.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 14,
+      "startedAt": "2026-09-27T16:15:55.524Z",
+      "durationMs": 6189,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 1932.135,
+        "ttfr_submit_ms": 1976.75,
+        "ttfr_frame_ms": 1977.835,
+        "init_ms": 44.615,
+        "first_frame_render_ms": 22.585,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 12.605
+      }
+    },
+    {
+      "file": "runs/031_r3f_i15.json",
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 15,
+      "startedAt": "2026-09-27T16:16:04.716Z",
+      "durationMs": 7193,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 2808.215,
+        "ttfr_submit_ms": 2966.955,
+        "ttfr_frame_ms": 2967.515,
+        "init_ms": 158.74,
+        "first_frame_render_ms": 20.115,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 16.658
+      }
+    },
+    {
+      "file": "runs/032_threejs_i15.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 15,
+      "startedAt": "2026-09-27T16:16:14.911Z",
+      "durationMs": 6197,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 1934.12,
+        "ttfr_submit_ms": 1978.965,
+        "ttfr_frame_ms": 1980.035,
+        "init_ms": 44.845,
+        "first_frame_render_ms": 23.145,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 12.823
+      }
+    },
+    {
+      "file": "runs/033_threejs_i16.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 16,
+      "startedAt": "2026-09-27T16:16:24.110Z",
+      "durationMs": 6183,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 1926.4,
+        "ttfr_submit_ms": 1971.735,
+        "ttfr_frame_ms": 1972.825,
+        "init_ms": 45.335,
+        "first_frame_render_ms": 23.705,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 12.854
+      }
+    },
+    {
+      "file": "runs/034_r3f_i16.json",
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 16,
+      "startedAt": "2026-09-27T16:16:33.294Z",
+      "durationMs": 7190,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 2812.74,
+        "ttfr_submit_ms": 2972.07,
+        "ttfr_frame_ms": 2972.63,
+        "init_ms": 159.33,
+        "first_frame_render_ms": 20.2,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 14.901
+      }
+    },
+    {
+      "file": "runs/035_threejs_i17.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 17,
+      "startedAt": "2026-09-27T16:16:43.489Z",
+      "durationMs": 6185,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 1926.485,
+        "ttfr_submit_ms": 1972.435,
+        "ttfr_frame_ms": 1973.49,
+        "init_ms": 45.95,
+        "first_frame_render_ms": 24.03,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 12.844
+      }
+    },
+    {
+      "file": "runs/036_r3f_i17.json",
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 17,
+      "startedAt": "2026-09-27T16:16:52.676Z",
+      "durationMs": 7195,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 2818.405,
+        "ttfr_submit_ms": 2977.39,
+        "ttfr_frame_ms": 2977.94,
+        "init_ms": 158.985,
+        "first_frame_render_ms": 20.16,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 16.347
+      }
+    },
+    {
+      "file": "runs/037_threejs_i18.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 18,
+      "startedAt": "2026-09-27T16:17:02.873Z",
+      "durationMs": 6184,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 1916.495,
+        "ttfr_submit_ms": 1960.575,
+        "ttfr_frame_ms": 1961.635,
+        "init_ms": 44.08,
+        "first_frame_render_ms": 22.49,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 12.823
+      }
+    },
+    {
+      "file": "runs/038_r3f_i18.json",
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 18,
+      "startedAt": "2026-09-27T16:17:12.058Z",
+      "durationMs": 7205,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 2820.545,
+        "ttfr_submit_ms": 2976.695,
+        "ttfr_frame_ms": 2977.25,
+        "init_ms": 156.15,
+        "first_frame_render_ms": 19.87,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 15.506
+      }
+    },
+    {
+      "file": "runs/039_r3f_i19.json",
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 19,
+      "startedAt": "2026-09-27T16:17:22.266Z",
+      "durationMs": 7201,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 2821.015,
+        "ttfr_submit_ms": 2980.53,
+        "ttfr_frame_ms": 2981.05,
+        "init_ms": 159.515,
+        "first_frame_render_ms": 20.995,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 17.465
+      }
+    },
+    {
+      "file": "runs/040_threejs_i19.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 19,
+      "startedAt": "2026-09-27T16:17:32.468Z",
+      "durationMs": 6212,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 1936.57,
+        "ttfr_submit_ms": 1982.67,
+        "ttfr_frame_ms": 1983.785,
+        "init_ms": 46.1,
+        "first_frame_render_ms": 24.13,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 13.073
+      }
+    },
+    {
+      "file": "runs/041_r3f_i20.json",
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 20,
+      "startedAt": "2026-09-27T16:17:41.682Z",
+      "durationMs": 7188,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 2813.23,
+        "ttfr_submit_ms": 2973.525,
+        "ttfr_frame_ms": 2974.08,
+        "init_ms": 160.295,
+        "first_frame_render_ms": 20.97,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 16.379
+      }
+    },
+    {
+      "file": "runs/042_threejs_i20.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 20,
+      "startedAt": "2026-09-27T16:17:51.872Z",
+      "durationMs": 6178,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 1922.39,
+        "ttfr_submit_ms": 1968.735,
+        "ttfr_frame_ms": 1969.835,
+        "init_ms": 46.345,
+        "first_frame_render_ms": 24.315,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 12.895
+      }
+    },
+    {
+      "file": "runs/043_r3f_i21.json",
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 21,
+      "startedAt": "2026-09-27T16:18:01.051Z",
+      "durationMs": 7205,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 2818.38,
+        "ttfr_submit_ms": 2978.4,
+        "ttfr_frame_ms": 2978.99,
+        "init_ms": 160.02,
+        "first_frame_render_ms": 20.42,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 20.831
+      }
+    },
+    {
+      "file": "runs/044_threejs_i21.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 21,
+      "startedAt": "2026-09-27T16:18:11.258Z",
+      "durationMs": 6170,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 1916.75,
+        "ttfr_submit_ms": 1961.51,
+        "ttfr_frame_ms": 1962.58,
+        "init_ms": 44.76,
+        "first_frame_render_ms": 23.285,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 12.849
+      }
+    },
+    {
+      "file": "runs/045_r3f_i22.json",
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 22,
+      "startedAt": "2026-09-27T16:18:20.430Z",
+      "durationMs": 7171,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 2808.045,
+        "ttfr_submit_ms": 2966.105,
+        "ttfr_frame_ms": 2966.665,
+        "init_ms": 158.06,
+        "first_frame_render_ms": 20.555,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 17.062
+      }
+    },
+    {
+      "file": "runs/046_threejs_i22.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 22,
+      "startedAt": "2026-09-27T16:18:30.603Z",
+      "durationMs": 6185,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 1934.45,
+        "ttfr_submit_ms": 1979.8,
+        "ttfr_frame_ms": 1980.885,
+        "init_ms": 45.35,
+        "first_frame_render_ms": 22.9,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 12.095
+      }
+    },
+    {
+      "file": "runs/047_r3f_i23.json",
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 23,
+      "startedAt": "2026-09-27T16:18:39.790Z",
+      "durationMs": 7180,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 2812.82,
+        "ttfr_submit_ms": 2973.515,
+        "ttfr_frame_ms": 2974.05,
+        "init_ms": 160.695,
+        "first_frame_render_ms": 20.265,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 17.141
+      }
+    },
+    {
+      "file": "runs/048_threejs_i23.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 23,
+      "startedAt": "2026-09-27T16:18:49.973Z",
+      "durationMs": 6194,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 1926.24,
+        "ttfr_submit_ms": 1971.975,
+        "ttfr_frame_ms": 1973.14,
+        "init_ms": 45.735,
+        "first_frame_render_ms": 24.28,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 12.643
+      }
+    },
+    {
+      "file": "runs/049_r3f_i24.json",
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 24,
+      "startedAt": "2026-09-27T16:18:59.169Z",
+      "durationMs": 7207,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 2826.29,
+        "ttfr_submit_ms": 2989,
+        "ttfr_frame_ms": 2989.535,
+        "init_ms": 162.71,
+        "first_frame_render_ms": 20.055,
+        "tbt_to_ttfr_ms": 2,
+        "heap_mb_at_ttfr": 20.805
+      }
+    },
+    {
+      "file": "runs/050_threejs_i24.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 24,
+      "startedAt": "2026-09-27T16:19:09.382Z",
+      "durationMs": 6183,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 1933.185,
+        "ttfr_submit_ms": 1976.55,
+        "ttfr_frame_ms": 1977.615,
+        "init_ms": 43.365,
+        "first_frame_render_ms": 21.525,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 12.266
+      }
+    },
+    {
+      "file": "runs/051_r3f_i25.json",
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 25,
+      "startedAt": "2026-09-27T16:19:18.569Z",
+      "durationMs": 7200,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 2815,
+        "ttfr_submit_ms": 2975.135,
+        "ttfr_frame_ms": 2975.71,
+        "init_ms": 160.135,
+        "first_frame_render_ms": 22.205,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 14.458
+      }
+    },
+    {
+      "file": "runs/052_threejs_i25.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 25,
+      "startedAt": "2026-09-27T16:19:28.772Z",
+      "durationMs": 6194,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 1934.24,
+        "ttfr_submit_ms": 1979.485,
+        "ttfr_frame_ms": 1980.545,
+        "init_ms": 45.245,
+        "first_frame_render_ms": 23.07,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 12.455
+      }
+    },
+    {
+      "file": "runs/053_r3f_i26.json",
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 26,
+      "startedAt": "2026-09-27T16:19:37.968Z",
+      "durationMs": 7199,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 2820.045,
+        "ttfr_submit_ms": 2980.53,
+        "ttfr_frame_ms": 2981.09,
+        "init_ms": 160.485,
+        "first_frame_render_ms": 20.945,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 17.065
+      }
+    },
+    {
+      "file": "runs/054_threejs_i26.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 26,
+      "startedAt": "2026-09-27T16:19:48.173Z",
+      "durationMs": 6201,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 1935.47,
+        "ttfr_submit_ms": 1980.72,
+        "ttfr_frame_ms": 1981.84,
+        "init_ms": 45.25,
+        "first_frame_render_ms": 23.18,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 13.785
+      }
+    },
+    {
+      "file": "runs/055_r3f_i27.json",
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 27,
+      "startedAt": "2026-09-27T16:19:57.377Z",
+      "durationMs": 7214,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 2827.06,
+        "ttfr_submit_ms": 2987.695,
+        "ttfr_frame_ms": 2988.29,
+        "init_ms": 160.635,
+        "first_frame_render_ms": 19.43,
+        "tbt_to_ttfr_ms": 1,
+        "heap_mb_at_ttfr": 18.858
+      }
+    },
+    {
+      "file": "runs/056_threejs_i27.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 27,
+      "startedAt": "2026-09-27T16:20:07.596Z",
+      "durationMs": 6197,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 1930.7,
+        "ttfr_submit_ms": 1975.27,
+        "ttfr_frame_ms": 1976.38,
+        "init_ms": 44.57,
+        "first_frame_render_ms": 22.715,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 13.098
+      }
+    },
+    {
+      "file": "runs/057_r3f_i28.json",
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 28,
+      "startedAt": "2026-09-27T16:20:16.794Z",
+      "durationMs": 7184,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 2817.97,
+        "ttfr_submit_ms": 2974.56,
+        "ttfr_frame_ms": 2975.15,
+        "init_ms": 156.59,
+        "first_frame_render_ms": 21.145,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 14.252
+      }
+    },
+    {
+      "file": "runs/058_threejs_i28.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 28,
+      "startedAt": "2026-09-27T16:20:26.981Z",
+      "durationMs": 6180,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 1923.875,
+        "ttfr_submit_ms": 1969.975,
+        "ttfr_frame_ms": 1971.035,
+        "init_ms": 46.1,
+        "first_frame_render_ms": 24.515,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 12.719
+      }
+    },
+    {
+      "file": "runs/059_r3f_i29.json",
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 29,
+      "startedAt": "2026-09-27T16:20:36.163Z",
+      "durationMs": 7206,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 2824.78,
+        "ttfr_submit_ms": 2986.49,
+        "ttfr_frame_ms": 2987.035,
+        "init_ms": 161.71,
+        "first_frame_render_ms": 19.77,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 20.845
+      }
+    },
+    {
+      "file": "runs/060_threejs_i29.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 29,
+      "startedAt": "2026-09-27T16:20:46.371Z",
+      "durationMs": 6187,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 1926.21,
+        "ttfr_submit_ms": 1970.435,
+        "ttfr_frame_ms": 1971.49,
+        "init_ms": 44.225,
+        "first_frame_render_ms": 22.635,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 12.837
+      }
+    },
+    {
+      "file": "runs/061_threejs_i30.json",
+      "label": "threejs",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 30,
+      "startedAt": "2026-09-27T16:20:55.561Z",
+      "durationMs": 6175,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 1924.555,
+        "ttfr_submit_ms": 1970.525,
+        "ttfr_frame_ms": 1971.615,
+        "init_ms": 45.97,
+        "first_frame_render_ms": 24.425,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 12.433
+      }
+    },
+    {
+      "file": "runs/062_r3f_i30.json",
+      "label": "r3f",
+      "load": "-",
+      "warmup": false,
+      "control": false,
+      "iteration": 30,
+      "startedAt": "2026-09-27T16:21:04.738Z",
+      "durationMs": 7189,
+      "validity": {
+        "fatal": [],
+        "warnings": []
+      },
+      "brief": {
+        "js_ready_ms": 2808.085,
+        "ttfr_submit_ms": 2968.59,
+        "ttfr_frame_ms": 2969.185,
+        "init_ms": 160.505,
+        "first_frame_render_ms": 21.61,
+        "tbt_to_ttfr_ms": 0,
+        "heap_mb_at_ttfr": 14.868
+      }
+    }
+  ]
+}

@@ -8,6 +8,11 @@
 Контрольные прогоны three.js (дрейф среды) в `runs` не попадают — они
 отдельно, в `controls()`. Серии с `protocol.usable = false` (незакоммиченный
 код, питание от батареи, dev-сервер, без паритета) пропускаются.
+
+Прогоны с предупреждениями harness исключаются по `WARNING_POLICY` из
+config: в `runs` остаются колонки `warnings` и `exclude_reason`, а
+`load(keep_excluded=True)` возвращает и исключённые — для раздела
+«Качество данных».
 """
 from __future__ import annotations
 
@@ -17,7 +22,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from .config import PRIMARY_CAMPAIGNS, RESULTS_DIR
+from .config import EXCLUDE_UNKNOWN_WARNINGS, PRIMARY_CAMPAIGNS, RESULTS_DIR, WARNING_POLICY
 
 
 def _num(v) -> float:
@@ -44,6 +49,19 @@ def _run_values(result: dict) -> dict[str, float]:
         out["control_frame_ratio"] = _num(ctl["frame_ratio"]) if ctl else np.nan
         return out
     return {}
+
+
+def exclude_reason(warnings: list[str]) -> str:
+    """Причина исключения прогона по его предупреждениям ('' — прогон остаётся)."""
+    reasons = []
+    for w in warnings:
+        rule = next((k for k in WARNING_POLICY if k in w), None)
+        if rule is None:
+            if EXCLUDE_UNKNOWN_WARNINGS:
+                reasons.append(w)
+        elif WARNING_POLICY[rule]:
+            reasons.append(rule)
+    return "; ".join(dict.fromkeys(reasons))
 
 
 def condition(cfg: dict) -> str:
@@ -82,29 +100,36 @@ def _series(root: Path, campaigns, conditions):
         if cond not in conditions:
             continue
         device = "-".join(device_dir.split("-")[:3])
+        manifest["_campaign"] = campaign
         yield manifest_path, f"{device} · {browser}", cond, manifest
 
 
-def load(root: Path = RESULTS_DIR, campaigns=PRIMARY_CAMPAIGNS,
-         conditions=("base",)) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+def load(root: Path = RESULTS_DIR, campaigns=PRIMARY_CAMPAIGNS, conditions=("base",),
+         keep_excluded: bool = False) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     runs, levels, bundles = [], [], []
     for manifest_path, platform, cond, manifest in _series(root, campaigns, conditions):
         scenario = manifest["config"]["scenario"]
         for b in manifest.get("bundles") or []:
             bundles.append({"platform": platform, "impl": b["impl"], "raw_kb": b["total_bytes"] / 1024,
                             "gzip_kb": b["total_gzip_bytes"] / 1024, "brotli_kb": b["total_brotli_bytes"] / 1024})
-        for row in manifest["runs"]:
+        for pos, row in enumerate(manifest["runs"]):
             if row["warmup"] or row.get("control"):
                 continue
             path = manifest_path.parent / row["file"]
             result = json.loads(path.read_text())["result"]
-            run_id = f"{platform}|{cond}|{scenario}|{path.stem}"
-            runs.append({"run_id": run_id, "platform": platform, "condition": cond, "scenario": scenario,
-                         "label": row["label"],
-                         "load": row.get("load") or "-", "iteration": row["iteration"], "file": str(path),
-                         **_run_values(result)})
+            warnings = (row.get("validity") or {}).get("warnings") or []
+            reason = exclude_reason(warnings)
+            if reason and not keep_excluded:
+                continue
+            run_id = f"{manifest['_campaign']}|{platform}|{cond}|{scenario}|{path.stem}"
+            runs.append({"run_id": run_id, "campaign": manifest["_campaign"], "platform": platform,
+                         "condition": cond, "scenario": scenario, "series": manifest_path.parent.name,
+                         "label": row["label"], "load": row.get("load") or "-", "iteration": row["iteration"],
+                         "order": pos, "warnings": " | ".join(warnings), "exclude_reason": reason,
+                         "file": str(path), **_run_values(result)})
             for lvl in result.get("levels") or []:
-                levels.append({"run_id": run_id, "platform": platform, "label": row["label"], "N": lvl["count"],
+                levels.append({"run_id": run_id, "platform": platform, "condition": cond, "label": row["label"],
+                               "N": lvl["count"],
                                **{k: _num(v) for k, v in lvl["summary"].items()}})
     bundles_df = pd.DataFrame(bundles).drop_duplicates(["platform", "impl"])
     return pd.DataFrame(runs), pd.DataFrame(levels), bundles_df
@@ -117,7 +142,7 @@ def controls(root: Path = RESULTS_DIR, campaigns=PRIMARY_CAMPAIGNS, conditions=(
         for pos, row in enumerate(manifest["runs"]):
             if not row.get("control"):
                 continue
-            rows.append({"platform": platform, "condition": cond, "scenario": manifest["config"]["scenario"],
+            rows.append({"campaign": manifest["_campaign"], "platform": platform, "condition": cond, "scenario": manifest["config"]["scenario"],
                          "series": manifest_path.parent.name, "position": pos, "iteration": row["iteration"],
                          **{k: v for k, v in (row.get("brief") or {}).items()}})
     return pd.DataFrame(rows)

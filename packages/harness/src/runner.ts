@@ -120,7 +120,7 @@ function runTimeoutMs(cfg: BenchConfig): number {
  * Проверки валидности прогона. fatal — нарушение условий эксперимента
  * (серия прерывается), остальные — предупреждения в манифесте.
  */
-function validate(cfg: BenchConfig, lb: LaunchedBrowser, load: LoadPoint, r: BenchResult, consoleErrors: string[]) {
+function validate(cfg: BenchConfig, load: LoadPoint, r: BenchResult, consoleErrors: string[]) {
   const fatal: string[] = [];
   const warnings: string[] = [];
   const env = r.meta.env;
@@ -139,9 +139,6 @@ function validate(cfg: BenchConfig, lb: LaunchedBrowser, load: LoadPoint, r: Ben
   if (env.renderer.clearAlpha !== 1) fatal.push(`альфа очистки ${env.renderer.clearAlpha} ≠ 1`);
   if (env.renderer.toneMapping !== 0) fatal.push(`tone mapping ${env.renderer.toneMapping} ≠ NoToneMapping`);
   if (r.kind === 'frame' && r.summary.frames < 100) warnings.push(`мало кадров: ${r.summary.frames}`);
-  if (r.kind === 'frame' && lb.vsyncUncapped && Math.abs(r.summary.fps_median - 60) < 1.5) {
-    warnings.push('median FPS ≈ 60 — похоже, vsync не снят');
-  }
   if (r.kind === 'input') {
     if (r.summary.ok < 30) warnings.push(`мало измеренных кликов: ${r.summary.ok}`);
     if (r.summary.timeout > 0) warnings.push(`клики без отклика: ${r.summary.timeout}`);
@@ -149,9 +146,6 @@ function validate(cfg: BenchConfig, lb: LaunchedBrowser, load: LoadPoint, r: Ben
     // полная задержка бессмысленны (в разных браузерах шкала исторически различалась)
     const q = r.summary.queue_ms_median;
     if (!(q >= 0 && q < 100)) fatal.push(`queue_ms_median=${q}: event.timeStamp не в шкале performance.now()`);
-  }
-  if (r.kind === 'scale' && r.control && Math.abs(r.control.frame_ratio - 1) > DRIFT_TOLERANCE) {
-    warnings.push(`S5: повтор уровня ${r.control.count} отличается от свипа ×${r.control.frame_ratio.toFixed(3)} — дрейф внутри прогона`);
   }
   if (consoleErrors.length > 0) warnings.push(`ошибки консоли: ${consoleErrors.slice(0, 3).join(' | ')}`);
   return { fatal, warnings };
@@ -279,9 +273,6 @@ function brief(r: BenchResult): Record<string, number | null> {
     }
   }
 }
-
-/** допустимый дрейф контрольных замеров: порог эквивалентности центральных метрик */
-const DRIFT_TOLERANCE = 0.05;
 
 /** главная метрика контрольного прогона по типу результата */
 function controlMetric(r: BenchResult): { name: string; value: number } | null {
@@ -455,7 +446,7 @@ async function main(): Promise<void> {
         }
       }
       const { result, consoleErrors, gc, clicks } = out;
-      const validity = validate(cfg, lb, item.load, result, consoleErrors);
+      const validity = validate(cfg, item.load, result, consoleErrors);
       const b = brief(result);
       console.log(`           ${JSON.stringify(b)}`);
       for (const wmsg of validity.warnings) console.warn(`           ⚠ ${wmsg}`);
@@ -510,10 +501,9 @@ async function main(): Promise<void> {
     if (controls.length >= 2) {
       const values = controls.map((c) => c.value);
       const spread = Math.max(...values) / Math.min(...values) - 1;
-      manifest.drift = { metric: controls[0]!.name, values, spread, tolerance: DRIFT_TOLERANCE };
-      const msg = `[harness] дрейф по контрольным прогонам three.js: ${values.map((v) => v.toFixed(3)).join(' → ')} (разброс ${(spread * 100).toFixed(1)}%)`;
-      if (spread > DRIFT_TOLERANCE) console.warn(`${msg} — больше ${DRIFT_TOLERANCE * 100}%, проверьте среду`);
-      else console.log(msg);
+      // только запись: оценивать дрейф — дело анализа, а не harness
+      manifest.drift = { metric: controls[0]!.name, values, spread };
+      console.log(`[harness] контрольные прогоны three.js: ${values.map((v) => v.toFixed(3)).join(' → ')} (разброс ${(spread * 100).toFixed(1)}%)`);
     }
   } finally {
     await saveManifest();
