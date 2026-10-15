@@ -1,4 +1,4 @@
-import { memo, useCallback, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
+import { memo, useCallback, useLayoutEffect, useMemo, useRef, useSyncExternalStore } from 'react';
 import { useThree, type ThreeEvent } from '@react-three/fiber';
 import * as THREE from 'three';
 import { bench, countMeshes, enableParityMode, InputCollector, type RunParams } from '@bench/metrics';
@@ -23,20 +23,16 @@ function emissiveOf(mesh: THREE.Object3D): THREE.Color {
 }
 
 /**
- * Узел для mode=ref и mode=state. НЕ мемоизирован намеренно: в state-режиме
- * смена подсветки в родителе перерисовывает все 2000 узлов (наивный путь).
- * ref-колбэк стабилен, чтобы ре-рендер не добавлял лишних вызовов ref,
- * не относящихся к самому паттерну.
+ * Узел для mode=ref: подсветка меняется мутацией материала через ref, сам
+ * узел после монтирования не перерисовывается.
  */
 function InputMesh({
   spec,
   index,
-  emissive,
   onMesh,
 }: {
   spec: ObjectSpec;
   index: number;
-  emissive: number;
   onMesh: (index: number, m: THREE.Mesh | null) => void;
 }) {
   const ref = useCallback((m: THREE.Mesh | null) => onMesh(index, m), [index, onMesh]);
@@ -51,7 +47,7 @@ function InputMesh({
       userData={{ id: spec.id }}
     >
       <GeometryNode spec={spec.geometry} />
-      <MaterialNode spec={spec.material} emissive={emissive} />
+      <MaterialNode spec={spec.material} emissive={FEEDBACK_EMISSIVE_OFF} />
     </mesh>
   );
 }
@@ -149,7 +145,6 @@ export function InputRun({ params, mode, spec }: { params: RunParams; mode: stri
     },
     [meshes]
   );
-  const [highlight, setHighlight] = useState<Highlight | null>(null);
 
   useLayoutEffect(() => {
     const canvas = gl.domElement;
@@ -157,7 +152,7 @@ export function InputRun({ params, mode, spec }: { params: RunParams; mode: stri
     const offProbe = bench.addProbe(collector);
 
     let offListener = (): void => {};
-    if (mode !== 'events') {
+    if (mode === 'ref') {
       const raycaster = new THREE.Raycaster();
       const ndc = new THREE.Vector2();
       let highlighted: THREE.Mesh | null = null;
@@ -169,15 +164,10 @@ export function InputRun({ params, mode, spec }: { params: RunParams; mode: stri
         const hits = raycaster.intersectObjects(meshes, false);
         if (hits.length === 0) return;
         const hit = hits[0]!.object as THREE.Mesh;
-        const seq = collector.clickSeq;
-        const color = feedbackColorFor(seq);
-        if (mode === 'ref') {
-          if (highlighted && highlighted !== hit) emissiveOf(highlighted).setHex(FEEDBACK_EMISSIVE_OFF);
-          emissiveOf(hit).setHex(color);
-          highlighted = hit;
-        } else {
-          setHighlight({ id: hit.userData.id as string, color, seq });
-        }
+        const color = feedbackColorFor(collector.clickSeq);
+        if (highlighted && highlighted !== hit) emissiveOf(highlighted).setHex(FEEDBACK_EMISSIVE_OFF);
+        emissiveOf(hit).setHex(color);
+        highlighted = hit;
         collector.reportHit(() => emissiveOf(hit).getHex() === color);
       };
       canvas.addEventListener('pointerdown', handler);
@@ -191,9 +181,9 @@ export function InputRun({ params, mode, spec }: { params: RunParams; mode: stri
         () => countMeshes(scene) === expectedMeshCount(spec)
       );
     } else {
-      collector.onDone((m) => {
+      collector.onDone((clicks) => {
         finish.stopLoop();
-        bench.complete({ kind: 'input', meta: finish.meta(spec.id), ...m });
+        bench.complete({ kind: 'input', meta: finish.meta(spec.id), clicks });
       });
     }
     return () => {
@@ -202,25 +192,12 @@ export function InputRun({ params, mode, spec }: { params: RunParams; mode: stri
     };
   }, []);
 
-  // state-режим: точный момент коммита подсветки
-  useLayoutEffect(() => {
-    if (highlight) collector.noteApplied(highlight.seq);
-  }, [highlight, collector]);
-
   return (
     <>
       <SceneEnvironment spec={spec} />
       {mode === 'events'
         ? spec.objects.map((o) => <EventsMesh key={o.id} spec={o} store={store} collector={collector} />)
-        : spec.objects.map((o, i) => (
-            <InputMesh
-              key={o.id}
-              index={i}
-              spec={o}
-              onMesh={onMesh}
-              emissive={mode === 'state' && highlight?.id === o.id ? highlight.color : FEEDBACK_EMISSIVE_OFF}
-            />
-          ))}
+        : spec.objects.map((o, i) => <InputMesh key={o.id} index={i} spec={o} onMesh={onMesh} />)}
     </>
   );
 }

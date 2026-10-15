@@ -21,50 +21,16 @@ function pkgVersion(name: string): string | null {
 }
 
 /**
- * Пути, от которых зависят замеры. results/ и analysis/ лежат в том же
- * репозитории, но на данные не влияют: иначе каждая новая серия делала бы
+ * Пути, от которых зависят замеры. results/, analysis/ и docs/ лежат в том
+ * же репозитории, но на данные не влияют: иначе каждая новая серия делала бы
  * рабочую копию «грязной» для следующей.
  */
 export const CODE_PATHS = ['packages', 'package.json', 'package-lock.json', 'tsconfig.base.json'];
 
-export function codeGitState(): { commit: string | null; dirty: boolean | null; dirtyFiles: string[]; diff: string | null } {
-  const paths = CODE_PATHS.join(' ');
-  const status = sh(`git status --porcelain -- ${paths}`);
+export function codeGitState(): { commit: string | null; dirty: boolean | null; dirtyFiles: string[] } {
+  const status = sh(`git status --porcelain -- ${CODE_PATHS.join(' ')}`);
   const dirtyFiles = status ? status.split('\n').map((l) => l.trim()).filter(Boolean) : [];
-  return {
-    commit: sh('git rev-parse HEAD'),
-    dirty: status === null ? null : dirtyFiles.length > 0,
-    dirtyFiles,
-    diff: dirtyFiles.length > 0 ? sh(`git diff HEAD -- ${paths}`) : null,
-  };
-}
-
-/**
- * Паспорт машины — статичное описание для таблицы пула. Показания датчиков
- * (температура, питание, частоты) стенд не снимает: влияние среды
- * контролируется контрольными прогонами three.js и повтором уровня в S5.
- */
-export function hostEnv() {
-  const cpus = os.cpus();
-  const git = codeGitState();
-  return {
-    node: process.version,
-    platform: process.platform,
-    arch: process.arch,
-    osRelease: os.release(),
-    osVersion: process.platform === 'darwin' ? sh('sw_vers -productVersion') : os.version(),
-    cpuModel: cpus[0]?.model ?? null,
-    cpuCount: cpus.length,
-    totalMemGb: Math.round((os.totalmem() / 1024 ** 3) * 10) / 10,
-    // сам diff — в отдельном файле серии, в манифесте только список файлов
-    git: { commit: git.commit, dirty: git.dirty, dirtyFiles: git.dirtyFiles, scope: CODE_PATHS },
-    libs: Object.fromEntries(
-      ['three', 'react', 'react-dom', '@react-three/fiber', 'vite', 'playwright', 'typescript'].map((n) => [
-        n,
-        pkgVersion(n),
-      ])
-    ),
-  };
+  return { commit: sh('git rev-parse HEAD'), dirty: status === null ? null : dirtyFiles.length > 0, dirtyFiles };
 }
 
 /** метка устройства для пути результатов: из --device или модели CPU */
@@ -72,7 +38,26 @@ export function deviceSlug(explicit: string | null): string {
   const raw = explicit ?? os.cpus()[0]?.model ?? 'unknown-device';
   return raw
     .toLowerCase()
-    .replace(/\(r\)|\(tm\)|cpu|@.*$/g, '')
+    .replace(/\(r\)|\(tm\)|cpu|@.*$| with .*$/g, '')
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '');
+}
+
+/** паспорт машины для manifest (gpu добавляется со страницы — WebGL renderer) */
+export function deviceInfo(explicit: string | null) {
+  const cpus = os.cpus();
+  return {
+    id: deviceSlug(explicit),
+    cpu: cpus[0]?.model.trim() ?? null,
+    cores: cpus.length,
+    memory_gb: Math.round(os.totalmem() / 1024 ** 3),
+    os: process.platform === 'darwin' ? `macOS ${sh('sw_vers -productVersion')}` : os.version(),
+  };
+}
+
+export function libVersions(): Record<string, string | null> {
+  return {
+    ...Object.fromEntries(['three', 'react', '@react-three/fiber', 'vite', 'playwright'].map((n) => [n, pkgVersion(n)])),
+    node: process.version.replace(/^v/, ''),
+  };
 }

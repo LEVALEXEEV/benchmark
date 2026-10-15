@@ -1,6 +1,6 @@
 import { FrameRecorder } from './frame-recorder.js';
 import { bench, type FrameProbe } from './runtime.js';
-import type { FrameRaw, FrameSummary } from './types.js';
+import type { FrameRows } from './types.js';
 
 export interface FrameCollectorConfig {
   readonly warmupMs: number;
@@ -8,7 +8,7 @@ export interface FrameCollectorConfig {
 }
 
 /**
- * S1/S2: прогрев → запись окна recordMs → публикация сводки и сырых рядов.
+ * S1/S2: прогрев → запись окна recordMs → публикация покадровых рядов.
  *
  * Отсчёт прогрева начинается с ПЕРВОГО КАДРА, а не с создания коллектора:
  * в R3F между монтированием и первым кадром проходит асинхронная настройка
@@ -20,13 +20,13 @@ export class FrameCollector implements FrameProbe {
   private warmStart = NaN;
   private recordStart = NaN;
   private recorder: FrameRecorder | null = null;
-  private onDoneCb: ((s: FrameSummary, raw: FrameRaw) => void) | null = null;
+  private onDoneCb: ((frames: FrameRows) => void) | null = null;
 
   constructor(cfg: FrameCollectorConfig) {
     this.cfg = cfg;
   }
 
-  onDone(cb: (s: FrameSummary, raw: FrameRaw) => void): void {
+  onDone(cb: (frames: FrameRows) => void): void {
     this.onDoneCb = cb;
   }
 
@@ -40,8 +40,7 @@ export class FrameCollector implements FrameProbe {
     if (this.phase === 'warmup' && now - this.warmStart >= this.cfg.warmupMs) {
       this.phase = 'recording';
       this.recordStart = now;
-      this.recorder = new FrameRecorder(now);
-      bench.mark('record-start');
+      this.recorder = new FrameRecorder();
       bench.setStatus('recording');
     }
     if (this.phase !== 'recording') return;
@@ -49,9 +48,8 @@ export class FrameCollector implements FrameProbe {
     const rec = this.recorder!;
     if (now - this.recordStart >= this.cfg.recordMs) {
       rec.finish(now);
-      bench.mark('record-end');
       this.phase = 'done';
-      this.onDoneCb?.(rec.summary(), rec.raw());
+      this.onDoneCb?.(rec.rows());
       return;
     }
     rec.beginFrame(now, bench.frameIndex);

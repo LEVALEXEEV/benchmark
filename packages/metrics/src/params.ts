@@ -11,8 +11,6 @@ export interface RunParams {
   readonly mode: string | null;
   readonly warmupMs: number;
   readonly recordMs: number;
-  /** S3: сколько ждать long tasks после первого кадра */
-  readonly settleMs: number;
   /** S5 */
   readonly fpsFloor: number;
   readonly levels: readonly number[] | null;
@@ -20,8 +18,6 @@ export interface RunParams {
   readonly levelsBeyondFloor: number;
   /** S5: минимум кадров на уровень */
   readonly minLevelFrames: number;
-  /** S5: после свипа повторно записать контрольный уровень (дрейф внутри прогона) */
-  readonly levelControl: boolean;
   /** множитель pixelRatio; 0.5 — проверка GPU-bound (S1) на половинном разрешении */
   readonly renderScale: number;
   /** множитель сегментов процедурной геометрии (диагностика S1) */
@@ -82,12 +78,10 @@ export function readRunParams(search: string = window.location.search): RunParam
     mode: p.get('mode'),
     warmupMs: num(p, 'warmup', 5000),
     recordMs: num(p, 'record', 30000, 1),
-    settleMs: num(p, 'settle', 3000),
     fpsFloor: num(p, 'fpsFloor', 30, 1),
     levels,
     levelsBeyondFloor: num(p, 'levelsBeyondFloor', 2),
     minLevelFrames: num(p, 'minLevelFrames', 60),
-    levelControl: flag(p, 'levelControl', false),
     renderScale: num(p, 'renderScale', 1, 0.05),
     detailScale: num(p, 'detailScale', 1, 0.01),
     objects: p.get('objects') === null ? null : num(p, 'objects', 0, 1),
@@ -106,8 +100,8 @@ export const MODES_BY_SCENARIO: Record<string, { r3f: readonly string[]; threejs
   s1: { threejs: [], r3f: ['ref'] },
   s2: { threejs: [], r3f: ['ref', 'ref-central', 'state'] },
   s3: { threejs: [], r3f: [] },
-  s4: { threejs: [], r3f: ['ref', 'state', 'events'] },
-  s5: { threejs: [], r3f: ['ref', 'ref-central', 'state'] },
+  s4: { threejs: [], r3f: ['ref', 'events'] },
+  s5: { threejs: [], r3f: ['ref'] },
 };
 
 /**

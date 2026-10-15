@@ -3,19 +3,21 @@
 #   1) проверки и подготовка стенда (git, браузеры пула, typecheck, сборка) —
 #      пока есть сеть;
 #   2) подготовка ОС (prepare-os.sh, нужен пароль администратора);
-#   3) чек-лист, пауза 10 мин без нагрузки, все серии по матрице пула;
+#   3) чек-лист, пауза 10 мин без нагрузки, все серии по матрице
+#      (packages/harness/src/campaign.ts);
 #      caffeinate не даёт уснуть системе и погаснуть экрану (иначе браузер
 #      перестаёт рисовать кадры);
 #   4) откат настроек ОС — при любом завершении, в том числе по Ctrl+C.
 #
-#   scripts/macos/measure.sh r2                      # вся кампания
-#   scripts/macos/measure.sh r2 --filter chromium/base
-#   scripts/macos/measure.sh r2b --keep-network      # не выключать Wi-Fi
+#   scripts/macos/measure.sh pilot                   # пилот
+#   scripts/macos/measure.sh r3                      # основная кампания
+#   scripts/macos/measure.sh r3 --filter chromium    # только часть матрицы
+#   scripts/macos/measure.sh r3 --keep-network       # не выключать Wi-Fi
 #
 # Прерванную кампанию можно запустить той же командой: готовые серии
-# пропускаются. План и прогресс: npm run campaign -- list --session r2
+# пропускаются. План и прогресс: npm run campaign -- list --session r3
 set -euo pipefail
-SESSION=${1:?"Использование: scripts/macos/measure.sh r2|r2b [--filter …] [--optional] [--keep-network]"}
+SESSION=${1:?"Использование: scripts/macos/measure.sh pilot|r3 [--filter …] [--keep-network]"}
 shift
 PREP_ARGS=()
 RUN_ARGS=()

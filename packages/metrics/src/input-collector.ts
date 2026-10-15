@@ -1,7 +1,5 @@
-import { FrameRecorder } from './frame-recorder.js';
 import { bench, type FrameProbe } from './runtime.js';
-import { mean, median, percentile, sortedFinite } from './stats.js';
-import type { FrameRaw, FrameSummary, InputRunResult, InputSample } from './types.js';
+import type { InputClick, InputOutcome } from './types.js';
 
 export interface InputCollectorConfig {
   readonly warmupMs: number;
@@ -20,16 +18,9 @@ interface Pending {
   hitTs: number;
   isApplied: (() => boolean) | null;
   appliedTs: number;
-  appliedInferred: boolean;
   feedbackRenderStart: number;
   feedbackRenderEnd: number;
-  /** начатых кадров с момента события */
-  frames: number;
-  /** номер кадра (1 — первый после события), в котором отрисован отклик */
-  feedbackFrame: number;
 }
-
-type InputMeasures = Omit<InputRunResult, 'kind' | 'meta'>;
 
 /**
  * S4: задержка «ввод → отрисованный отклик».
@@ -48,6 +39,9 @@ type InputMeasures = Omit<InputRunResult, 'kind' | 'meta'>;
  *   - конец отсчёта — конец renderer.render() кадра, в начале которого
  *     отклик уже был в сцене.
  *
+ * Пишутся только отметки времени каждого клика (InputClick); фазы и
+ * задержку считает анализ.
+ *
  * Слушатели: capture на canvas (срабатывает раньше обработчиков реализации
  * и R3F) и bubble на window (срабатывает после всех синхронных обработчиков).
  */
@@ -56,18 +50,17 @@ export class InputCollector implements FrameProbe {
   private phase: 'idle' | 'warmup' | 'recording' | 'draining' | 'done' = 'idle';
   private warmStart = NaN;
   private recordStart = NaN;
-  private recorder: FrameRecorder | null = null;
   private pending: Pending | null = null;
   private seqCounter = 0;
-  private readonly samples: InputSample[] = [];
-  private onDoneCb: ((m: InputMeasures) => void) | null = null;
+  private readonly clicks: InputClick[] = [];
+  private onDoneCb: ((clicks: readonly InputClick[]) => void) | null = null;
   private detach: (() => void) | null = null;
 
   constructor(cfg: InputCollectorConfig) {
     this.cfg = cfg;
   }
 
-  onDone(cb: (m: InputMeasures) => void): void {
+  onDone(cb: (clicks: readonly InputClick[]) => void): void {
     this.onDoneCb = cb;
   }
 
@@ -120,57 +113,40 @@ export class InputCollector implements FrameProbe {
     if (this.phase === 'warmup' && now - this.warmStart >= this.cfg.warmupMs) {
       this.phase = 'recording';
       this.recordStart = now;
-      this.recorder = new FrameRecorder(now);
-      bench.mark('record-start');
       bench.setStatus('recording');
     }
 
     const p = this.pending;
     if (p) {
-      p.frames++;
       if (!Number.isNaN(p.feedbackRenderEnd)) {
-        this.finalize(p, 'ok', now);
+        this.finalize(p, 'ok');
       } else if (now - p.captureTs > this.cfg.timeoutMs) {
-        this.finalize(p, 'timeout', now);
+        this.finalize(p, 'timeout');
       }
     }
 
     if (this.phase === 'recording' && now - this.recordStart >= this.cfg.recordMs) {
-      this.recorder!.finish(now);
-      bench.mark('record-end');
       this.phase = 'draining';
     }
     if (this.phase === 'draining' && this.pending === null) {
       this.complete();
-      return;
     }
-    if (this.phase === 'recording') this.recorder!.beginFrame(now, bench.frameIndex);
   }
 
   beginRender(now: number): void {
-    if (this.phase === 'recording') this.recorder!.beginRender(now);
     const p = this.pending;
     if (!p || !p.hit || !Number.isNaN(p.feedbackRenderStart)) return;
-    if (Number.isNaN(p.appliedTs) && p.isApplied?.()) {
-      p.appliedTs = now;
-      p.appliedInferred = true;
-    }
-    if (!Number.isNaN(p.appliedTs)) {
-      p.feedbackRenderStart = now;
-      p.feedbackFrame = p.frames;
-    }
+    // без сигнала noteApplied момент применения — начало рендера, в котором
+    // цвет уже в сцене
+    if (Number.isNaN(p.appliedTs) && p.isApplied?.()) p.appliedTs = now;
+    if (!Number.isNaN(p.appliedTs)) p.feedbackRenderStart = now;
   }
 
   endRender(now: number): void {
-    if (this.phase === 'recording') this.recorder!.endRender(now);
     const p = this.pending;
     if (p && !Number.isNaN(p.feedbackRenderStart) && Number.isNaN(p.feedbackRenderEnd)) {
       p.feedbackRenderEnd = now;
     }
-  }
-
-  gpuSample(frame: number, gpuMs: number): void {
-    this.recorder?.gpuSample(frame, gpuMs);
   }
 
   private onPointerDownCapture(e: PointerEvent): void {
@@ -180,10 +156,8 @@ export class InputCollector implements FrameProbe {
     const now = performance.now();
     const prev = this.pending;
     if (prev) {
-      // отклик предыдущего клика уже отрисован, но следующий кадр ещё не начался:
-      // выборка валидна, только latency_frame неизвестна
-      if (!Number.isNaN(prev.feedbackRenderEnd)) this.finalize(prev, 'ok', NaN);
-      else this.finalize(prev, 'superseded', now);
+      // отклик предыдущего клика уже отрисован, но следующий кадр ещё не начался
+      this.finalize(prev, Number.isNaN(prev.feedbackRenderEnd) ? 'superseded' : 'ok');
     }
     this.pending = {
       seq: ++this.seqCounter,
@@ -196,11 +170,8 @@ export class InputCollector implements FrameProbe {
       hitTs: NaN,
       isApplied: null,
       appliedTs: NaN,
-      appliedInferred: false,
       feedbackRenderStart: NaN,
       feedbackRenderEnd: NaN,
-      frames: 0,
-      feedbackFrame: NaN,
     };
   }
 
@@ -208,28 +179,23 @@ export class InputCollector implements FrameProbe {
     const p = this.pending;
     if (!p || !Number.isNaN(p.dispatchEndTs)) return;
     p.dispatchEndTs = performance.now();
-    if (!p.hit) this.finalize(p, 'miss', p.dispatchEndTs);
+    if (!p.hit) this.finalize(p, 'miss');
   }
 
-  private finalize(p: Pending, outcome: InputSample['outcome'], now: number): void {
+  private finalize(p: Pending, outcome: InputOutcome): void {
     if (this.pending === p) this.pending = null;
     if (!p.recorded) return;
+    const t = (ts: number): number => ts - this.recordStart;
     const ok = outcome === 'ok';
-    const nan = NaN;
-    this.samples.push({
-      seq: p.seq,
-      t_ms: p.captureTs - this.recordStart,
+    this.clicks.push({
+      click: this.clicks.length + 1,
       outcome,
-      queue_ms: p.captureTs - p.eventTs,
-      dispatch_ms: p.dispatchEndTs - p.captureTs,
-      apply_ms: ok ? p.appliedTs - p.hitTs : nan,
-      commit_ms: ok ? Math.max(0, p.appliedTs - p.dispatchEndTs) : nan,
-      frame_wait_ms: ok ? p.feedbackRenderStart - Math.max(p.appliedTs, p.dispatchEndTs) : nan,
-      render_ms: ok ? p.feedbackRenderEnd - p.feedbackRenderStart : nan,
-      latency_render_ms: ok ? p.feedbackRenderEnd - p.eventTs : nan,
-      latency_frame_ms: ok ? now - p.eventTs : nan,
-      frames: ok ? p.feedbackFrame : nan,
-      applied_inferred: p.appliedInferred,
+      event_ms: t(p.eventTs),
+      handler_start_ms: t(p.captureTs),
+      handler_end_ms: t(p.dispatchEndTs),
+      applied_ms: t(p.appliedTs),
+      render_start_ms: ok ? t(p.feedbackRenderStart) : NaN,
+      render_end_ms: ok ? t(p.feedbackRenderEnd) : NaN,
     });
     if (ok) bench.setHudValue(`lat ${(p.feedbackRenderEnd - p.eventTs).toFixed(1)} ms`);
   }
@@ -237,32 +203,6 @@ export class InputCollector implements FrameProbe {
   private complete(): void {
     this.phase = 'done';
     this.detach?.();
-    const ok = this.samples.filter((s) => s.outcome === 'ok');
-    const count = (o: InputSample['outcome']): number =>
-      this.samples.filter((s) => s.outcome === o).length;
-    const col = (k: keyof InputSample): number[] => ok.map((s) => s[k] as number);
-    const rec = this.recorder!;
-    const frames: { summary: FrameSummary; raw: FrameRaw } = { summary: rec.summary(), raw: rec.raw() };
-    this.onDoneCb?.({
-      summary: {
-        clicks: this.samples.length,
-        ok: ok.length,
-        miss: count('miss'),
-        timeout: count('timeout'),
-        superseded: count('superseded'),
-        latency_render_ms_median: median(col('latency_render_ms')),
-        latency_render_ms_p95: percentile(sortedFinite(col('latency_render_ms')), 95),
-        latency_render_ms_mean: mean(col('latency_render_ms')),
-        latency_frame_ms_median: median(col('latency_frame_ms')),
-        queue_ms_median: median(col('queue_ms')),
-        dispatch_ms_median: median(col('dispatch_ms')),
-        apply_ms_median: median(col('apply_ms')),
-        commit_ms_median: median(col('commit_ms')),
-        frame_wait_ms_median: median(col('frame_wait_ms')),
-        render_ms_median: median(col('render_ms')),
-      },
-      samples: this.samples,
-      frames,
-    });
+    this.onDoneCb?.(this.clicks);
   }
 }

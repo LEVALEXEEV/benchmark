@@ -1,7 +1,7 @@
 import { execSync, spawn, type ChildProcess } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
-import { DEV_PORTS, PREVIEW_PORTS, type BenchConfig } from './config.js';
+import { PORTS } from './config.js';
 
 export const ROOT = fileURLToPath(new URL('../../../', import.meta.url));
 const VITE_BIN = join(ROOT, 'node_modules/vite/bin/vite.js');
@@ -33,18 +33,17 @@ async function waitForServer(url: string, timeoutMs: number): Promise<Response> 
 }
 
 export interface Servers {
-  readonly info: Record<string, { url: string; coop: string | null; coep: string | null }>;
   stop(): void;
 }
 
 /**
- * Поднимает серверы обеих реализаций. По умолчанию — `vite preview` поверх
- * production-сборки: в НИР2 замеры шли на dev-сервере (development-сборка
- * React, сотни несжатых ESM-модулей), что искажало и S3, и все state-режимы.
+ * Поднимает `vite preview` обеих реализаций поверх production-сборки: в НИР2
+ * замеры шли на dev-сервере (development-сборка React, сотни несжатых
+ * ESM-модулей), что искажало и S3, и все state-режимы. Без COOP/COEP таймер
+ * страницы огрубляется — такой сервер не принимается.
  */
-export async function startServers(cfg: BenchConfig): Promise<Servers> {
+export async function startServers(): Promise<Servers> {
   const children: ChildProcess[] = [];
-  const info: Servers['info'] = {};
   const stop = (): void => {
     for (const c of children) if (!c.killed) c.kill('SIGTERM');
   };
@@ -52,8 +51,8 @@ export async function startServers(cfg: BenchConfig): Promise<Servers> {
 
   try {
     for (const impl of ['threejs', 'r3f'] as const) {
-      const port = cfg.serve === 'preview' ? PREVIEW_PORTS[impl] : DEV_PORTS[impl];
-      const args = cfg.serve === 'preview' ? ['preview', '--port', String(port), '--strictPort'] : ['--port', String(port), '--strictPort'];
+      const port = PORTS[impl];
+      const args = ['preview', '--port', String(port), '--strictPort'];
       const child = spawn(process.execPath, [VITE_BIN, ...args], {
         cwd: PKG_DIR[impl],
         stdio: ['ignore', 'pipe', 'pipe'],
@@ -72,12 +71,11 @@ export async function startServers(cfg: BenchConfig): Promise<Servers> {
       if (coop !== 'same-origin' || coep !== 'require-corp') {
         throw new Error(`${url}: нет заголовков COOP/COEP (получено ${coop}/${coep}) — таймер будет огрублён`);
       }
-      info[impl] = { url, coop, coep };
-      console.log(`[server] ${impl}: ${url} (${cfg.serve})`);
+      console.log(`[server] ${impl}: ${url}`);
     }
   } catch (e) {
     stop();
     throw e;
   }
-  return { info, stop };
+  return { stop };
 }

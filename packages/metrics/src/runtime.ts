@@ -29,9 +29,6 @@ declare global {
   interface Window {
     __BENCH__?: BenchWindowState;
     __BENCH_CTRL__?: BenchControl;
-    /** long tasks, собранные инлайн-скриптом в <head> до загрузки бандла */
-    __LT__?: [number, number][];
-    __LT_SUPPORTED__?: boolean;
     /**
      * Уведомление harness о смене статуса (page.exposeFunction). Заменяет
      * опрос страницы таймером: в НИР2 waitForFunction с polling 250 мс
@@ -82,10 +79,6 @@ class BenchRuntime {
 
   get gpuSupported(): boolean {
     return this.gpu !== null;
-  }
-
-  get gpuDisjointDrops(): number {
-    return this.gpu?.disjointDrops ?? 0;
   }
 
   /** номер текущего кадра — по нему привязываются отложенные замеры GPU */
@@ -168,11 +161,6 @@ class BenchRuntime {
 
   setControl(ctrl: BenchControl): void {
     window.__BENCH_CTRL__ = { ...window.__BENCH_CTRL__, ...ctrl };
-  }
-
-  /** метка в Performance Timeline — по ней harness выравнивает трассу CDP */
-  mark(name: string): void {
-    performance.mark(`bench:${name}`);
   }
 
   private publish(): void {

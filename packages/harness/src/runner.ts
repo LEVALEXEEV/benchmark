@@ -1,40 +1,40 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { mulberry32 } from '@bench/scene-spec';
-import type {
-  BenchResult,
-  FrameRunResult,
-  InitRunResult,
-  InputRunResult,
-  ScaleRunResult,
-} from '@bench/metrics';
+import type { BenchResult, PageEnv } from '@bench/metrics';
 import { BenchPage } from './bench-page.js';
 import { launchBrowser, newBenchContext, type LaunchedBrowser } from './browser.js';
 import { measureBundles } from './bundle-size.js';
 import {
+  CLICKS,
   effRenderScale,
-  NETWORK_PROFILES,
   PINNED_BROWSER_VERSIONS,
   parseArgs,
   runUrl,
+  SWEEP,
   type BenchConfig,
   type LoadPoint,
   type Target,
 } from './config.js';
-import { codeGitState, deviceSlug, hostEnv } from './host-env.js';
+import { codeGitState, deviceInfo, libVersions } from './host-env.js';
 import { canvasBox, startClickDriver } from './input-driver.js';
+import { toCsv } from './output.js';
 import { runParity } from './parity-check.js';
 import { buildImpls, startServers } from './servers.js';
-import { Tracer, type GcWindowStats } from './trace.js';
+
+/**
+ * Серия: проверки → сборка → паритет → прогоны в случайном порядке → CSV на
+ * прогон и manifest.json (формат — docs/DATA.md). Harness ничего не считает
+ * из замеров: метрики — дело анализа.
+ */
 
 interface ScheduleItem {
   readonly target: Target;
   readonly load: LoadPoint;
+  /** прогревочный прогон: выполняется, но не сохраняется */
   readonly warmup: boolean;
-  /** контрольный прогон three.js (дрейф среды); в сравнение вариантов не входит */
-  readonly control: boolean;
-  /** номер итерации (для прогревов — номер прогрева, для контрольных — номер контроля) */
-  readonly iteration: number;
+  /** номер повтора внутри ячейки (у прогревов — номер прогрева) */
+  readonly repeat: number;
 }
 
 const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
@@ -49,50 +49,22 @@ function shuffled<T>(xs: readonly T[], rng: () => number): T[] {
 }
 
 /**
- * Порядок прогонов. random — рандомизированные блоки: в каждой итерации все
- * варианты в случайном порядке. В НИР2 шли сначала все прогоны three.js, затем
- * все R3F, и медленный дрейф среды (нагрев, фоновые процессы) смешивался с
- * различием технологий. blocked оставлен для контроля этого эффекта.
+ * Рандомизированные блоки: в каждом повторе все ячейки («вариант × точка
+ * нагрузки») в случайном порядке. В НИР2 шли сначала все прогоны three.js,
+ * затем все R3F, и медленный дрейф среды смешивался с различием технологий.
  */
 function buildSchedule(cfg: BenchConfig): ScheduleItem[] {
   const rng = mulberry32(cfg.orderSeed);
-  const items: ScheduleItem[] = [];
-  // ячейка плана — пара «вариант × точка нагрузки»
   const cells: { target: Target; load: LoadPoint }[] = [];
   for (const load of cfg.loads) for (const target of cfg.targets) cells.push({ target, load });
-
+  const items: ScheduleItem[] = [];
   for (let w = 1; w <= cfg.warmupRuns; w++) {
-    for (const c of shuffled(cells, rng)) items.push({ ...c, warmup: true, control: false, iteration: w });
+    for (const c of shuffled(cells, rng)) items.push({ ...c, warmup: true, repeat: w });
   }
-  const main: ScheduleItem[] = [];
-  if (cfg.order === 'blocked') {
-    for (const c of cells) {
-      for (let i = 1; i <= cfg.iterations; i++) main.push({ ...c, warmup: false, control: false, iteration: i });
-    }
-  } else {
-    for (let i = 1; i <= cfg.iterations; i++) {
-      for (const c of shuffled(cells, rng)) main.push({ ...c, warmup: false, control: false, iteration: i });
-    }
+  for (let i = 1; i <= cfg.repeats; i++) {
+    for (const c of shuffled(cells, rng)) items.push({ ...c, warmup: false, repeat: i });
   }
-  return [...items, ...withControls(cfg, main)];
-}
-
-/**
- * Контрольные прогоны: одна и та же ячейка (three.js, первая точка нагрузки),
- * равномерно по серии — в начале, в середине, в конце. Различие между ними —
- * дрейф среды за время серии, а не различие технологий.
- */
-function withControls(cfg: BenchConfig, main: ScheduleItem[]): ScheduleItem[] {
-  const n = cfg.controlRuns;
-  if (n === 0) return main;
-  const target = cfg.targets.find((t) => t.label === 'threejs')!;
-  const at = (k: number) => (n === 1 ? 0 : Math.round((k * main.length) / (n - 1)));
-  const out = [...main];
-  // с конца, чтобы вставки не сдвигали ещё не использованные позиции
-  for (let k = n - 1; k >= 0; k--) {
-    out.splice(at(k), 0, { target, load: cfg.loads[0]!, warmup: false, control: true, iteration: k + 1 });
-  }
-  return out;
+  return items;
 }
 
 /** попыток на прогон: сбой браузера повторяется один раз */
@@ -101,90 +73,53 @@ const MAX_ATTEMPTS = 2;
 /** пауза после открытия окна до загрузки стенда (см. runOne) */
 const WINDOW_READY_MS = 1000;
 
-/** все контрольные прогоны S4 получают одинаковые клики — иначе они несравнимы между собой */
-const CONTROL_CLICK_SEED_OFFSET = 999_983;
-
 function runTimeoutMs(cfg: BenchConfig): number {
-  switch (cfg.scenario) {
-    case 's3':
-      return cfg.settleMs + 60_000;
-    case 's5':
-      // построение крупных уровней в state-режиме занимает секунды
-      return cfg.levels.length * (cfg.warmupMs + cfg.recordMs * 5 + 20_000) + 60_000;
-    default:
-      return cfg.warmupMs + cfg.recordMs + 60_000;
-  }
+  if (cfg.scenario === 's3') return 60_000;
+  // построение крупных уровней S5 в R3F занимает секунды
+  if (cfg.scenario === 's5') return SWEEP.levels.length * (cfg.warmupMs + cfg.recordMs * 5 + 20_000) + 60_000;
+  return cfg.warmupMs + cfg.recordMs + 60_000;
 }
 
 /**
- * Проверки валидности прогона. fatal — нарушение условий эксперимента
- * (серия прерывается), остальные — предупреждения в манифесте.
+ * Нарушения условий эксперимента — факты, а не догадки: прогон с ними
+ * останавливает серию.
  */
-function validate(cfg: BenchConfig, load: LoadPoint, r: BenchResult, consoleErrors: string[]) {
-  const fatal: string[] = [];
-  const warnings: string[] = [];
+function violations(load: LoadPoint, r: BenchResult, consoleErrors: string[]): string[] {
+  const out: string[] = [];
   const env = r.meta.env;
-  if (cfg.serve === 'preview' && env.buildMode !== 'production') fatal.push(`buildMode=${env.buildMode}`);
-  if (!env.crossOriginIsolated) fatal.push('страница не cross-origin isolated');
-  if (env.timerResolutionMs > 0.1) warnings.push(`грубый таймер: ${env.timerResolutionMs} мс`);
-  const scale = effRenderScale(cfg, load);
+  if (env.buildMode !== 'production') out.push(`сборка ${env.buildMode}, а не production`);
+  if (!env.crossOriginIsolated) out.push('страница не cross-origin isolated — таймер огрублён');
+  const scale = effRenderScale(load);
   const w = Math.round(1280 * scale);
   const h = Math.round(720 * scale);
   if (env.gl.drawingBufferWidth !== w || env.gl.drawingBufferHeight !== h) {
-    fatal.push(`drawing buffer ${env.gl.drawingBufferWidth}×${env.gl.drawingBufferHeight} ≠ ${w}×${h}`);
+    out.push(`буфер кадра ${env.gl.drawingBufferWidth}×${env.gl.drawingBufferHeight} ≠ ${w}×${h}`);
   }
   if (env.gl.canvasCssWidth !== 1280 || env.gl.canvasCssHeight !== 720) {
-    fatal.push(`canvas CSS ${env.gl.canvasCssWidth}×${env.gl.canvasCssHeight} ≠ 1280×720`);
+    out.push(`холст ${env.gl.canvasCssWidth}×${env.gl.canvasCssHeight} ≠ 1280×720`);
   }
-  if (env.renderer.clearAlpha !== 1) fatal.push(`альфа очистки ${env.renderer.clearAlpha} ≠ 1`);
-  if (env.renderer.toneMapping !== 0) fatal.push(`tone mapping ${env.renderer.toneMapping} ≠ NoToneMapping`);
-  if (r.kind === 'frame' && r.summary.frames < 100) warnings.push(`мало кадров: ${r.summary.frames}`);
+  if (env.renderer.clearAlpha !== 1) out.push(`альфа очистки ${env.renderer.clearAlpha} ≠ 1`);
+  if (env.renderer.toneMapping !== 0) out.push(`tone mapping ${env.renderer.toneMapping} ≠ NoToneMapping`);
   if (r.kind === 'input') {
-    if (r.summary.ok < 30) warnings.push(`мало измеренных кликов: ${r.summary.ok}`);
-    if (r.summary.timeout > 0) warnings.push(`клики без отклика: ${r.summary.timeout}`);
-    // event.timeStamp должен быть в шкале performance.now(); иначе queue и
-    // полная задержка бессмысленны (в разных браузерах шкала исторически различалась)
-    const q = r.summary.queue_ms_median;
-    if (!(q >= 0 && q < 100)) fatal.push(`queue_ms_median=${q}: event.timeStamp не в шкале performance.now()`);
+    // event.timeStamp должен быть в шкале performance.now(), иначе отметка
+    // события несопоставима с остальными (в браузерах шкала исторически
+    // различалась). При чужой шкале разница отрицательна или порядка часов
+    // и лет, поэтому граница в минуту не задевает реальные задержки.
+    const bad = r.clicks.find((c) => !(c.handler_start_ms - c.event_ms >= 0 && c.handler_start_ms - c.event_ms < 60_000));
+    if (bad) out.push(`клик ${bad.click}: event.timeStamp не в шкале performance.now()`);
   }
-  if (consoleErrors.length > 0) warnings.push(`ошибки консоли: ${consoleErrors.slice(0, 3).join(' | ')}`);
-  return { fatal, warnings };
+  if (consoleErrors.length > 0) out.push(`ошибки страницы: ${consoleErrors.slice(0, 3).join(' | ')}`);
+  return out;
 }
 
-async function runOne(
-  lb: LaunchedBrowser,
-  cfg: BenchConfig,
-  item: ScheduleItem,
-  tracePath: string | null
-): Promise<{ result: BenchResult; consoleErrors: string[]; gc: GcWindowStats[] | null; clicks: number | null }> {
+async function runOne(lb: LaunchedBrowser, cfg: BenchConfig, item: ScheduleItem): Promise<{ result: BenchResult; consoleErrors: string[] }> {
   const context = await newBenchContext(lb);
   try {
     const bp = await BenchPage.open(context);
-    const net = NETWORK_PROFILES[cfg.network];
-    if (lb.supportsCdp && (cfg.scenario === 's3' || cfg.cpuThrottle !== 1 || net)) {
-      // эмуляция ставится до навигации: в S3 замедлены должны быть и загрузка,
-      // и исполнение бандла, а не только кадры после старта
-      const cdp = await context.newCDPSession(bp.page);
-      if (cfg.scenario === 's3' || net) await cdp.send('Network.enable');
-      // новый контекст уже с пустым кэшем; CDP — дополнительная гарантия
-      if (cfg.scenario === 's3') await cdp.send('Network.setCacheDisabled', { cacheDisabled: true });
-      if (cfg.cpuThrottle !== 1) await cdp.send('Emulation.setCPUThrottlingRate', { rate: cfg.cpuThrottle });
-      if (net) {
-        await cdp.send('Network.emulateNetworkConditions', {
-          offline: false,
-          latency: net.latencyMs,
-          downloadThroughput: (net.downloadKbps * 1024) / 8,
-          uploadThroughput: (net.uploadKbps * 1024) / 8,
-        });
-      }
-    }
-    const tracer = tracePath && lb.supportsCdp ? await Tracer.start(bp.page) : null;
-
-    // Каждый прогон — новый контекст, то есть новое окно. Если страница
+    // Каждый прогон — новый контекст: новое окно и холодный кэш. Если страница
     // успевала исполнить скрипт раньше, чем окно готово показывать кадры,
     // первый requestAnimationFrame ждал ≈ 40 мс (на M4 — в 40% холодных
-    // загрузок S3, отсюда бимодальность TTFR). Окно открывается заранее,
-    // как вкладка у пользователя; кэш остаётся холодным — контекст новый.
+    // загрузок S3). Окно открывается заранее, как вкладка у пользователя.
     await bp.page.goto('about:blank');
     await sleep(WINDOW_READY_MS);
     await bp.goto(runUrl(cfg, item.target, item.load));
@@ -192,321 +127,181 @@ async function runOne(
     let driver: { stop(): Promise<number> } | null = null;
     if (cfg.scenario === 's4') {
       await bp.waitFor(['warmup', 'recording'], 60_000);
-      // seed по номеру итерации: все варианты итерации получают одинаковые клики
-      const seed = item.control
-        ? cfg.clickSeed + CONTROL_CLICK_SEED_OFFSET
-        : cfg.clickSeed + (item.warmup ? -item.iteration : item.iteration) * 7919;
-      driver = startClickDriver(bp.page, await canvasBox(bp.page), seed, cfg.clickIntervalMs, () =>
-        bp.has('done')
-      );
+      // seed по номеру повтора: все варианты повтора получают одинаковые клики
+      const seed = CLICKS.seed + (item.warmup ? -item.repeat : item.repeat) * 7919;
+      driver = startClickDriver(bp.page, await canvasBox(bp.page), seed, CLICKS.intervalMs, () => bp.has('done'));
     }
-
     try {
       await bp.waitFor(['done'], runTimeoutMs(cfg));
     } finally {
       await driver?.stop();
     }
-    const clicks = driver ? await driver.stop() : null;
-    const result = await bp.result<BenchResult>();
-    const gc = tracer ? await tracer.stop(tracePath) : null;
-    return { result, consoleErrors: bp.consoleErrors, gc, clicks };
+    return { result: await bp.result<BenchResult>(), consoleErrors: bp.consoleErrors };
   } finally {
     // закрытие тяжёлого WebGL-контекста иногда зависает — не ждём дольше 15 с
     await Promise.race([context.close().catch(() => undefined), sleep(15_000)]);
   }
 }
 
-/** компактная сводка прогона для манифеста и консоли */
-function brief(r: BenchResult): Record<string, number | null> {
-  const n = (x: number | null | undefined) => (x === null || x === undefined || Number.isNaN(x) ? null : Math.round(x * 1000) / 1000);
-  switch (r.kind) {
-    case 'frame': {
-      const s = (r as FrameRunResult).summary;
-      return {
-        fps_median: n(s.fps_median),
-        frame_ms_median: n(s.frame_ms_median),
-        frame_ms_p99: n(s.frame_ms_p99),
-        fps_p1_low: n(s.fps_p1_low),
-        jank_60_share: n(s.jank_60_share),
-        update_ms_median: n(s.update_ms_median),
-        render_ms_median: n(s.render_ms_median),
-        gpu_ms_median: n(s.gpu_ms_median),
-        other_ms_median: n(s.other_ms_median),
-        heap_mb_peak: n(s.heap_mb_peak),
-      };
-    }
-    case 'init': {
-      const i = r as InitRunResult;
-      return {
-        js_ready_ms: n(i.js_ready_ms),
-        ttfr_submit_ms: n(i.ttfr_submit_ms),
-        ttfr_frame_ms: n(i.ttfr_frame_ms),
-        init_ms: n(i.init_ms),
-        first_frame_render_ms: n(i.first_frame_render_ms),
-        tbt_to_ttfr_ms: n(i.tbt_to_ttfr_ms),
-        heap_mb_at_ttfr: n(i.heap_mb_at_ttfr),
-      };
-    }
-    case 'input': {
-      const s = (r as InputRunResult).summary;
-      return {
-        ok: s.ok,
-        miss: s.miss,
-        latency_render_ms_median: n(s.latency_render_ms_median),
-        latency_render_ms_p95: n(s.latency_render_ms_p95),
-        queue_ms_median: n(s.queue_ms_median),
-        dispatch_ms_median: n(s.dispatch_ms_median),
-        apply_ms_median: n(s.apply_ms_median),
-        commit_ms_median: n(s.commit_ms_median),
-        frame_wait_ms_median: n(s.frame_wait_ms_median),
-        render_ms_median: n(s.render_ms_median),
-      };
-    }
-    case 'scale': {
-      const s = r as ScaleRunResult;
-      return {
-        levels: s.levels.length,
-        capacity_fps60: s.capacity_fps60,
-        capacity_fps30: s.capacity_fps30,
-        first_below_floor: s.first_below_floor,
-      };
-    }
-  }
+function pageInfo(env: PageEnv) {
+  return {
+    build: env.buildMode,
+    isolated: env.crossOriginIsolated,
+    timer_resolution_ms: Math.round(env.timerResolutionMs * 1000) / 1000,
+    canvas: `${env.gl.canvasCssWidth}x${env.gl.canvasCssHeight}`,
+    device_pixel_ratio: env.devicePixelRatio,
+  };
 }
 
-/** главная метрика контрольного прогона по типу результата */
-function controlMetric(r: BenchResult): { name: string; value: number } | null {
-  if (r.kind === 'frame') return { name: 'frame_ms_median', value: r.summary.frame_ms_median };
-  if (r.kind === 'input') return { name: 'latency_render_ms_median', value: r.summary.latency_render_ms_median };
-  return null;
-}
-
-function median(xs: number[]): number | null {
-  if (xs.length === 0) return null;
-  const s = [...xs].sort((a, b) => a - b);
-  const m = Math.floor(s.length / 2);
-  return s.length % 2 ? s[m]! : (s[m - 1]! + s[m]!) / 2;
-}
-
-function printSummary(runs: { label: string; warmup: boolean; control: boolean; brief: Record<string, number | null> }[]): void {
-  const byLabel = new Map<string, Record<string, number | null>[]>();
-  for (const r of runs) {
-    if (r.warmup || r.control) continue;
-    (byLabel.get(r.label) ?? byLabel.set(r.label, []).get(r.label)!).push(r.brief);
+function settings(cfg: BenchConfig): Record<string, unknown> {
+  const s: Record<string, unknown> = {
+    variants: cfg.targets.map((t) => t.label),
+    repeats: cfg.repeats,
+    warmup_runs: cfg.warmupRuns,
+    order: 'random',
+    order_seed: cfg.orderSeed,
+  };
+  if (cfg.scenario !== 's3') Object.assign(s, { warmup_ms: cfg.warmupMs, record_ms: cfg.recordMs });
+  s.pause_ms = cfg.pauseMs;
+  if (cfg.scenario === 's1') s.loads = cfg.loads;
+  if (cfg.scenario === 's4') {
+    Object.assign(s, { click_interval_ms: CLICKS.intervalMs, click_seed: CLICKS.seed, click_timeout_ms: CLICKS.timeoutMs });
   }
-  const table: Record<string, Record<string, number | null>> = {};
-  for (const [label, briefs] of byLabel) {
-    const row: Record<string, number | null> = { n: briefs.length };
-    for (const k of Object.keys(briefs[0] ?? {})) {
-      const v = median(briefs.map((b) => b[k]).filter((x): x is number => x !== null));
-      row[k] = v === null ? null : Math.round(v * 1000) / 1000;
-    }
-    table[label] = row;
+  if (cfg.scenario === 's5') {
+    Object.assign(s, { levels: SWEEP.levels, fps_floor: SWEEP.fpsFloor, levels_beyond_floor: SWEEP.levelsBeyondFloor, min_level_frames: SWEEP.minLevelFrames });
+    // в S5 окна — на уровень
+    s.level_warmup_ms = s.warmup_ms;
+    s.level_record_ms = s.record_ms;
+    delete s.warmup_ms;
+    delete s.record_ms;
   }
-  console.log('\n[harness] медианы по итерациям (предварительно; статистика — в анализе):');
-  console.table(table);
+  return s;
 }
 
 async function main(): Promise<void> {
   const cfg = parseArgs(process.argv.slice(2));
-  const stamp = new Date().toISOString().replace(/[:.]/g, '-');
-  const folder = cfg.campaign ? `${cfg.campaign} ${stamp}` : stamp;
+  const created = new Date();
+  const stamp = created.toISOString().replace(/\.\d+Z$/, 'Z').replace(/:/g, '-');
+  const series = cfg.campaign ? `${cfg.campaign} ${stamp}` : stamp;
 
-  // Условия допуска серии (nir3-plan.md, «Протокол измерений»). Нарушение
-  // без явного флага — отказ до сборки; с флагом — серия помечается как
-  // непригодная для анализа, и загрузчик в analysis/ её пропускает.
-  // --parity-only данных не даёт — там нарушения только записываются.
-  const strict = !cfg.parityOnly;
-  const violations: string[] = [];
   const git = codeGitState();
-  if (git.dirty !== false) {
-    const what = git.dirty === null ? 'состояние git неизвестно' : `незакоммиченные изменения кода: ${git.dirtyFiles.join(', ')}`;
-    if (strict && !cfg.allowDirty) throw new Error(`${what}\nЗакоммитьте код перед серией (для отладки — --allow-dirty).`);
-    violations.push(what);
+  if (!cfg.parityOnly && git.dirty !== false && !cfg.allowDirty) {
+    const what = git.dirty === null ? 'состояние git неизвестно' : `незакоммиченный код: ${git.dirtyFiles.join(', ')}`;
+    throw new Error(`${what}\nЗакоммитьте код перед серией (для отладки — --allow-dirty).`);
   }
-  const host = hostEnv();
-  if (cfg.serve === 'dev') violations.push('dev-сервер');
-  if (cfg.skipParity) violations.push('паритет не проверялся');
-
-  const outDir = join(cfg.resultsDir, deviceSlug(cfg.device), cfg.browser, cfg.scenario, folder);
-  await mkdir(join(outDir, 'runs'), { recursive: true });
-  if (git.diff) await writeFile(join(outDir, 'git.diff'), git.diff);
+  const device = deviceInfo(cfg.device);
+  const outDir = join(cfg.resultsDir, device.id, cfg.browser, cfg.scenario, series);
   console.log(`[harness] ${cfg.scenario} • ${cfg.browser} • ${cfg.targets.map((t) => t.label).join(', ')}`);
-  console.log(`[harness] результаты: ${outDir}`);
-  const conditions = [
-    cfg.cpuThrottle !== 1 ? `CPU ×${cfg.cpuThrottle}` : null,
-    cfg.network !== 'none' ? `сеть ${cfg.network}` : null,
-    cfg.vsync ? 'vsync' : null,
-  ].filter(Boolean);
-  if (conditions.length) console.log(`[harness] условия: ${conditions.join(', ')}`);
-  if (cfg.serve === 'dev') console.warn('[harness] ВНИМАНИЕ: dev-сервер — данные непригодны для анализа');
-  for (const v of violations) console.warn(`[harness] ВНИМАНИЕ: серия непригодна для анализа — ${v}`);
 
-  if (cfg.build && cfg.serve === 'preview') buildImpls();
-  const bundles = cfg.serve === 'preview' ? await measureBundles() : null;
-  const servers = await startServers(cfg);
+  if (cfg.build) buildImpls();
+  const bundles = cfg.scenario === 's3' ? await measureBundles() : null;
+  const servers = await startServers();
   let lb: LaunchedBrowser | null = null;
 
-  const manifest: Record<string, unknown> & { runs: unknown[] } = {
-    schema: 3,
-    createdAt: new Date().toISOString(),
-    config: cfg,
-    // usable = false — серия нарушает протокол; анализ её не берёт
-    protocol: { usable: violations.length === 0, violations },
-    host,
+  const manifest: Record<string, unknown> & { runs: unknown[]; retries: unknown[] } = {
+    series,
+    scenario: cfg.scenario,
+    created: created.toISOString().replace(/\.\d+Z$/, 'Z'),
+    // null — серия не завершена (сбой, Ctrl+C); кампания снимает её заново
+    finished: null,
+    device: { ...device, gpu: null as string | null },
     browser: null,
-    servers: servers.info,
-    bundles,
+    code: { commit: git.commit, clean: git.dirty === false },
+    libs: libVersions(),
+    page: null,
+    settings: settings(cfg),
     parity: null,
-    schedule: [],
+    ...(bundles ? { bundles } : {}),
     runs: [],
+    retries: [],
   };
-  const saveManifest = () => writeFile(join(outDir, 'manifest.json'), JSON.stringify(manifest, null, 2));
+  const saveManifest = () => writeFile(join(outDir, 'manifest.json'), JSON.stringify(manifest, null, 2) + '\n');
 
   try {
-    lb = await launchBrowser(cfg.browser, { vsync: cfg.vsync });
+    lb = await launchBrowser(cfg.browser);
     const pinned = PINNED_BROWSER_VERSIONS[cfg.browser];
-    if (pinned !== null && lb.version !== pinned) {
+    if (lb.version !== pinned) {
       throw new Error(
         `${lb.name} ${lb.version} ≠ ${pinned} из пула (config.ts, PINNED_BROWSER_VERSIONS).\n` +
-          'Установите сборки командой `npm run browsers`; если версия сменилась намеренно — обновите таблицу и протокол.'
+          'Установите сборки командой `npm run browsers`.'
       );
     }
-    if (pinned === null) {
-      console.warn(`[harness] ВНИМАНИЕ: ${lb.name} ${lb.version} — версия не зафиксирована проектом (основные данные — --browser chromium)`);
-    }
-    manifest.browser = {
-      name: lb.name,
-      version: lb.version,
-      pinned: pinned !== null,
-      launchArgs: lb.launchArgs,
-      prefs: lb.prefs,
-      vsyncUncapped: lb.vsyncUncapped,
-    };
+    manifest.browser = { name: lb.name, version: lb.version, flags: lb.flags };
     console.log(`[harness] браузер ${lb.name} ${lb.version}`);
+
+    // Паритет: все варианты сравниваются с three.js — сцена, камера, свет,
+    // меши и сам кадр. При расхождении серия не снимается.
+    const reports = [];
+    for (const load of cfg.loads) reports.push(await runParity(lb, cfg, load));
+    const parityOk = reports.every((r) => r.ok);
+    const issues = reports.flatMap((r) => r.entries.flatMap((e) => e.issues.map((i) => `${r.load} ${e.label}: ${i}`)));
+    manifest.parity = {
+      ok: parityOk,
+      frame_identical: reports.every((r) => r.entries.every((e) => e.image.exact)),
+      ...(issues.length ? { issues } : {}),
+    };
+    if (cfg.parityOnly) return;
+    await mkdir(join(outDir, 'runs'), { recursive: true });
+    console.log(`[harness] результаты: ${outDir}`);
+    if (!parityOk) {
+      await saveManifest();
+      throw new Error('Паритет сцен нарушен — замеры не проводятся (см. manifest.json)');
+    }
     await saveManifest();
 
-    if (!cfg.skipParity) {
-      const reports = [];
-      for (const load of cfg.loads) reports.push(await runParity(lb, cfg, load));
-      manifest.parity = reports;
-      await writeFile(join(outDir, 'parity.json'), JSON.stringify(reports, null, 2));
-      await saveManifest();
-      if (reports.some((r) => !r.ok)) {
-        throw new Error('Паритет сцен нарушен — замеры не проводятся (см. parity.json)');
-      }
-    } else {
-      console.warn('[harness] ВНИМАНИЕ: проверка паритета пропущена');
-    }
-    if (cfg.parityOnly) return;
-
     const schedule = buildSchedule(cfg);
-    manifest.schedule = schedule.map((s) => ({
-      label: s.target.label,
-      load: s.load.id,
-      warmup: s.warmup,
-      control: s.control,
-      iteration: s.iteration,
-    }));
-    const briefs: { label: string; warmup: boolean; control: boolean; brief: Record<string, number | null> }[] = [];
-    const controls: { name: string; value: number }[] = [];
-    const retries: { tag: string; attempt: number; error: string }[] = [];
-
+    let saved = 0;
     for (let idx = 0; idx < schedule.length; idx++) {
       const item = schedule[idx]!;
-      const loadTag = item.load.id === '-' ? '' : `_${item.load.id}`;
-      const kind = item.warmup ? 'w' : item.control ? 'c' : 'i';
-      const tag = `${String(idx + 1).padStart(3, '0')}_${item.target.label}${loadTag}_${kind}${item.iteration}`;
-      if (idx > 0) await sleep(cfg.cooldownMs);
-      let startedAt = new Date().toISOString();
-      let t0 = Date.now();
-      console.log(
-        `[harness] ${idx + 1}/${schedule.length} ${item.target.label}${item.load.id === '-' ? '' : ` [${item.load.id}]`} ` +
-          `${item.warmup ? `прогрев ${item.iteration}` : item.control ? `контроль ${item.iteration}` : `итерация ${item.iteration}`}`
-      );
-      const tracePath = cfg.trace ? join(outDir, 'traces', `${tag}.json.gz`) : null;
+      const where = `${item.target.label}${item.load.id === '-' ? '' : ` [${item.load.id}]`}`;
+      const tag = `${String(saved + 1).padStart(3, '0')}_${item.target.label}${item.load.id === '-' ? '' : `_${item.load.id}`}_${item.repeat}`;
+      if (idx > 0) await sleep(cfg.pauseMs);
+      console.log(`[harness] ${idx + 1}/${schedule.length} ${where} ${item.warmup ? `прогрев ${item.repeat}` : `повтор ${item.repeat}`}`);
+
       // Сбой браузера (таймаут, падение страницы) повторяется один раз: иначе
-      // случайный сбой обрывал серию S2 длиной ≈ 1¾ ч, и кампания снимала её
-      // заново целиком. Нарушения условий (validity.fatal) не повторяются.
+      // случайный сбой обрывал бы многочасовую серию. Нарушения условий
+      // эксперимента не повторяются.
+      let started = new Date();
       let out: Awaited<ReturnType<typeof runOne>>;
       for (let attempt = 1; ; attempt++) {
         try {
-          out = await runOne(lb, cfg, item, tracePath);
+          out = await runOne(lb, cfg, item);
           break;
         } catch (e) {
           const error = (e instanceof Error ? e.message : String(e)).split('\n').slice(0, 3).join(' | ');
-          retries.push({ tag, attempt, error });
-          manifest.retries = retries;
+          manifest.retries.push({ run: item.warmup ? `прогрев ${where} ${item.repeat}` : tag, attempt, error });
           await saveManifest();
           if (attempt >= MAX_ATTEMPTS) throw e;
-          console.warn(`           ⚠ сбой прогона: ${error} — повтор`);
-          await sleep(cfg.cooldownMs * 3);
-          startedAt = new Date().toISOString();
-          t0 = Date.now();
+          console.warn(`           сбой прогона: ${error} — повтор`);
+          await sleep(cfg.pauseMs * 3);
+          started = new Date();
         }
       }
-      const { result, consoleErrors, gc, clicks } = out;
-      const validity = validate(cfg, item.load, result, consoleErrors);
-      const b = brief(result);
-      console.log(`           ${JSON.stringify(b)}`);
-      for (const wmsg of validity.warnings) console.warn(`           ⚠ ${wmsg}`);
+      const { result, consoleErrors } = out;
+      const broken = violations(item.load, result, consoleErrors);
+      if (broken.length > 0) throw new Error(`Нарушены условия эксперимента (${where}): ${broken.join('; ')}`);
+      if (manifest.page === null) {
+        manifest.page = pageInfo(result.meta.env);
+        (manifest.device as { gpu: string | null }).gpu = result.meta.env.gl.renderer;
+      }
+      if (item.warmup) continue;
 
-      const file = `runs/${tag}.json`;
-      await writeFile(
-        join(outDir, file),
-        JSON.stringify({
-          label: item.target.label,
-          load: item.load.id,
-          warmup: item.warmup,
-          control: item.control,
-          iteration: item.iteration,
-          startedAt,
-          durationMs: Date.now() - t0,
-          validity,
-          consoleErrors,
-          clicksSent: clicks,
-          gc,
-          result,
-        })
-      );
+      saved++;
+      const file = `runs/${tag}.csv`;
+      await writeFile(join(outDir, file), toCsv(result));
       manifest.runs.push({
         file,
-        label: item.target.label,
-        load: item.load.id,
-        warmup: item.warmup,
-        control: item.control,
-        iteration: item.iteration,
-        startedAt,
-        durationMs: Date.now() - t0,
-        validity,
-        brief: b,
+        variant: item.target.label,
+        ...(item.load.id === '-' ? {} : { load: item.load.id }),
+        repeat: item.repeat,
+        started: started.toISOString().replace(/\.\d+Z$/, 'Z'),
       });
-      briefs.push({
-        label: item.target.label + (item.load.id === '-' ? '' : ` [${item.load.id}]`),
-        warmup: item.warmup,
-        control: item.control,
-        brief: b,
-      });
-      if (item.control) {
-        const m = controlMetric(result);
-        if (m) controls.push(m);
-      }
-      manifest.protocol = { usable: violations.length === 0, violations };
       await saveManifest();
-      if (validity.fatal.length > 0) {
-        throw new Error(`Нарушены условия эксперимента в ${tag}: ${validity.fatal.join('; ')}`);
-      }
     }
-    printSummary(briefs);
-    if (controls.length >= 2) {
-      const values = controls.map((c) => c.value);
-      const spread = Math.max(...values) / Math.min(...values) - 1;
-      // только запись: оценивать дрейф — дело анализа, а не harness
-      manifest.drift = { metric: controls[0]!.name, values, spread };
-      console.log(`[harness] контрольные прогоны three.js: ${values.map((v) => v.toFixed(3)).join(' → ')} (разброс ${(spread * 100).toFixed(1)}%)`);
-    }
+    manifest.finished = new Date().toISOString().replace(/\.\d+Z$/, 'Z');
+    console.log(`[harness] серия завершена: ${saved} прогонов`);
   } finally {
-    await saveManifest();
+    if (!cfg.parityOnly) await saveManifest().catch(() => undefined);
     if (lb) await Promise.race([lb.browser.close().catch(() => undefined), sleep(15_000)]);
     servers.stop();
   }

@@ -6,20 +6,6 @@
     <!-- пустая иконка: без неё браузер запрашивает /favicon.ico (404 в консоли) -->
     <link rel="icon" href="data:," />
     <title>Bench • react-three-fiber</title>
-    <script>
-      // Long tasks собираются ДО загрузки бандла: основная long task холодного
-      // старта — исполнение модулей, и наблюдатель, созданный кодом приложения,
-      // её уже не видит (так было в НИР2). Скрипт идентичен в обеих реализациях.
-      window.__LT__ = [];
-      try {
-        new PerformanceObserver(function (list) {
-          list.getEntries().forEach(function (e) { window.__LT__.push([e.startTime, e.duration]); });
-        }).observe({ type: 'longtask', buffered: true });
-        window.__LT_SUPPORTED__ = PerformanceObserver.supportedEntryTypes.indexOf('longtask') !== -1;
-      } catch (e) {
-        window.__LT_SUPPORTED__ = false;
-      }
-    </script>
     <style>
       * { box-sizing: border-box; }
       html, body { margin: 0; padding: 0; height: 100%; background: #0d1117; color: #e6edf3; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }

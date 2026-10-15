@@ -87,9 +87,9 @@ function runFrameScenario(params: RunParams, spec: SceneSpec): void {
   }
 
   const collector = new FrameCollector({ warmupMs: params.warmupMs, recordMs: params.recordMs });
-  collector.onDone((summary, raw) => {
+  collector.onDone((frames) => {
     loop.stop();
-    const result: BenchResult = { kind: 'frame', meta: meta(params, spec, renderer), summary, raw };
+    const result: BenchResult = { kind: 'frame', meta: meta(params, spec, renderer), frames };
     bench.complete(result);
   });
   bench.addProbe(collector);
@@ -99,7 +99,6 @@ function runFrameScenario(params: RunParams, spec: SceneSpec): void {
 function runInitScenario(params: RunParams, spec: SceneSpec): void {
   let scene: THREE.Scene | null = null;
   const collector = new InitCollector({
-    settleMs: params.settleMs,
     isSceneComplete: () => scene !== null && countMeshes(scene) === expectedMeshCount(spec),
   });
   collector.markJsReady(jsReady);
@@ -182,9 +181,9 @@ function runInputScenario(params: RunParams, spec: SceneSpec): void {
     return;
   }
 
-  collector.onDone((m) => {
+  collector.onDone((clicks) => {
     loop.stop();
-    bench.complete({ kind: 'input', meta: meta(params, spec, renderer), ...m } satisfies BenchResult);
+    bench.complete({ kind: 'input', meta: meta(params, spec, renderer), clicks } satisfies BenchResult);
   });
 }
 
@@ -246,16 +245,15 @@ function runScaleScenario(params: RunParams): void {
     fpsFloor: params.fpsFloor,
     levelsBeyondFloor: params.levelsBeyondFloor,
     minLevelFrames: params.minLevelFrames,
-    levelControl: params.levelControl,
   });
   collector.onAdvanceLevel((count) => {
     setLevel(count);
     // построение синхронное — объекты уже в графе сцены
     collector.levelReady();
   });
-  collector.onDone((m) => {
+  collector.onDone((levels) => {
     loop.stop();
-    const result: BenchResult = { kind: 'scale', meta: meta(params, spec, renderer), ...m };
+    const result: BenchResult = { kind: 'scale', meta: meta(params, spec, renderer), levels };
     content?.dispose();
     bench.complete(result);
   });

@@ -18,7 +18,6 @@ try {
     // Коллектор S3 регистрируется ДО создания корня, как в three.js: иначе он
     // не увидел бы кадры, отрисованные до коммита сцены.
     const collector = new InitCollector({
-      settleMs: params.settleMs,
       isSceneComplete: () => initProbe.isSceneComplete(),
     });
     collector.markJsReady(jsReady);

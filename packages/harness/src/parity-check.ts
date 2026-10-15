@@ -1,7 +1,7 @@
 import type { ParitySnapshot } from '@bench/metrics';
 import { BenchPage } from './bench-page.js';
 import { newBenchContext, type LaunchedBrowser } from './browser.js';
-import { runUrl, type BenchConfig, type LoadPoint, type Target } from './config.js';
+import { CLICKS, runUrl, type BenchConfig, type LoadPoint, type Target } from './config.js';
 import { canvasBox, clickPoints } from './input-driver.js';
 
 /** время анимации, в котором сравниваются кадры */
@@ -44,7 +44,7 @@ async function snapshot(lb: LaunchedBrowser, cfg: BenchConfig, target: Target, l
     await bp.waitFor(['parity-ready'], 120_000);
     if (cfg.scenario === 's4') {
       // одинаковые клики → один и тот же подсвеченный объект (паритет raycast)
-      const next = clickPoints(await canvasBox(bp.page), cfg.clickSeed);
+      const next = clickPoints(await canvasBox(bp.page), CLICKS.seed);
       for (let i = 0; i < PARITY_S4_CLICKS; i++) {
         const p = next();
         await bp.page.mouse.click(p.x, p.y);

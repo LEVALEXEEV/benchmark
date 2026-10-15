@@ -24,9 +24,9 @@ export function FrameRun({ params, mode, spec }: { params: RunParams; mode: stri
       return;
     }
     const collector = new FrameCollector({ warmupMs: params.warmupMs, recordMs: params.recordMs });
-    collector.onDone((summary, raw) => {
+    collector.onDone((frames) => {
       finish.stopLoop();
-      bench.complete({ kind: 'frame', meta: finish.meta(spec.id), summary, raw });
+      bench.complete({ kind: 'frame', meta: finish.meta(spec.id), frames });
     });
     return bench.addProbe(collector);
   }, []);

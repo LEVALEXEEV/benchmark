@@ -1,33 +1,34 @@
+import { mkdtempSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { chromium, firefox, webkit, type Browser, type BrowserContext } from 'playwright';
 import type { BrowserName } from './config.js';
 
 /**
- * Chromium-флаги:
+ * Chromium:
  *   --disable-gpu-vsync, --disable-frame-rate-limit — снять привязку к частоте
- *     монитора, иначе frame time упирается в 16,7 мс и различия не видны;
- *   --enable-precise-memory-info — без него performance.memory квантуется;
+ *     монитора, иначе время кадра упирается в 16,7 мс и различия не видны;
  *   --disable-renderer-backgrounding и др. — окно без фокуса не должно
  *     троттлиться (headed-окно может оказаться перекрыто).
  */
-const CHROMIUM_UNCAP_ARGS = ['--disable-frame-rate-limit', '--disable-gpu-vsync'];
 const CHROMIUM_ARGS = [
   '--use-gl=angle',
   '--enable-gpu',
   '--ignore-gpu-blocklist',
-  '--enable-precise-memory-info',
   '--disable-renderer-backgrounding',
   '--disable-background-timer-throttling',
   '--disable-backgrounding-occluded-windows',
+  '--disable-frame-rate-limit',
+  '--disable-gpu-vsync',
 ];
 
 /**
- * Firefox: layout.frame_rate=0 — ASAP-режим (без vsync);
- * privacy.reduceTimerPrecision=false — точный performance.now().
- * WebKit (Playwright-сборка) не позволяет снять vsync: FPS там упирается в
- * частоту монитора, сравнивать нужно фазы кадра (update/render), а не FPS.
+ * Firefox: layout.frame_rate=0 — без vsync; privacy.reduceTimerPrecision=false
+ * — точный performance.now(). WebKit (Playwright-сборка) не позволяет снять
+ * vsync: кадр там не короче 16,7 мс, сравниваются фазы кадра.
  */
-const FIREFOX_UNCAP_PREFS = { 'layout.frame_rate': 0 };
 const FIREFOX_PREFS = {
+  'layout.frame_rate': 0,
   'privacy.reduceTimerPrecision': false,
   'webgl.force-enabled': true,
   'dom.timeout.enable_budget_timer_throttling': false,
@@ -37,44 +38,35 @@ export interface LaunchedBrowser {
   readonly browser: Browser;
   readonly name: BrowserName;
   readonly version: string;
-  readonly launchArgs: readonly string[];
-  readonly prefs: Record<string, unknown> | null;
-  readonly vsyncUncapped: boolean;
-  readonly supportsCdp: boolean;
+  /** флаги запуска для manifest: аргументы Chromium или настройки Firefox */
+  readonly flags: readonly string[];
 }
 
-/**
- * vsync = true — условие «как видит пользователь»: частота кадров привязана
- * к монитору, и сравнивается уже не время кадра, а доля пропущенных кадров.
- */
-export async function launchBrowser(name: BrowserName, opts: { vsync: boolean }): Promise<LaunchedBrowser> {
-  const args = opts.vsync ? CHROMIUM_ARGS : [...CHROMIUM_ARGS, ...CHROMIUM_UNCAP_ARGS];
-  const prefs = opts.vsync ? FIREFOX_PREFS : { ...FIREFOX_PREFS, ...FIREFOX_UNCAP_PREFS };
+export async function launchBrowser(name: BrowserName): Promise<LaunchedBrowser> {
   let browser: Browser;
+  let flags: string[] = [];
   switch (name) {
-    case 'chrome':
-      browser = await chromium.launch({ channel: 'chrome', headless: false, args });
-      break;
     case 'chromium':
-      browser = await chromium.launch({ headless: false, args });
+      browser = await chromium.launch({ headless: false, args: CHROMIUM_ARGS });
+      flags = CHROMIUM_ARGS;
       break;
     case 'firefox':
-      browser = await firefox.launch({ headless: false, firefoxUserPrefs: prefs });
+      browser = await firefox.launch({
+        headless: false,
+        firefoxUserPrefs: FIREFOX_PREFS,
+        // macOS 27 закрывает ~/Library/Application Support/Firefox, где сборка
+        // Playwright ищет свои данные, и браузер не стартует
+        // (microsoft/playwright#42768, исправлено в Firefox 158). Отдельная
+        // пустая «домашняя папка» обходит это; песочница Firefox не трогается.
+        env: process.platform === 'darwin' ? { ...process.env, CFFIXED_USER_HOME: mkdtempSync(join(tmpdir(), 'bench-ff-')) } : undefined,
+      });
+      flags = Object.entries(FIREFOX_PREFS).map(([k, v]) => `${k}=${v}`);
       break;
     case 'webkit':
       browser = await webkit.launch({ headless: false });
       break;
   }
-  const chromiumLike = name === 'chrome' || name === 'chromium';
-  return {
-    browser,
-    name,
-    version: browser.version(),
-    launchArgs: chromiumLike ? args : [],
-    prefs: name === 'firefox' ? prefs : null,
-    vsyncUncapped: name !== 'webkit' && !opts.vsync,
-    supportsCdp: chromiumLike,
-  };
+  return { browser, name, version: browser.version(), flags };
 }
 
 export async function newBenchContext(b: LaunchedBrowser): Promise<BrowserContext> {

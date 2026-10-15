@@ -3,25 +3,26 @@
     1) проверки и подготовка стенда (git, браузеры пула, typecheck, сборка) —
        пока есть сеть;
     2) подготовка ОС (prepare-os.ps1, запрос UAC);
-    3) чек-лист, пауза 10 мин без нагрузки, все серии по матрице пула;
+    3) чек-лист, пауза 10 мин без нагрузки, все серии по матрице
+       (packages\harness\src\campaign.ts);
        система не уснёт и экран не погаснет, пока идёт кампания (иначе
        браузер перестаёт рисовать кадры);
     4) откат настроек ОС при любом завершении (снова запрос UAC — если
        кампания шла без присмотра, подтвердите его, когда вернётесь).
 
   Запускать из обычного (не администраторского) окна PowerShell — замеры
-  идут без повышенных прав, как в первой серии:
-    powershell -ExecutionPolicy Bypass -File scripts\windows\measure.ps1 r2
-    powershell -ExecutionPolicy Bypass -File scripts\windows\measure.ps1 r2 -Filter chromium/base
-    powershell -ExecutionPolicy Bypass -File scripts\windows\measure.ps1 r2b -KeepNetwork
+  идут без повышенных прав:
+    powershell -ExecutionPolicy Bypass -File scripts\windows\measure.ps1 pilot
+    powershell -ExecutionPolicy Bypass -File scripts\windows\measure.ps1 r3
+    powershell -ExecutionPolicy Bypass -File scripts\windows\measure.ps1 r3 -Filter chromium
+    powershell -ExecutionPolicy Bypass -File scripts\windows\measure.ps1 r3 -KeepNetwork
 
   Прерванную кампанию можно запустить той же командой: готовые серии
-  пропускаются. План и прогресс: npm run campaign -- list --session r2
+  пропускаются. План и прогресс: npm run campaign -- list --session r3
 #>
 param(
-  [Parameter(Mandatory = $true)][ValidateSet('r2', 'r2b')][string]$Session,
+  [Parameter(Mandatory = $true)][ValidateSet('pilot', 'r3')][string]$Session,
   [string]$Filter,
-  [switch]$Optional,
   [switch]$KeepNetwork
 )
 $ErrorActionPreference = 'Stop'
@@ -61,7 +62,6 @@ try {
 
   $runArgs = @('run', '--session', $Session)
   if ($Filter) { $runArgs += @('--filter', $Filter) }
-  if ($Optional) { $runArgs += '--optional' }
   & node $tsx $campaign @runArgs
   $campaignCode = $LASTEXITCODE
 }

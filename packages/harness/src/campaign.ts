@@ -2,105 +2,84 @@ import { execSync, spawn } from 'node:child_process';
 import { appendFileSync, existsSync, mkdirSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { createInterface } from 'node:readline/promises';
-import type { BrowserName, ScenarioId } from './config.js';
+import { SCENARIO_DEFAULTS, type BrowserName, type ScenarioId } from './config.js';
 import { codeGitState, deviceSlug } from './host-env.js';
 import { ROOT } from './servers.js';
 
 /**
- * Кампания замеров «от и до» по матрице пула (nir3-plan.md, «Протокол
- * измерений и пул платформ»): проверки перед стартом → сборка → пауза без
- * нагрузки → серии по очереди → журнал. Подготовку ОС (сеть, индексация,
- * сон) делают обёртки scripts/macos и scripts/windows.
+ * Кампания замеров «от и до» по матрице пула (nir3-spec.md, раздел 5):
+ * проверки перед стартом → сборка → пауза без нагрузки → серии по очереди →
+ * журнал. Подготовку ОС (сеть, индексация, сон) делают обёртки
+ * scripts/macos и scripts/windows.
  *
- * Кампанию можно прервать и запустить снова: завершённые серии (все
- * прогоны расписания, protocol.usable) пропускаются. Незавершённые остаются
- * на диске, загрузчик анализа их не берёт.
+ * Кампанию можно прервать и запустить снова: завершённые серии (manifest
+ * finished, чистый код) пропускаются, прерванные снимаются заново целиком.
  *
- *   npm run campaign -- list    --session r2
- *   npm run campaign -- prepare --session r2        (git, браузеры, typecheck, сборка)
- *   npm run campaign -- run     --session r2 [--filter chromium/base] [--optional]
+ *   npm run campaign -- list    --session pilot|r3
+ *   npm run campaign -- prepare --session pilot|r3  (git, браузеры, typecheck, сборка)
+ *   npm run campaign -- run     --session pilot|r3 [--filter firefox]
  */
 
 type DeviceId = 'D1' | 'D2';
-type Session = 'r2' | 'r2b';
-
-interface Condition {
-  readonly id: string;
-  readonly args: readonly string[];
-  /** как условие выглядит в config манифеста — для поиска готовых серий */
-  readonly match: { cpuThrottle: number; network: string; vsync: boolean; trace: boolean };
-}
-
-const BASE = { cpuThrottle: 1, network: 'none', vsync: false, trace: false };
-const COND: Record<string, Condition> = {
-  base: { id: 'base', args: [], match: BASE },
-  // GC — отдельной серией: трасса сама добавляет накладные расходы
-  trace: { id: 'trace', args: ['--trace'], match: { ...BASE, trace: true } },
-  cpu4: { id: 'cpu4', args: ['--cpuThrottle', '4'], match: { ...BASE, cpuThrottle: 4 } },
-  slow4g: { id: 'slow4g', args: ['--network', 'slow4g'], match: { ...BASE, network: 'slow4g' } },
-  vsync: { id: 'vsync', args: ['--vsync'], match: { ...BASE, vsync: true } },
-};
+type Session = 'pilot' | 'r3';
 
 interface Series {
   readonly browser: BrowserName;
-  readonly condition: Condition;
   readonly scenario: ScenarioId;
-  readonly optional: boolean;
+  /** повторов на ячейку; null — по умолчанию из config.ts */
+  readonly repeats: number | null;
 }
 
 const ALL: readonly ScenarioId[] = ['s1', 's2', 's3', 's4', 's5'];
 
-function series(browser: BrowserName, cond: string, scenarios: readonly ScenarioId[], optional = false): Series[] {
-  return scenarios.map((scenario) => ({ browser, condition: COND[cond]!, scenario, optional }));
+function series(browser: BrowserName, scenarios: readonly ScenarioId[], repeats: Partial<Record<ScenarioId, number>> = {}): Series[] {
+  return scenarios.map((scenario) => ({ browser, scenario, repeats: repeats[scenario] ?? null }));
 }
 
 /**
- * Матрица пула. Порядок — порядок выполнения: сначала основная платформа
- * целиком (после неё — быстрый разбор), затем остальные условия.
+ * Пилот: оценка разброса между прогонами, по ней выбирается число повторов
+ * r3 (nir3-spec.md, раздел 5). По одному браузеру на машину, разные движки:
+ * Mac · Chromium и Windows · Firefox — по r2 это самые шумные платформы.
+ * 5 повторов мало для точной оценки разброса, поэтому n считается по его
+ * верхней доверительной границе. S3 дёшев и шумнее — повторов больше.
+ */
+const PILOT_REPEATS: Record<ScenarioId, number> = { s1: 5, s2: 5, s3: 10, s4: 5, s5: 5 };
+
+/**
+ * Матрица пула. Порядок — порядок выполнения: основная серия (Chromium,
+ * Firefox), затем дополнительная — WebKit на Mac (S1 и S5 в нём не
+ * снимаются, см. config.ts, SCENARIOS_BY_BROWSER).
  */
 const PLAN: Record<Session, Record<DeviceId, Series[]>> = {
-  r2: {
-    D1: [
-      ...series('chromium', 'base', ALL),
-      ...series('chromium', 'trace', ['s2']),
-      // S5 в WebKit не снимается: от ≈ 6400 объектов (у каждого своя геометрия
-      // и материал) WebKit теряет контекст WebGL — ёмкость не определена
-      ...series('webkit', 'base', ['s2', 's3', 's4']),
-      ...series('chromium', 'cpu4', ['s2', 's3', 's4']),
-      ...series('chromium', 'slow4g', ['s3']),
-      ...series('webkit', 'base', ['s1'], true),
-      ...series('chromium', 'vsync', ['s2'], true),
-      // связь с первой серией: Chrome for Testing ≈ системный Chrome
-      ...series('chrome', 'base', ['s2'], true),
-    ],
-    D2: [
-      ...series('chromium', 'base', ALL),
-      ...series('chromium', 'trace', ['s2']),
-      ...series('firefox', 'base', ALL),
-    ],
+  pilot: {
+    D1: series('chromium', ALL, PILOT_REPEATS),
+    D2: series('firefox', ALL, PILOT_REPEATS),
   },
-  // вторая сессия в другой день — разброс между сессиями
-  r2b: {
-    D1: series('chromium', 'base', ALL),
-    D2: series('chromium', 'base', ['s2', 's5']),
+  r3: {
+    D1: [...series('chromium', ALL), ...series('firefox', ALL), ...series('webkit', ['s2', 's3', 's4'])],
+    D2: [...series('chromium', ALL), ...series('firefox', ALL)],
   },
 };
 
 /**
- * Оценка длительности серии, мин: длительности прогонов первой серии на M4
- * + прогрев, контрольные прогоны, пауза и открытие окна. Запись фиксирована
- * по времени, поэтому от устройства и условия почти не зависит.
+ * Оценка длительности серии, мин, при повторах по умолчанию: число прогонов
+ * (с прогревом) × (окно записи + прогрев 5 с + открытие окна + пауза 3 с).
+ * Уточняется после пилота.
  */
-const MINUTES: Record<ScenarioId, number> = { s1: 60, s2: 105, s3: 8, s4: 57, s5: 58 };
+const MINUTES: Record<ScenarioId, number> = { s1: 45, s2: 105, s3: 8, s4: 43, s5: 30 };
 
-const seriesId = (s: Series) => `${s.browser}/${s.condition.id}/${s.scenario}`;
+function minutes(s: Series): number {
+  const def = SCENARIO_DEFAULTS[s.scenario].repeats;
+  return (MINUTES[s.scenario] * ((s.repeats ?? def) + 1)) / (def + 1);
+}
+
+const seriesId = (s: Series) => `${s.browser}/${s.scenario}`;
 
 interface Args {
   command: 'list' | 'prepare' | 'run';
   session: Session;
   device: DeviceId;
   filter: string | null;
-  optional: boolean;
   idleMin: number;
   pauseSec: number;
   yes: boolean;
@@ -111,17 +90,17 @@ interface Args {
 function parse(argv: string[]): Args {
   const [command, ...rest] = argv;
   if (command !== 'list' && command !== 'prepare' && command !== 'run') {
-    throw new Error('Команда: list | prepare | run. Пример: npm run campaign -- run --session r2');
+    throw new Error('Команда: list | prepare | run. Пример: npm run campaign -- run --session r3');
   }
   const v = new Map<string, string>();
   const flags = new Set<string>();
   for (let i = 0; i < rest.length; i++) {
     const k = rest[i]!.replace(/^--/, '');
-    if (['optional', 'yes'].includes(k)) flags.add(k);
+    if (k === 'yes') flags.add(k);
     else v.set(k, rest[++i] ?? '');
   }
   const session = (v.get('session') ?? '') as Session;
-  if (!(session in PLAN)) throw new Error('--session r2 | r2b');
+  if (!(session in PLAN)) throw new Error(`--session ${Object.keys(PLAN).join(' | ')}`);
   const device = (v.get('device') ?? (process.platform === 'darwin' ? 'D1' : process.platform === 'win32' ? 'D2' : '')) as DeviceId;
   if (device !== 'D1' && device !== 'D2') throw new Error('--device D1 | D2 (по умолчанию: macOS → D1, Windows → D2)');
   return {
@@ -129,7 +108,6 @@ function parse(argv: string[]): Args {
     session,
     device,
     filter: v.get('filter') ?? null,
-    optional: flags.has('optional'),
     // протокол: не менее 10 минут без нагрузки после сборки
     idleMin: Number(v.get('idle') ?? 10),
     pauseSec: Number(v.get('pause') ?? 120),
@@ -139,9 +117,7 @@ function parse(argv: string[]): Args {
 }
 
 function selected(a: Args): Series[] {
-  return PLAN[a.session][a.device].filter(
-    (s) => (a.optional || !s.optional) && (a.filter === null || seriesId(s).includes(a.filter))
-  );
+  return PLAN[a.session][a.device].filter((s) => a.filter === null || seriesId(s).includes(a.filter));
 }
 
 interface Found {
@@ -152,25 +128,15 @@ interface Found {
 
 /** серии этой кампании на диске, в том числе прерванные */
 function findSeries(a: Args, s: Series): Found[] {
-  const session = a.session;
   const dir = join(a.results, deviceSlug(null), s.browser, s.scenario);
   if (!existsSync(dir)) return [];
   const out: Found[] = [];
   for (const folder of readdirSync(dir)) {
-    if (!folder.startsWith(`${session} `)) continue;
+    if (!folder.startsWith(`${a.session} `)) continue;
     const path = join(dir, folder, 'manifest.json');
     if (!existsSync(path)) continue;
     const m = JSON.parse(readFileSync(path, 'utf8'));
-    const c = m.config ?? {};
-    const same =
-      (c.cpuThrottle ?? 1) === s.condition.match.cpuThrottle &&
-      (c.network ?? 'none') === s.condition.match.network &&
-      !!c.vsync === s.condition.match.vsync &&
-      !!c.trace === s.condition.match.trace;
-    if (!same) continue;
-    const complete =
-      m.protocol?.usable === true && Array.isArray(m.schedule) && m.schedule.length > 0 && m.runs.length === m.schedule.length;
-    out.push({ folder: join(dir, folder), complete, commit: m.host?.git?.commit ?? null });
+    out.push({ folder: join(dir, folder), complete: m.finished != null && m.code?.clean === true, commit: m.code?.commit ?? null });
   }
   return out;
 }
@@ -194,8 +160,8 @@ function list(a: Args): void {
     const found = findSeries(a, s);
     const done = found.some((f) => f.complete);
     const partial = !done && found.length > 0;
-    if (!done) left += MINUTES[s.scenario] * (s.condition.id === 'cpu4' ? 1.1 : 1);
-    console.log(`  ${done ? '✓' : partial ? '…' : '·'} ${seriesId(s).padEnd(26)}${s.optional ? ' (необязательно)' : ''}${partial ? ' прервана, будет снята заново' : ''}`);
+    if (!done) left += minutes(s);
+    console.log(`  ${done ? '✓' : partial ? '…' : '·'} ${seriesId(s).padEnd(18)}${partial ? ' прервана, будет снята заново' : ''}`);
   }
   console.log(`\nОсталось ≈ ${Math.round(left / 6) / 10} ч машинного времени.`);
 }
@@ -253,7 +219,7 @@ async function confirmChecklist(a: Args): Promise<void> {
   }
   const rl = createInterface({ input: process.stdin, output: process.stdout });
   try {
-    console.log('\nЧек-лист перед кампанией (nir3-plan.md, раздел 3):');
+    console.log('\nЧек-лист перед кампанией (docs/MEASURE.md):');
     for (const item of items) {
       const ans = (await rl.question(`  ${item}? [y/N] `)).trim().toLowerCase();
       if (ans !== 'y' && ans !== 'д') throw new Error(`Не выполнено: ${item}. Кампания не начата.`);
@@ -265,7 +231,8 @@ async function confirmChecklist(a: Args): Promise<void> {
 }
 
 function runSeries(a: Args, s: Series): Promise<number> {
-  const args = ['run', 'bench', '--', '--scenario', s.scenario, '--browser', s.browser, '--campaign', a.session, '--no-build', ...s.condition.args];
+  const args = ['run', 'bench', '--', '--scenario', s.scenario, '--browser', s.browser, '--campaign', a.session, '--no-build'];
+  if (s.repeats !== null) args.push('--repeats', String(s.repeats));
   // только для проверки кампании: в Windows аргументы идут через cmd.exe без кавычек
   if (a.results !== join(ROOT, 'results')) args.push('--out', a.results);
   return new Promise((resolve) => {
