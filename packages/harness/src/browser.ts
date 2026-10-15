@@ -9,7 +9,8 @@ import type { BrowserName } from './config.js';
  *   --disable-gpu-vsync, --disable-frame-rate-limit — снять привязку к частоте
  *     монитора, иначе время кадра упирается в 16,7 мс и различия не видны;
  *   --disable-renderer-backgrounding и др. — окно без фокуса не должно
- *     троттлиться (headed-окно может оказаться перекрыто).
+ *     троттлиться (headed-окно может оказаться перекрыто);
+ *   --no-proxy-server — см. directEnv.
  */
 const CHROMIUM_ARGS = [
   '--use-gl=angle',
@@ -20,6 +21,7 @@ const CHROMIUM_ARGS = [
   '--disable-backgrounding-occluded-windows',
   '--disable-frame-rate-limit',
   '--disable-gpu-vsync',
+  '--no-proxy-server',
 ];
 
 /**
@@ -29,6 +31,8 @@ const CHROMIUM_ARGS = [
  */
 const FIREFOX_PREFS = {
   'layout.frame_rate': 0,
+  // без прокси — см. directEnv
+  'network.proxy.type': 0,
   'privacy.reduceTimerPrecision': false,
   'webgl.force-enabled': true,
   'dom.timeout.enable_budget_timer_throttling': false,
@@ -42,12 +46,26 @@ export interface LaunchedBrowser {
   readonly flags: readonly string[];
 }
 
+/**
+ * Окружение браузера без переменных прокси. Если в системе задан прокси
+ * (VPN, HTTP_PROXY), Firefox пускает через него даже запросы к localhost, и
+ * стенд отвечает 502; да и сеть между страницей и сервером замеров должна
+ * быть одинаково прямой во всех браузерах.
+ */
+function directEnv(extra: Record<string, string> = {}): Record<string, string> {
+  const env: Record<string, string> = {};
+  for (const [k, v] of Object.entries(process.env)) {
+    if (v !== undefined && !/^(https?|all|no)_proxy$/i.test(k)) env[k] = v;
+  }
+  return { ...env, ...extra };
+}
+
 export async function launchBrowser(name: BrowserName): Promise<LaunchedBrowser> {
   let browser: Browser;
   let flags: string[] = [];
   switch (name) {
     case 'chromium':
-      browser = await chromium.launch({ headless: false, args: CHROMIUM_ARGS });
+      browser = await chromium.launch({ headless: false, args: CHROMIUM_ARGS, env: directEnv() });
       flags = CHROMIUM_ARGS;
       break;
     case 'firefox':
@@ -58,12 +76,12 @@ export async function launchBrowser(name: BrowserName): Promise<LaunchedBrowser>
         // Playwright ищет свои данные, и браузер не стартует
         // (microsoft/playwright#42768, исправлено в Firefox 158). Отдельная
         // пустая «домашняя папка» обходит это; песочница Firefox не трогается.
-        env: process.platform === 'darwin' ? { ...process.env, CFFIXED_USER_HOME: mkdtempSync(join(tmpdir(), 'bench-ff-')) } : undefined,
+        env: directEnv(process.platform === 'darwin' ? { CFFIXED_USER_HOME: mkdtempSync(join(tmpdir(), 'bench-ff-')) } : {}),
       });
       flags = Object.entries(FIREFOX_PREFS).map(([k, v]) => `${k}=${v}`);
       break;
     case 'webkit':
-      browser = await webkit.launch({ headless: false });
+      browser = await webkit.launch({ headless: false, env: directEnv() });
       break;
   }
   return { browser, name, version: browser.version(), flags };
