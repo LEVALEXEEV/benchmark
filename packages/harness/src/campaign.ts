@@ -62,11 +62,11 @@ const PLAN: Record<Session, Record<DeviceId, Series[]>> = {
 };
 
 /**
- * Оценка длительности серии, мин, при повторах по умолчанию: число прогонов
- * (с прогревом) × (окно записи + прогрев 5 с + открытие окна + пауза 3 с).
- * Уточняется после пилота.
+ * Оценка длительности серии, мин, при повторах по умолчанию — по времени
+ * серий пилота (analysis/pilot.ipynb, раздел 7), с запасом по медленной
+ * платформе.
  */
-const MINUTES: Record<ScenarioId, number> = { s1: 45, s2: 105, s3: 8, s4: 43, s5: 30 };
+const MINUTES: Record<ScenarioId, number> = { s1: 45, s2: 105, s3: 6, s4: 30, s5: 100 };
 
 function minutes(s: Series): number {
   const def = SCENARIO_DEFAULTS[s.scenario].repeats;

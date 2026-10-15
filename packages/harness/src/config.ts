@@ -94,17 +94,19 @@ export const CLICKS = { intervalMs: 250, seed: 4242, timeoutMs: 2000 } as const;
 export const SWEEP = { levels: S5_LEVELS, fpsFloor: 30, levelsBeyondFloor: 2, minLevelFrames: 60 } as const;
 
 /**
- * Повторы и окна по сценарию. Число повторов — до пилота r3 значения r2;
- * пилот определяет их заново (nir3-spec.md, раздел 5; docs/MEASURE.md).
+ * Повторы и окна по сценарию. Число повторов на вариант рассчитано по пилоту
+ * (analysis/pilot.ipynb, 2026-10-15): различить 5% (S4 — 10%) при α = 0,05 и
+ * мощности 0,8 по верхней границе разброса; не меньше 10; S2 — 30 из-за
+ * двух уровней быстродействия процесса на M4.
  */
 export const SCENARIO_DEFAULTS: Record<ScenarioId, { repeats: number; warmupMs: number; recordMs: number }> = {
   s1: { repeats: 10, warmupMs: 5000, recordMs: 30000 },
   s2: { repeats: 30, warmupMs: 5000, recordMs: 30000 },
   // S3: одна холодная загрузка, окон нет
-  s3: { repeats: 30, warmupMs: 0, recordMs: 0 },
-  s4: { repeats: 20, warmupMs: 5000, recordMs: 30000 },
+  s3: { repeats: 45, warmupMs: 0, recordMs: 0 },
+  s4: { repeats: 15, warmupMs: 5000, recordMs: 30000 },
   // S5: окна — на каждый уровень
-  s5: { repeats: 8, warmupMs: 1500, recordMs: 3000 },
+  s5: { repeats: 29, warmupMs: 1500, recordMs: 3000 },
 };
 
 export interface BenchConfig {
