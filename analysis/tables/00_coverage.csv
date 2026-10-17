@@ -1,9 +1,0 @@
-platform,condition,s1,s2,s3,s4,s5
-apple-m4 · chromium,base,●,●,●,●,●
-apple-m4 · chromium,trace,,●,,,
-apple-m4 · webkit,base,,●,●,●,
-apple-m4 · chromium,cpu×4,,●,●,●,
-apple-m4 · chromium,slow4g,,,●,,
-amd-ryzen-5 · chromium,base,●,●,●,●,●
-amd-ryzen-5 · chromium,trace,,●,,,
-amd-ryzen-5 · firefox,base,●,●,●,●,●
