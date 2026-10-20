@@ -1,0 +1,971 @@
+{
+  "series": "r3 2026-10-17T21-42-56Z",
+  "scenario": "s2",
+  "created": "2026-10-17T21:42:56Z",
+  "finished": "2026-10-17T23:24:51Z",
+  "device": {
+    "id": "apple-m4",
+    "cpu": "Apple M4",
+    "cores": 10,
+    "memory_gb": 16,
+    "os": "macOS 27.0.1",
+    "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M4, Unspecified Version)"
+  },
+  "browser": {
+    "name": "chromium",
+    "version": "153.0.8010.12",
+    "flags": [
+      "--use-gl=angle",
+      "--enable-gpu",
+      "--ignore-gpu-blocklist",
+      "--disable-renderer-backgrounding",
+      "--disable-background-timer-throttling",
+      "--disable-backgrounding-occluded-windows",
+      "--disable-frame-rate-limit",
+      "--disable-gpu-vsync",
+      "--no-proxy-server"
+    ]
+  },
+  "code": {
+    "commit": "4c2af0576e18e061d16c8c7f167d2b10070d4773",
+    "clean": true
+  },
+  "libs": {
+    "three": "0.186.0",
+    "react": "19.2.8",
+    "@react-three/fiber": "9.7.0",
+    "vite": "8.3.0",
+    "playwright": "1.63.0",
+    "node": "22.20.0"
+  },
+  "page": {
+    "build": "production",
+    "isolated": true,
+    "timer_resolution_ms": 0.005,
+    "canvas": "1280x720",
+    "device_pixel_ratio": 1
+  },
+  "settings": {
+    "variants": [
+      "threejs",
+      "r3f-ref",
+      "r3f-ref-central",
+      "r3f-state",
+      "r3f-parent-state"
+    ],
+    "repeats": 30,
+    "warmup_runs": 1,
+    "order": "random",
+    "order_seed": 1272014170,
+    "warmup_ms": 5000,
+    "record_ms": 30000,
+    "pause_ms": 3000
+  },
+  "parity": {
+    "ok": true,
+    "frame_identical": true
+  },
+  "runs": [
+    {
+      "file": "runs/001_r3f-state_1.csv",
+      "variant": "r3f-state",
+      "repeat": 1,
+      "started": "2026-10-17T21:46:18Z"
+    },
+    {
+      "file": "runs/002_threejs_1.csv",
+      "variant": "threejs",
+      "repeat": 1,
+      "started": "2026-10-17T21:46:57Z"
+    },
+    {
+      "file": "runs/003_r3f-ref_1.csv",
+      "variant": "r3f-ref",
+      "repeat": 1,
+      "started": "2026-10-17T21:47:37Z"
+    },
+    {
+      "file": "runs/004_r3f-parent-state_1.csv",
+      "variant": "r3f-parent-state",
+      "repeat": 1,
+      "started": "2026-10-17T21:48:16Z"
+    },
+    {
+      "file": "runs/005_r3f-ref-central_1.csv",
+      "variant": "r3f-ref-central",
+      "repeat": 1,
+      "started": "2026-10-17T21:48:55Z"
+    },
+    {
+      "file": "runs/006_r3f-ref_2.csv",
+      "variant": "r3f-ref",
+      "repeat": 2,
+      "started": "2026-10-17T21:49:35Z"
+    },
+    {
+      "file": "runs/007_threejs_2.csv",
+      "variant": "threejs",
+      "repeat": 2,
+      "started": "2026-10-17T21:50:14Z"
+    },
+    {
+      "file": "runs/008_r3f-parent-state_2.csv",
+      "variant": "r3f-parent-state",
+      "repeat": 2,
+      "started": "2026-10-17T21:50:54Z"
+    },
+    {
+      "file": "runs/009_r3f-ref-central_2.csv",
+      "variant": "r3f-ref-central",
+      "repeat": 2,
+      "started": "2026-10-17T21:51:33Z"
+    },
+    {
+      "file": "runs/010_r3f-state_2.csv",
+      "variant": "r3f-state",
+      "repeat": 2,
+      "started": "2026-10-17T21:52:13Z"
+    },
+    {
+      "file": "runs/011_r3f-state_3.csv",
+      "variant": "r3f-state",
+      "repeat": 3,
+      "started": "2026-10-17T21:52:52Z"
+    },
+    {
+      "file": "runs/012_threejs_3.csv",
+      "variant": "threejs",
+      "repeat": 3,
+      "started": "2026-10-17T21:53:31Z"
+    },
+    {
+      "file": "runs/013_r3f-ref_3.csv",
+      "variant": "r3f-ref",
+      "repeat": 3,
+      "started": "2026-10-17T21:54:11Z"
+    },
+    {
+      "file": "runs/014_r3f-ref-central_3.csv",
+      "variant": "r3f-ref-central",
+      "repeat": 3,
+      "started": "2026-10-17T21:54:50Z"
+    },
+    {
+      "file": "runs/015_r3f-parent-state_3.csv",
+      "variant": "r3f-parent-state",
+      "repeat": 3,
+      "started": "2026-10-17T21:55:30Z"
+    },
+    {
+      "file": "runs/016_threejs_4.csv",
+      "variant": "threejs",
+      "repeat": 4,
+      "started": "2026-10-17T21:56:09Z"
+    },
+    {
+      "file": "runs/017_r3f-ref_4.csv",
+      "variant": "r3f-ref",
+      "repeat": 4,
+      "started": "2026-10-17T21:56:49Z"
+    },
+    {
+      "file": "runs/018_r3f-state_4.csv",
+      "variant": "r3f-state",
+      "repeat": 4,
+      "started": "2026-10-17T21:57:28Z"
+    },
+    {
+      "file": "runs/019_r3f-parent-state_4.csv",
+      "variant": "r3f-parent-state",
+      "repeat": 4,
+      "started": "2026-10-17T21:58:08Z"
+    },
+    {
+      "file": "runs/020_r3f-ref-central_4.csv",
+      "variant": "r3f-ref-central",
+      "repeat": 4,
+      "started": "2026-10-17T21:58:47Z"
+    },
+    {
+      "file": "runs/021_r3f-ref-central_5.csv",
+      "variant": "r3f-ref-central",
+      "repeat": 5,
+      "started": "2026-10-17T21:59:26Z"
+    },
+    {
+      "file": "runs/022_threejs_5.csv",
+      "variant": "threejs",
+      "repeat": 5,
+      "started": "2026-10-17T22:00:06Z"
+    },
+    {
+      "file": "runs/023_r3f-state_5.csv",
+      "variant": "r3f-state",
+      "repeat": 5,
+      "started": "2026-10-17T22:00:45Z"
+    },
+    {
+      "file": "runs/024_r3f-parent-state_5.csv",
+      "variant": "r3f-parent-state",
+      "repeat": 5,
+      "started": "2026-10-17T22:01:25Z"
+    },
+    {
+      "file": "runs/025_r3f-ref_5.csv",
+      "variant": "r3f-ref",
+      "repeat": 5,
+      "started": "2026-10-17T22:02:04Z"
+    },
+    {
+      "file": "runs/026_r3f-ref-central_6.csv",
+      "variant": "r3f-ref-central",
+      "repeat": 6,
+      "started": "2026-10-17T22:02:44Z"
+    },
+    {
+      "file": "runs/027_r3f-parent-state_6.csv",
+      "variant": "r3f-parent-state",
+      "repeat": 6,
+      "started": "2026-10-17T22:03:23Z"
+    },
+    {
+      "file": "runs/028_r3f-state_6.csv",
+      "variant": "r3f-state",
+      "repeat": 6,
+      "started": "2026-10-17T22:04:03Z"
+    },
+    {
+      "file": "runs/029_threejs_6.csv",
+      "variant": "threejs",
+      "repeat": 6,
+      "started": "2026-10-17T22:04:42Z"
+    },
+    {
+      "file": "runs/030_r3f-ref_6.csv",
+      "variant": "r3f-ref",
+      "repeat": 6,
+      "started": "2026-10-17T22:05:21Z"
+    },
+    {
+      "file": "runs/031_r3f-parent-state_7.csv",
+      "variant": "r3f-parent-state",
+      "repeat": 7,
+      "started": "2026-10-17T22:06:01Z"
+    },
+    {
+      "file": "runs/032_r3f-ref_7.csv",
+      "variant": "r3f-ref",
+      "repeat": 7,
+      "started": "2026-10-17T22:06:40Z"
+    },
+    {
+      "file": "runs/033_threejs_7.csv",
+      "variant": "threejs",
+      "repeat": 7,
+      "started": "2026-10-17T22:07:20Z"
+    },
+    {
+      "file": "runs/034_r3f-ref-central_7.csv",
+      "variant": "r3f-ref-central",
+      "repeat": 7,
+      "started": "2026-10-17T22:07:59Z"
+    },
+    {
+      "file": "runs/035_r3f-state_7.csv",
+      "variant": "r3f-state",
+      "repeat": 7,
+      "started": "2026-10-17T22:08:39Z"
+    },
+    {
+      "file": "runs/036_r3f-state_8.csv",
+      "variant": "r3f-state",
+      "repeat": 8,
+      "started": "2026-10-17T22:09:18Z"
+    },
+    {
+      "file": "runs/037_r3f-ref_8.csv",
+      "variant": "r3f-ref",
+      "repeat": 8,
+      "started": "2026-10-17T22:09:57Z"
+    },
+    {
+      "file": "runs/038_r3f-parent-state_8.csv",
+      "variant": "r3f-parent-state",
+      "repeat": 8,
+      "started": "2026-10-17T22:10:37Z"
+    },
+    {
+      "file": "runs/039_threejs_8.csv",
+      "variant": "threejs",
+      "repeat": 8,
+      "started": "2026-10-17T22:11:16Z"
+    },
+    {
+      "file": "runs/040_r3f-ref-central_8.csv",
+      "variant": "r3f-ref-central",
+      "repeat": 8,
+      "started": "2026-10-17T22:11:56Z"
+    },
+    {
+      "file": "runs/041_r3f-parent-state_9.csv",
+      "variant": "r3f-parent-state",
+      "repeat": 9,
+      "started": "2026-10-17T22:12:35Z"
+    },
+    {
+      "file": "runs/042_r3f-ref_9.csv",
+      "variant": "r3f-ref",
+      "repeat": 9,
+      "started": "2026-10-17T22:13:15Z"
+    },
+    {
+      "file": "runs/043_r3f-state_9.csv",
+      "variant": "r3f-state",
+      "repeat": 9,
+      "started": "2026-10-17T22:13:54Z"
+    },
+    {
+      "file": "runs/044_threejs_9.csv",
+      "variant": "threejs",
+      "repeat": 9,
+      "started": "2026-10-17T22:14:34Z"
+    },
+    {
+      "file": "runs/045_r3f-ref-central_9.csv",
+      "variant": "r3f-ref-central",
+      "repeat": 9,
+      "started": "2026-10-17T22:15:13Z"
+    },
+    {
+      "file": "runs/046_r3f-state_10.csv",
+      "variant": "r3f-state",
+      "repeat": 10,
+      "started": "2026-10-17T22:15:52Z"
+    },
+    {
+      "file": "runs/047_r3f-parent-state_10.csv",
+      "variant": "r3f-parent-state",
+      "repeat": 10,
+      "started": "2026-10-17T22:16:32Z"
+    },
+    {
+      "file": "runs/048_r3f-ref-central_10.csv",
+      "variant": "r3f-ref-central",
+      "repeat": 10,
+      "started": "2026-10-17T22:17:11Z"
+    },
+    {
+      "file": "runs/049_r3f-ref_10.csv",
+      "variant": "r3f-ref",
+      "repeat": 10,
+      "started": "2026-10-17T22:17:51Z"
+    },
+    {
+      "file": "runs/050_threejs_10.csv",
+      "variant": "threejs",
+      "repeat": 10,
+      "started": "2026-10-17T22:18:30Z"
+    },
+    {
+      "file": "runs/051_r3f-ref-central_11.csv",
+      "variant": "r3f-ref-central",
+      "repeat": 11,
+      "started": "2026-10-17T22:19:10Z"
+    },
+    {
+      "file": "runs/052_r3f-state_11.csv",
+      "variant": "r3f-state",
+      "repeat": 11,
+      "started": "2026-10-17T22:19:49Z"
+    },
+    {
+      "file": "runs/053_r3f-parent-state_11.csv",
+      "variant": "r3f-parent-state",
+      "repeat": 11,
+      "started": "2026-10-17T22:20:28Z"
+    },
+    {
+      "file": "runs/054_threejs_11.csv",
+      "variant": "threejs",
+      "repeat": 11,
+      "started": "2026-10-17T22:21:08Z"
+    },
+    {
+      "file": "runs/055_r3f-ref_11.csv",
+      "variant": "r3f-ref",
+      "repeat": 11,
+      "started": "2026-10-17T22:21:47Z"
+    },
+    {
+      "file": "runs/056_r3f-ref-central_12.csv",
+      "variant": "r3f-ref-central",
+      "repeat": 12,
+      "started": "2026-10-17T22:22:27Z"
+    },
+    {
+      "file": "runs/057_r3f-parent-state_12.csv",
+      "variant": "r3f-parent-state",
+      "repeat": 12,
+      "started": "2026-10-17T22:23:06Z"
+    },
+    {
+      "file": "runs/058_r3f-ref_12.csv",
+      "variant": "r3f-ref",
+      "repeat": 12,
+      "started": "2026-10-17T22:23:46Z"
+    },
+    {
+      "file": "runs/059_threejs_12.csv",
+      "variant": "threejs",
+      "repeat": 12,
+      "started": "2026-10-17T22:24:25Z"
+    },
+    {
+      "file": "runs/060_r3f-state_12.csv",
+      "variant": "r3f-state",
+      "repeat": 12,
+      "started": "2026-10-17T22:25:04Z"
+    },
+    {
+      "file": "runs/061_r3f-ref-central_13.csv",
+      "variant": "r3f-ref-central",
+      "repeat": 13,
+      "started": "2026-10-17T22:25:44Z"
+    },
+    {
+      "file": "runs/062_r3f-state_13.csv",
+      "variant": "r3f-state",
+      "repeat": 13,
+      "started": "2026-10-17T22:26:23Z"
+    },
+    {
+      "file": "runs/063_r3f-parent-state_13.csv",
+      "variant": "r3f-parent-state",
+      "repeat": 13,
+      "started": "2026-10-17T22:27:03Z"
+    },
+    {
+      "file": "runs/064_threejs_13.csv",
+      "variant": "threejs",
+      "repeat": 13,
+      "started": "2026-10-17T22:27:42Z"
+    },
+    {
+      "file": "runs/065_r3f-ref_13.csv",
+      "variant": "r3f-ref",
+      "repeat": 13,
+      "started": "2026-10-17T22:28:22Z"
+    },
+    {
+      "file": "runs/066_r3f-state_14.csv",
+      "variant": "r3f-state",
+      "repeat": 14,
+      "started": "2026-10-17T22:29:01Z"
+    },
+    {
+      "file": "runs/067_r3f-ref-central_14.csv",
+      "variant": "r3f-ref-central",
+      "repeat": 14,
+      "started": "2026-10-17T22:29:41Z"
+    },
+    {
+      "file": "runs/068_r3f-ref_14.csv",
+      "variant": "r3f-ref",
+      "repeat": 14,
+      "started": "2026-10-17T22:30:20Z"
+    },
+    {
+      "file": "runs/069_threejs_14.csv",
+      "variant": "threejs",
+      "repeat": 14,
+      "started": "2026-10-17T22:31:00Z"
+    },
+    {
+      "file": "runs/070_r3f-parent-state_14.csv",
+      "variant": "r3f-parent-state",
+      "repeat": 14,
+      "started": "2026-10-17T22:31:39Z"
+    },
+    {
+      "file": "runs/071_r3f-parent-state_15.csv",
+      "variant": "r3f-parent-state",
+      "repeat": 15,
+      "started": "2026-10-17T22:32:18Z"
+    },
+    {
+      "file": "runs/072_r3f-ref-central_15.csv",
+      "variant": "r3f-ref-central",
+      "repeat": 15,
+      "started": "2026-10-17T22:32:58Z"
+    },
+    {
+      "file": "runs/073_threejs_15.csv",
+      "variant": "threejs",
+      "repeat": 15,
+      "started": "2026-10-17T22:33:37Z"
+    },
+    {
+      "file": "runs/074_r3f-state_15.csv",
+      "variant": "r3f-state",
+      "repeat": 15,
+      "started": "2026-10-17T22:34:17Z"
+    },
+    {
+      "file": "runs/075_r3f-ref_15.csv",
+      "variant": "r3f-ref",
+      "repeat": 15,
+      "started": "2026-10-17T22:34:56Z"
+    },
+    {
+      "file": "runs/076_threejs_16.csv",
+      "variant": "threejs",
+      "repeat": 16,
+      "started": "2026-10-17T22:35:36Z"
+    },
+    {
+      "file": "runs/077_r3f-state_16.csv",
+      "variant": "r3f-state",
+      "repeat": 16,
+      "started": "2026-10-17T22:36:15Z"
+    },
+    {
+      "file": "runs/078_r3f-ref_16.csv",
+      "variant": "r3f-ref",
+      "repeat": 16,
+      "started": "2026-10-17T22:36:54Z"
+    },
+    {
+      "file": "runs/079_r3f-parent-state_16.csv",
+      "variant": "r3f-parent-state",
+      "repeat": 16,
+      "started": "2026-10-17T22:37:34Z"
+    },
+    {
+      "file": "runs/080_r3f-ref-central_16.csv",
+      "variant": "r3f-ref-central",
+      "repeat": 16,
+      "started": "2026-10-17T22:38:13Z"
+    },
+    {
+      "file": "runs/081_r3f-parent-state_17.csv",
+      "variant": "r3f-parent-state",
+      "repeat": 17,
+      "started": "2026-10-17T22:38:53Z"
+    },
+    {
+      "file": "runs/082_r3f-state_17.csv",
+      "variant": "r3f-state",
+      "repeat": 17,
+      "started": "2026-10-17T22:39:32Z"
+    },
+    {
+      "file": "runs/083_r3f-ref_17.csv",
+      "variant": "r3f-ref",
+      "repeat": 17,
+      "started": "2026-10-17T22:40:12Z"
+    },
+    {
+      "file": "runs/084_r3f-ref-central_17.csv",
+      "variant": "r3f-ref-central",
+      "repeat": 17,
+      "started": "2026-10-17T22:40:51Z"
+    },
+    {
+      "file": "runs/085_threejs_17.csv",
+      "variant": "threejs",
+      "repeat": 17,
+      "started": "2026-10-17T22:41:31Z"
+    },
+    {
+      "file": "runs/086_r3f-state_18.csv",
+      "variant": "r3f-state",
+      "repeat": 18,
+      "started": "2026-10-17T22:42:10Z"
+    },
+    {
+      "file": "runs/087_r3f-ref-central_18.csv",
+      "variant": "r3f-ref-central",
+      "repeat": 18,
+      "started": "2026-10-17T22:42:49Z"
+    },
+    {
+      "file": "runs/088_r3f-parent-state_18.csv",
+      "variant": "r3f-parent-state",
+      "repeat": 18,
+      "started": "2026-10-17T22:43:29Z"
+    },
+    {
+      "file": "runs/089_threejs_18.csv",
+      "variant": "threejs",
+      "repeat": 18,
+      "started": "2026-10-17T22:44:08Z"
+    },
+    {
+      "file": "runs/090_r3f-ref_18.csv",
+      "variant": "r3f-ref",
+      "repeat": 18,
+      "started": "2026-10-17T22:44:48Z"
+    },
+    {
+      "file": "runs/091_r3f-ref-central_19.csv",
+      "variant": "r3f-ref-central",
+      "repeat": 19,
+      "started": "2026-10-17T22:45:27Z"
+    },
+    {
+      "file": "runs/092_r3f-ref_19.csv",
+      "variant": "r3f-ref",
+      "repeat": 19,
+      "started": "2026-10-17T22:46:07Z"
+    },
+    {
+      "file": "runs/093_r3f-state_19.csv",
+      "variant": "r3f-state",
+      "repeat": 19,
+      "started": "2026-10-17T22:46:46Z"
+    },
+    {
+      "file": "runs/094_threejs_19.csv",
+      "variant": "threejs",
+      "repeat": 19,
+      "started": "2026-10-17T22:47:26Z"
+    },
+    {
+      "file": "runs/095_r3f-parent-state_19.csv",
+      "variant": "r3f-parent-state",
+      "repeat": 19,
+      "started": "2026-10-17T22:48:05Z"
+    },
+    {
+      "file": "runs/096_r3f-ref_20.csv",
+      "variant": "r3f-ref",
+      "repeat": 20,
+      "started": "2026-10-17T22:48:44Z"
+    },
+    {
+      "file": "runs/097_threejs_20.csv",
+      "variant": "threejs",
+      "repeat": 20,
+      "started": "2026-10-17T22:49:24Z"
+    },
+    {
+      "file": "runs/098_r3f-state_20.csv",
+      "variant": "r3f-state",
+      "repeat": 20,
+      "started": "2026-10-17T22:50:03Z"
+    },
+    {
+      "file": "runs/099_r3f-ref-central_20.csv",
+      "variant": "r3f-ref-central",
+      "repeat": 20,
+      "started": "2026-10-17T22:50:43Z"
+    },
+    {
+      "file": "runs/100_r3f-parent-state_20.csv",
+      "variant": "r3f-parent-state",
+      "repeat": 20,
+      "started": "2026-10-17T22:51:22Z"
+    },
+    {
+      "file": "runs/101_r3f-ref-central_21.csv",
+      "variant": "r3f-ref-central",
+      "repeat": 21,
+      "started": "2026-10-17T22:52:02Z"
+    },
+    {
+      "file": "runs/102_r3f-parent-state_21.csv",
+      "variant": "r3f-parent-state",
+      "repeat": 21,
+      "started": "2026-10-17T22:52:41Z"
+    },
+    {
+      "file": "runs/103_r3f-state_21.csv",
+      "variant": "r3f-state",
+      "repeat": 21,
+      "started": "2026-10-17T22:53:20Z"
+    },
+    {
+      "file": "runs/104_r3f-ref_21.csv",
+      "variant": "r3f-ref",
+      "repeat": 21,
+      "started": "2026-10-17T22:54:00Z"
+    },
+    {
+      "file": "runs/105_threejs_21.csv",
+      "variant": "threejs",
+      "repeat": 21,
+      "started": "2026-10-17T22:54:39Z"
+    },
+    {
+      "file": "runs/106_threejs_22.csv",
+      "variant": "threejs",
+      "repeat": 22,
+      "started": "2026-10-17T22:55:19Z"
+    },
+    {
+      "file": "runs/107_r3f-parent-state_22.csv",
+      "variant": "r3f-parent-state",
+      "repeat": 22,
+      "started": "2026-10-17T22:55:58Z"
+    },
+    {
+      "file": "runs/108_r3f-ref-central_22.csv",
+      "variant": "r3f-ref-central",
+      "repeat": 22,
+      "started": "2026-10-17T22:56:38Z"
+    },
+    {
+      "file": "runs/109_r3f-ref_22.csv",
+      "variant": "r3f-ref",
+      "repeat": 22,
+      "started": "2026-10-17T22:57:17Z"
+    },
+    {
+      "file": "runs/110_r3f-state_22.csv",
+      "variant": "r3f-state",
+      "repeat": 22,
+      "started": "2026-10-17T22:57:56Z"
+    },
+    {
+      "file": "runs/111_r3f-ref-central_23.csv",
+      "variant": "r3f-ref-central",
+      "repeat": 23,
+      "started": "2026-10-17T22:58:36Z"
+    },
+    {
+      "file": "runs/112_r3f-ref_23.csv",
+      "variant": "r3f-ref",
+      "repeat": 23,
+      "started": "2026-10-17T22:59:15Z"
+    },
+    {
+      "file": "runs/113_threejs_23.csv",
+      "variant": "threejs",
+      "repeat": 23,
+      "started": "2026-10-17T22:59:55Z"
+    },
+    {
+      "file": "runs/114_r3f-parent-state_23.csv",
+      "variant": "r3f-parent-state",
+      "repeat": 23,
+      "started": "2026-10-17T23:00:34Z"
+    },
+    {
+      "file": "runs/115_r3f-state_23.csv",
+      "variant": "r3f-state",
+      "repeat": 23,
+      "started": "2026-10-17T23:01:14Z"
+    },
+    {
+      "file": "runs/116_r3f-ref-central_24.csv",
+      "variant": "r3f-ref-central",
+      "repeat": 24,
+      "started": "2026-10-17T23:01:53Z"
+    },
+    {
+      "file": "runs/117_threejs_24.csv",
+      "variant": "threejs",
+      "repeat": 24,
+      "started": "2026-10-17T23:02:33Z"
+    },
+    {
+      "file": "runs/118_r3f-state_24.csv",
+      "variant": "r3f-state",
+      "repeat": 24,
+      "started": "2026-10-17T23:03:12Z"
+    },
+    {
+      "file": "runs/119_r3f-ref_24.csv",
+      "variant": "r3f-ref",
+      "repeat": 24,
+      "started": "2026-10-17T23:03:51Z"
+    },
+    {
+      "file": "runs/120_r3f-parent-state_24.csv",
+      "variant": "r3f-parent-state",
+      "repeat": 24,
+      "started": "2026-10-17T23:04:31Z"
+    },
+    {
+      "file": "runs/121_r3f-ref-central_25.csv",
+      "variant": "r3f-ref-central",
+      "repeat": 25,
+      "started": "2026-10-17T23:05:10Z"
+    },
+    {
+      "file": "runs/122_r3f-parent-state_25.csv",
+      "variant": "r3f-parent-state",
+      "repeat": 25,
+      "started": "2026-10-17T23:05:50Z"
+    },
+    {
+      "file": "runs/123_r3f-ref_25.csv",
+      "variant": "r3f-ref",
+      "repeat": 25,
+      "started": "2026-10-17T23:06:29Z"
+    },
+    {
+      "file": "runs/124_r3f-state_25.csv",
+      "variant": "r3f-state",
+      "repeat": 25,
+      "started": "2026-10-17T23:07:09Z"
+    },
+    {
+      "file": "runs/125_threejs_25.csv",
+      "variant": "threejs",
+      "repeat": 25,
+      "started": "2026-10-17T23:07:48Z"
+    },
+    {
+      "file": "runs/126_r3f-ref_26.csv",
+      "variant": "r3f-ref",
+      "repeat": 26,
+      "started": "2026-10-17T23:08:28Z"
+    },
+    {
+      "file": "runs/127_r3f-state_26.csv",
+      "variant": "r3f-state",
+      "repeat": 26,
+      "started": "2026-10-17T23:09:07Z"
+    },
+    {
+      "file": "runs/128_threejs_26.csv",
+      "variant": "threejs",
+      "repeat": 26,
+      "started": "2026-10-17T23:09:46Z"
+    },
+    {
+      "file": "runs/129_r3f-ref-central_26.csv",
+      "variant": "r3f-ref-central",
+      "repeat": 26,
+      "started": "2026-10-17T23:10:26Z"
+    },
+    {
+      "file": "runs/130_r3f-parent-state_26.csv",
+      "variant": "r3f-parent-state",
+      "repeat": 26,
+      "started": "2026-10-17T23:11:05Z"
+    },
+    {
+      "file": "runs/131_threejs_27.csv",
+      "variant": "threejs",
+      "repeat": 27,
+      "started": "2026-10-17T23:11:45Z"
+    },
+    {
+      "file": "runs/132_r3f-state_27.csv",
+      "variant": "r3f-state",
+      "repeat": 27,
+      "started": "2026-10-17T23:12:24Z"
+    },
+    {
+      "file": "runs/133_r3f-ref_27.csv",
+      "variant": "r3f-ref",
+      "repeat": 27,
+      "started": "2026-10-17T23:13:04Z"
+    },
+    {
+      "file": "runs/134_r3f-parent-state_27.csv",
+      "variant": "r3f-parent-state",
+      "repeat": 27,
+      "started": "2026-10-17T23:13:43Z"
+    },
+    {
+      "file": "runs/135_r3f-ref-central_27.csv",
+      "variant": "r3f-ref-central",
+      "repeat": 27,
+      "started": "2026-10-17T23:14:23Z"
+    },
+    {
+      "file": "runs/136_r3f-ref_28.csv",
+      "variant": "r3f-ref",
+      "repeat": 28,
+      "started": "2026-10-17T23:15:02Z"
+    },
+    {
+      "file": "runs/137_threejs_28.csv",
+      "variant": "threejs",
+      "repeat": 28,
+      "started": "2026-10-17T23:15:41Z"
+    },
+    {
+      "file": "runs/138_r3f-state_28.csv",
+      "variant": "r3f-state",
+      "repeat": 28,
+      "started": "2026-10-17T23:16:21Z"
+    },
+    {
+      "file": "runs/139_r3f-ref-central_28.csv",
+      "variant": "r3f-ref-central",
+      "repeat": 28,
+      "started": "2026-10-17T23:17:00Z"
+    },
+    {
+      "file": "runs/140_r3f-parent-state_28.csv",
+      "variant": "r3f-parent-state",
+      "repeat": 28,
+      "started": "2026-10-17T23:17:40Z"
+    },
+    {
+      "file": "runs/141_r3f-ref_29.csv",
+      "variant": "r3f-ref",
+      "repeat": 29,
+      "started": "2026-10-17T23:18:19Z"
+    },
+    {
+      "file": "runs/142_r3f-ref-central_29.csv",
+      "variant": "r3f-ref-central",
+      "repeat": 29,
+      "started": "2026-10-17T23:18:59Z"
+    },
+    {
+      "file": "runs/143_r3f-parent-state_29.csv",
+      "variant": "r3f-parent-state",
+      "repeat": 29,
+      "started": "2026-10-17T23:19:38Z"
+    },
+    {
+      "file": "runs/144_threejs_29.csv",
+      "variant": "threejs",
+      "repeat": 29,
+      "started": "2026-10-17T23:20:18Z"
+    },
+    {
+      "file": "runs/145_r3f-state_29.csv",
+      "variant": "r3f-state",
+      "repeat": 29,
+      "started": "2026-10-17T23:20:57Z"
+    },
+    {
+      "file": "runs/146_r3f-ref-central_30.csv",
+      "variant": "r3f-ref-central",
+      "repeat": 30,
+      "started": "2026-10-17T23:21:36Z"
+    },
+    {
+      "file": "runs/147_r3f-parent-state_30.csv",
+      "variant": "r3f-parent-state",
+      "repeat": 30,
+      "started": "2026-10-17T23:22:16Z"
+    },
+    {
+      "file": "runs/148_threejs_30.csv",
+      "variant": "threejs",
+      "repeat": 30,
+      "started": "2026-10-17T23:22:55Z"
+    },
+    {
+      "file": "runs/149_r3f-state_30.csv",
+      "variant": "r3f-state",
+      "repeat": 30,
+      "started": "2026-10-17T23:23:35Z"
+    },
+    {
+      "file": "runs/150_r3f-ref_30.csv",
+      "variant": "r3f-ref",
+      "repeat": 30,
+      "started": "2026-10-17T23:24:14Z"
+    }
+  ],
+  "retries": []
+}
