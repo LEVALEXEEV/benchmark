@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "bench": "tsx src/runner.ts",
-    "campaign": "tsx src/campaign.ts"
+    "campaign": "tsx src/campaign.ts",
+    "smoke": "tsx src/smoke.ts"
   },
   "dependencies": {
     "@bench/metrics": "0.1.0",

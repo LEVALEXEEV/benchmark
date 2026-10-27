@@ -41,6 +41,7 @@ R3F и какие способы писать на нём дешёвые, а к�
 npm install
 npm run browsers                     # сборки браузеров пула
 npm run typecheck
+scripts/macos/smoke.sh               # смоук-тест стенда (Windows: scripts\windows\smoke.ps1)
 npm run bench:parity -- s2           # только проверка паритета
 npm run bench -- --scenario s2 --browser firefox --repeats 3 --allow-dirty   # отладка
 npm run campaign -- list --session r3                                       # план кампании
