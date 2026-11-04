@@ -46,6 +46,7 @@ jobs:
             --execute r3.ipynb \
             --output-dir ../_site \
             --output index.html \
+            --ExecutePreprocessor.kernel_name=python3 \
             --ExecutePreprocessor.timeout=1200
         working-directory: analysis
 
