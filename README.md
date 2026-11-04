@@ -51,3 +51,12 @@ npm run campaign -- list --session r3                                       # п
 `manifest.json` и `runs/*.csv` (см. `docs/DATA.md`).
 
 Ручной просмотр: `npm run dev:r3f` → `http://localhost:5174/?scenario=s4&mode=events`.
+
+## Публикация анализа
+
+Workflow [`.github/workflows/publish-analysis.yml`](.github/workflows/publish-analysis.yml)
+при изменении `analysis/r3.ipynb`, зависимостей или результатов выполняет ноутбук
+и публикует его как `index.html` на GitHub Pages. Для первого запуска в настройках
+репозитория выберите **Settings → Pages → Source: GitHub Actions**. После этого
+страница обновляется автоматически; запуск также можно выполнить вручную через
+**Actions → Publish analysis → Run workflow**.
